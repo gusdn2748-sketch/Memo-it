@@ -1138,7 +1138,7 @@ function startApp(){
   fetchWeather();
   setInterval(fetchWeather, 30*60*1000);
   try{
-    firebase.initializeApp(firebaseConfig);db=firebase.firestore();
+    firebase.initializeApp(firebaseConfig);var db=firebase.firestore();
     db.collection('events').orderBy('date').onSnapshot(s=>{
       allEvents=s.docs.map(d=>({id:d.id,...d.data()}));
       renderCal();renderSelEvents();checkAlarms();
@@ -2683,26 +2683,35 @@ function rgMakeTile(tile){
   return el;
 }
 function rgRender(data){
+  if(!document.getElementById('rg-turnlabel'))return; // 게임 화면 미준비
   const me=RL_USER(),isMe=data.turn===me;
-  document.getElementById('rg-turnlabel').textContent=isMe?'✨ 내 차례!':data.turn+'의 차례';
-  document.getElementById('rg-btn-place').disabled=!isMe||!rgHasPlayed;
-  document.getElementById('rg-btn-draw').disabled=!isMe||rgHasPlayed;
-  document.getElementById('rg-btn-undo').disabled=!isMe||!rgHasPlayed;
-  document.getElementById('rg-deckcount').textContent='더미 '+(data.deck||[]).length+'장';
+  const _tl=document.getElementById('rg-turnlabel');
+  const _dc=document.getElementById('rg-deckcount');
+  const _bp=document.getElementById('rg-btn-place');
+  const _bd=document.getElementById('rg-btn-draw');
+  const _bu=document.getElementById('rg-btn-undo');
+  if(_tl)_tl.textContent=isMe?'✨ 내 차례!':data.turn+'의 차례';
+  if(_dc)_dc.textContent='더미 '+(data.deck||[]).length+'장';
+  if(_bp)_bp.disabled=!isMe||!rgHasPlayed;
+  if(_bd)_bd.disabled=!isMe||rgHasPlayed;
+  if(_bu)_bu.disabled=!isMe||!rgHasPlayed;
   rgRenderHand();rgRenderBoard();rgRenderPlayers(data);rgRenderLog(data.log||[]);
   if(data.timerEnabled&&isMe)rgStartTimer();else rgStopTimer();
   if(isMe&&!rgHasPlayed){
-    rgBoardSnap=JSON.parse(JSON.stringify(data.board));
+    rgBoardSnap=JSON.parse(JSON.stringify(data.board||[]));
     rgHandSnap=[...(data.hands[me]||[])];
-    rgLocalBoard=JSON.parse(JSON.stringify(data.board));
+    rgLocalBoard=JSON.parse(JSON.stringify(data.board||[]));
     rgLocalHand=[...rgHandSnap];
   }
 }
 function rgRenderHand(){
   const me=RL_USER();
+  const ct=document.getElementById('rg-handtiles');
+  const hc=document.getElementById('rg-handcount');
+  if(!ct)return;
   const hand=rgHasPlayed?rgLocalHand:(rgG.hands[me]||[]);
-  const ct=document.getElementById('rg-handtiles');ct.innerHTML='';
-  document.getElementById('rg-handcount').textContent=hand.length+'장';
+  ct.innerHTML='';
+  if(hc)hc.textContent=hand.length+'장';
   hand.forEach((tile,i)=>{
     const el=rgMakeTile(tile);
     el.addEventListener('click',()=>rgTileClick('hand',i,tile));
@@ -2711,9 +2720,12 @@ function rgRenderHand(){
   });
 }
 function rgRenderBoard(){
-  const board=rgHasPlayed?rgLocalBoard:rgG.board;
-  const inner=document.getElementById('rg-boardinner');inner.innerHTML='';
-  document.getElementById('rg-bempty').style.display=board.length===0?'flex':'none';
+  const inner=document.getElementById('rg-boardinner');
+  const bempty=document.getElementById('rg-bempty');
+  if(!inner)return;
+  const board=rgHasPlayed?rgLocalBoard:(rgG.board||[]);
+  inner.innerHTML='';
+  if(bempty)bempty.style.display=board.length===0?'flex':'none';
   board.forEach((set,si)=>{
     const grp=document.createElement('div');grp.className='rg-setgrp';
     if(rgHasPlayed)grp.classList.add(rgIsValid(set)?'valid':'invalid');
@@ -2736,7 +2748,9 @@ function rgRenderBoard(){
   }
 }
 function rgRenderPlayers(data){
-  const list=document.getElementById('rg-plist');list.innerHTML='';
+  const list=document.getElementById('rg-plist');
+  if(!list)return;
+  list.innerHTML='';
   (data.players||[]).forEach((p,i)=>{
     const row=document.createElement('div');row.className='rg-prow'+(data.turn===p.name?' myturn':'');
     const col=p.color||RL_AVC[i%RL_AVC.length];
@@ -2749,7 +2763,9 @@ function rgRenderPlayers(data){
 }
 function rgRenderLog(logs){
   const me=RL_USER();
-  const el=document.getElementById('rg-gamelog');el.innerHTML='';
+  const el=document.getElementById('rg-gamelog');
+  if(!el)return;
+  el.innerHTML='';
   [...logs].reverse().slice(0,40).forEach(l=>{
     const d=document.createElement('div');
     d.className='rg-logentry'+(l.includes(me)?l.includes('승리')?' win':' mine':'');
@@ -2762,19 +2778,37 @@ function rgTileClick(src,idx,tile,tIdx){
   if(src==='hand'){rgLocalHand.splice(idx,1);rgLocalBoard.push([tile]);}
   else{const s=rgLocalBoard[idx];s.splice(tIdx,1);if(s.length===0)rgLocalBoard.splice(idx,1);rgLocalHand.push(tile);}
   rgRenderHand();rgRenderBoard();
-  document.getElementById('rg-btn-place').disabled=!rgAllValid();
-  document.getElementById('rg-btn-undo').disabled=false;
+  const _bp2=document.getElementById('rg-btn-place');
+  const _bu2=document.getElementById('rg-btn-undo');
+  if(_bp2)_bp2.disabled=!rgAllValid();
+  if(_bu2)_bu2.disabled=false;
 }
 function rgDragStart(e,src,idx,tile,tIdx){
-  if(rgG.turn!==RL_USER())return;rgDragTile={src,idx,tile,tIdx};
+  if(rgG.turn!==RL_USER())return;
+  // 기존 리스너 먼저 제거 (중복 방지)
+  document.removeEventListener('mousemove',rgMoveDrag);
+  document.removeEventListener('mouseup',rgEndDrag);
+  rgDragTile={src,idx,tile,tIdx};
   const ov=document.getElementById('rg-dragov');
+  if(!ov)return;
   ov.className='rg-dragov '+(tile.joker?'rg-tile-j':RG_CMAP[tile.col]);
-  ov.textContent=tile.joker?'★':tile.num;ov.style.display='flex';
+  ov.textContent=tile.joker?'★':tile.num;
+  ov.style.display='flex';
   rgMoveDrag(e);
-  document.addEventListener('mousemove',rgMoveDrag);document.addEventListener('mouseup',rgEndDrag);
+  document.addEventListener('mousemove',rgMoveDrag);
+  document.addEventListener('mouseup',rgEndDrag);
 }
-function rgMoveDrag(e){const ov=document.getElementById('rg-dragov');ov.style.left=(e.clientX-20)+'px';ov.style.top=(e.clientY-28)+'px';}
-function rgEndDrag(){document.getElementById('rg-dragov').style.display='none';document.removeEventListener('mousemove',rgMoveDrag);document.removeEventListener('mouseup',rgEndDrag);rgDragTile=null;}
+function rgMoveDrag(e){
+  const ov=document.getElementById('rg-dragov');
+  if(ov){ov.style.left=(e.clientX-20)+'px';ov.style.top=(e.clientY-28)+'px';}
+}
+function rgEndDrag(){
+  const ov=document.getElementById('rg-dragov');
+  if(ov)ov.style.display='none';
+  document.removeEventListener('mousemove',rgMoveDrag);
+  document.removeEventListener('mouseup',rgEndDrag);
+  rgDragTile=null;
+}
 function rgDropSet(si){
   if(!rgDragTile||rgG.turn!==RL_USER())return;
   const{src,idx,tile,tIdx}=rgDragTile;rgHasPlayed=true;
@@ -2783,16 +2817,20 @@ function rgDropSet(si){
   const tsi=Math.min(si,rgLocalBoard.length-1);
   if(rgLocalBoard[tsi])rgLocalBoard[tsi].push(tile);else rgLocalBoard.push([tile]);
   rgRenderHand();rgRenderBoard();
-  document.getElementById('rg-btn-place').disabled=!rgAllValid();
-  document.getElementById('rg-btn-undo').disabled=false;
+  const _bpd=document.getElementById('rg-btn-place');
+  const _bud=document.getElementById('rg-btn-undo');
+  if(_bpd)_bpd.disabled=!rgAllValid();
+  if(_bud)_bud.disabled=false;
 }
 function rgAddNewSet(){
   if(!rgDragTile)return;const{src,idx,tile,tIdx}=rgDragTile;rgHasPlayed=true;
   if(src==='hand')rgLocalHand.splice(idx,1);
   else{rgLocalBoard[idx].splice(tIdx,1);if(rgLocalBoard[idx].length===0)rgLocalBoard.splice(idx,1);}
   rgLocalBoard.push([tile]);rgRenderHand();rgRenderBoard();
-  document.getElementById('rg-btn-place').disabled=!rgAllValid();
-  document.getElementById('rg-btn-undo').disabled=false;
+  const _bpa=document.getElementById('rg-btn-place');
+  const _bua=document.getElementById('rg-btn-undo');
+  if(_bpa)_bpa.disabled=!rgAllValid();
+  if(_bua)_bua.disabled=false;
 }
 function rgIsValid(set){
   if(set.length<3)return false;
@@ -2846,16 +2884,30 @@ function rgUndo(){
 }
 function rgStartTimer(){
   rgStopTimer();rgTimerSec=60;
-  const d=document.getElementById('rg-timerdisp');d.style.display='block';
-  rgTimerInterval=setInterval(()=>{rgTimerSec--;d.textContent=rgTimerSec;d.className='rg-timerdisp'+(rgTimerSec<=10?' warn':'');if(rgTimerSec<=0){clearInterval(rgTimerInterval);rgDrawTile();}},1000);
+  const d=document.getElementById('rg-timerdisp');
+  if(!d)return;
+  d.style.display='block';
+  rgTimerInterval=setInterval(()=>{
+    rgTimerSec--;
+    if(d){d.textContent=rgTimerSec;d.className='rg-timerdisp'+(rgTimerSec<=10?' warn':'');}
+    if(rgTimerSec<=0){clearInterval(rgTimerInterval);rgDrawTile();}
+  },1000);
 }
-function rgStopTimer(){clearInterval(rgTimerInterval);document.getElementById('rg-timerdisp').style.display='none';}
+function rgStopTimer(){
+  clearInterval(rgTimerInterval);
+  const d=document.getElementById('rg-timerdisp');
+  if(d)d.style.display='none';
+}
 function rgShowWin(data){
   const me=RL_USER(),won=data.winner===me;
-  document.getElementById('rg-winemoji').textContent=won?'🏆':'😢';
-  document.getElementById('rg-wintitle').textContent=won?'승리!':'패배...';
-  document.getElementById('rg-winsub').textContent=won?'축하합니다! 모든 타일을 내려놓았습니다!':(data.winner||'상대')+'이(가) 승리했습니다.';
-  document.getElementById('rg-winov').classList.add('show');
+  const emoji=document.getElementById('rg-winemoji');
+  const title=document.getElementById('rg-wintitle');
+  const sub=document.getElementById('rg-winsub');
+  const ov=document.getElementById('rg-winov');
+  if(emoji)emoji.textContent=won?'🏆':'😢';
+  if(title)title.textContent=won?'승리!':'패배...';
+  if(sub)sub.textContent=won?'축하합니다! 모든 타일을 내려놓았습니다!':(data.winner||'상대')+'이(가) 승리했습니다.';
+  if(ov)ov.classList.add('show');
 }
 </script>
 
