@@ -814,12 +814,11 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 .rumi-pw-err{font-size:12px;color:#E03030;text-align:center;min-height:16px}
 
 
-.version-tag{
-  position:fixed;bottom:10px;right:12px;
-  font-size:10px;color:rgba(0,0,0,.2);
-  font-family:'DM Mono',monospace;letter-spacing:.5px;
-  pointer-events:none;z-index:10;
-  user-select:none;
+
+.splash-ver{
+  font-size:11px;color:#C4B8A4;
+  font-family:'DM Mono',monospace;letter-spacing:1px;
+  margin-top:6px;opacity:.75;
 }
 </style>
 </head>
@@ -896,6 +895,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
+  <div class="splash-ver">v04.21.01</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -2684,6 +2684,5 @@ function rumiPwConfirm(){
 }
 </script>
 
-<div class="version-tag">v04.21.01</div>
 </body>
 </html>
