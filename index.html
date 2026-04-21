@@ -660,7 +660,7 @@ to{opacity:1;transform:translateY(0)}
 .rw-tsl::before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:white;border-radius:50%;transition:.25s;box-shadow:0 2px 4px rgba(0,0,0,.3)}
 input:checked+.rw-tsl{background:var(--ra)}
 input:checked+.rw-tsl::before{transform:translateX(18px)}
-.rw-acts{display:flex;gap:10px}
+.rw-acts{display:flex;gap:10px;justify-content:flex-end}
 .rw-leave{background:none;border:1px solid var(--rbr);border-radius:8px;padding:0 18px;color:var(--rm);cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-size:13px;transition:all .15s}
 .rw-leave:hover{border-color:var(--rred);color:#FF7070}
 .rw-start{flex:1;padding:14px;border-radius:12px;border:none;cursor:pointer;background:linear-gradient(135deg,#1E6A3A,#289050);color:#fff;font-family:'Black Han Sans',sans-serif;font-size:17px;letter-spacing:1px;transition:all .2s;position:relative;overflow:hidden}
@@ -820,6 +820,59 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
   font-family:'DM Mono',monospace;letter-spacing:1px;
   margin-top:6px;opacity:.75;
 }
+
+/* ── 메모 확대 오버레이 */
+.memo-expand-bg{
+  position:fixed;inset:0;z-index:300;
+  background:rgba(0,0,0,.45);
+  backdrop-filter:blur(3px);
+  display:none;align-items:center;justify-content:center;
+  animation:meBgIn .18s ease;
+}
+.memo-expand-bg.open{display:flex}
+@keyframes meBgIn{from{opacity:0}to{opacity:1}}
+.memo-expand-card{
+  width:380px;max-width:90vw;
+  border-radius:6px;
+  padding:20px 22px 18px;
+  box-shadow:3px 5px 28px rgba(0,0,0,.28),0 2px 6px rgba(0,0,0,.14);
+  position:relative;
+  animation:meCardIn .2s cubic-bezier(.34,1.56,.64,1);
+  max-height:80vh;display:flex;flex-direction:column;
+}
+@keyframes meCardIn{from{transform:scale(.88);opacity:0}to{transform:scale(1);opacity:1}}
+.memo-expand-pin{
+  position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+  width:14px;height:17px;background:#8B3A2A;border-radius:50% 50% 40% 40%;
+}
+.memo-expand-author{font-size:12px;font-weight:700;margin-bottom:10px;opacity:.75}
+.memo-expand-text{
+  font-family:'Gaegu',cursive;font-size:22px;line-height:1.65;
+  color:#1E1A14;flex:1;overflow-y:auto;white-space:pre-wrap;word-break:break-word;
+}
+.memo-expand-text::-webkit-scrollbar{width:4px}
+.memo-expand-text::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:2px}
+.memo-expand-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:12px;padding-top:10px;border-top:1px solid rgba(0,0,0,.08);
+}
+.memo-expand-time{font-size:11px;opacity:.5}
+.memo-expand-close{
+  background:rgba(0,0,0,.08);border:none;border-radius:20px;
+  padding:5px 14px;font-size:12px;cursor:pointer;
+  font-family:'Noto Sans KR',sans-serif;color:#3C2A18;
+  transition:background .15s;
+}
+.memo-expand-close:hover{background:rgba(0,0,0,.15)}
+/* 메모 카드에 클릭 힌트 */
+.sticky{cursor:pointer}
+.sticky:hover .s-expand-hint{opacity:1}
+.s-expand-hint{
+  position:absolute;bottom:6px;right:8px;
+  font-size:10px;color:rgba(0,0,0,.3);
+  opacity:0;transition:opacity .15s;
+  pointer-events:none;
+}
 </style>
 </head>
 <body>
@@ -895,7 +948,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v04.21.01</div>
+  <div class="splash-ver">v04.21.02</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -1968,11 +2021,33 @@ init();
       </div>
       <div class="rw-acts">
         <button class="rw-leave" onclick="rlLeaveRoom()">나가기</button>
-        <button class="rw-start" id="rw-start" onclick="rlStartGame()" disabled>게임 시작 ▶</button>
+        <button class="rw-start" id="rw-start" onclick="rlStartGame()" disabled style="display:none">게임 시작 ▶</button>
       </div>
       <div class="rw-hint" id="rw-hint">방장이 게임을 시작하면 자동으로 시작됩니다</div>
     </div>
   </div>
+  <!-- ── 튜토리얼 이후 준비 대기 ── -->
+  <div class="rumi-screen" id="rscr-ready" style="background:#0C0A18">
+    <div class="rw-wrap">
+      <div class="rw-hdr">
+        <div class="rw-rtitle">🎲 준비 확인</div>
+        <div style="font-size:13px;color:var(--rm);margin-top:6px">모든 플레이어가 준비되면 호스트가 게임을 시작합니다</div>
+      </div>
+      <div class="rw-pgrid" id="rr-pgrid"></div>
+      <div class="rw-acts">
+        <!-- 참가자: 준비 버튼 -->
+        <button class="rw-start" id="rr-ready-btn" onclick="rlSetReady()" style="background:linear-gradient(135deg,#1E5A8A,#2878B8)">
+          준비 완료 ✓
+        </button>
+        <!-- 호스트: 게임 시작 버튼 (전원 준비 시 활성화) -->
+        <button class="rw-start" id="rr-start-btn" onclick="rlFinalStart()" disabled style="display:none">
+          게임 시작 ▶
+        </button>
+      </div>
+      <div class="rw-hint" id="rr-hint">튜토리얼을 완료하셨나요? 준비 버튼을 눌러주세요</div>
+    </div>
+  </div>
+
   <!-- ── 튜토리얼 ── -->
   <div class="rumi-screen" id="rscr-tuto" style="background:#0C0A18">
     <div class="rt-wrap">
@@ -2133,6 +2208,7 @@ function rumiLeave(){
   document.getElementById('rs-loading').classList.add('hide');
   document.getElementById('rs-error').classList.remove('show');
   if(rgGameUnsub){rgGameUnsub();rgGameUnsub=null;}
+  if(rrUnsub){rrUnsub();rrUnsub=null;}
   clearInterval(rgTimerInterval);
   rgHasPlayed=false;rgGameStarted=false;
   rlRoomId=null;rlIsHost=false;
@@ -2242,39 +2318,66 @@ function rlEnterWaiting(rid){
   rlRoomUnsub=db.collection('rummikub_rooms').doc(rid).onSnapshot(snap=>{
     if(!snap.exists){rlToast('방이 사라졌습니다');rumiShowLobby();return;}
     const data=snap.data();
-    // 게임 진입 이후엔 대기실 렌더 스킵
-    if(!_rlGameEntered) rlRenderWaiting(data);
-    if(data.status==='tutorial'&&!_rlGameEntered){
+
+    if(_rlGameEntered)return; // 이미 게임 진입했으면 무시
+
+    if(data.status==='waiting'){
+      // 대기실 렌더
+      rlRenderWaiting(data);
+    } else if(data.status==='tutorial'){
       _rlGameEntered=true;
-      // 방 구독 해제 후 튜토리얼
-      if(rlRoomUnsub){rlRoomUnsub();rlRoomUnsub=null;}
-      rlShowTutorial();
-    } else if(data.status==='playing'&&!_rlGameEntered){
+      const unsub=rlRoomUnsub;rlRoomUnsub=null;
+      if(unsub)unsub();
+      setTimeout(()=>rlShowTutorial(),50);
+    } else if(data.status==='playing'){
       _rlGameEntered=true;
-      if(rlRoomUnsub){rlRoomUnsub();rlRoomUnsub=null;}
-      rlStartGameScreen();
+      const unsub=rlRoomUnsub;rlRoomUnsub=null;
+      if(unsub)unsub();
+      setTimeout(()=>rlStartGameScreen(),50);
     }
+  },err=>{
+    rlToast('연결 오류: '+err.message);
   });
 }
 function rlRenderWaiting(data){
-  document.getElementById('rw-rname').textContent=data.name;
-  document.getElementById('rw-code').textContent=data.code;
-  document.getElementById('rw-cnt').textContent=data.players.length+'/'+data.maxPlayers+'명';
-  rlIsHost=data.host===RL_USER();
+  // null 안전 처리
+  const rname=document.getElementById('rw-rname');
+  const rcode=document.getElementById('rw-code');
+  const rcnt=document.getElementById('rw-cnt');
   const btn=document.getElementById('rw-start');
-  btn.disabled=!rlIsHost||data.players.length<2;
-  document.getElementById('rw-hint').textContent=rlIsHost
-    ?(data.players.length<2?'2명 이상이어야 시작할 수 있습니다':'준비 완료! 게임을 시작하세요 👍')
-    :'방장이 게임을 시작하면 자동으로 시작됩니다';
-  const grid=document.getElementById('rw-pgrid');grid.innerHTML='';
-  for(let i=0;i<data.maxPlayers;i++){
-    const p=data.players[i];const slot=document.createElement('div');
+  const hint=document.getElementById('rw-hint');
+  const grid=document.getElementById('rw-pgrid');
+  if(!rname||!btn||!grid)return; // DOM 아직 없으면 스킵
+
+  rname.textContent=data.name||'';
+  rcode.textContent=data.code||'----';
+  rcnt.textContent=(data.players||[]).length+'/'+(data.maxPlayers||4)+'명';
+  rlIsHost=data.host===RL_USER();
+
+  if(rlIsHost){
+    btn.style.display='flex';
+    btn.disabled=(data.players||[]).length<2;
+    if(hint)hint.textContent=(data.players||[]).length<2
+      ?'2명 이상이어야 시작할 수 있습니다'
+      :'준비 완료! 게임을 시작하세요 👍';
+  } else {
+    btn.style.display='none';
+    if(hint)hint.textContent='방장 '+(data.host||'')+'이(가) 게임을 시작하면 자동으로 입장됩니다';
+  }
+
+  grid.innerHTML='';
+  const maxP=data.maxPlayers||4;
+  for(let i=0;i<maxP;i++){
+    const p=(data.players||[])[i];
+    const slot=document.createElement('div');
     if(p){
-      slot.className='rw-pslot filled'+(p.name===RL_USER()?' me':'');
-      const col=p.color||RL_AVC[i];
+      const col=p.color||RL_AVC[i%RL_AVC.length];
+      const isMe=p.name===RL_USER();
+      const isHost2=data.host===p.name;
+      slot.className='rw-pslot filled'+(isMe?' me':'');
       slot.innerHTML=`<div class="rw-pav" style="background:${col}22;border:2px solid ${col}">${p.name.charAt(0)}</div>
-        <div class="rw-pname">${p.name}${p.name===RL_USER()?' (나)':''}</div>
-        <div class="rw-phost">${data.host===p.name?'👑 방장':''}</div>`;
+        <div class="rw-pname">${p.name}${isMe?' <span style="font-size:10px;opacity:.6">(나)</span>':''}</div>
+        <div class="rw-phost">${isHost2?'👑 방장':'🎮 참가자'}</div>`;
     } else {
       slot.className='rw-pslot';
       slot.innerHTML='<div class="rw-pempty"><div class="rw-peicon">•••</div>대기 중</div>';
@@ -2297,7 +2400,13 @@ async function rlLeaveRoom(){
 async function rlStartGame(){
   if(!rlIsHost||!rlRoomId)return;
   const timer=document.getElementById('rw-timer-tog').checked;
-  await db.collection('rummikub_rooms').doc(rlRoomId).update({status:'tutorial',timerEnabled:timer});
+  // ready 필드 초기화
+  const snap=await db.collection('rummikub_rooms').doc(rlRoomId).get();
+  const players=(snap.data().players||[]).map(p=>p.name);
+  const ready={};players.forEach(p=>{ready[p]=false;});
+  await db.collection('rummikub_rooms').doc(rlRoomId).update({
+    status:'tutorial',timerEnabled:timer,ready
+  });
 }
 
 // ── 튜토리얼
@@ -2324,11 +2433,98 @@ function rtRender(){
   if(rtSlide===RT_SLIDES.length-1){nb.className='rt-tnav rt-tns';nb.textContent='게임 시작! ▶';}
   else{nb.className='rt-tnav rt-tnn';nb.textContent='다음 →';}
 }
-function rtNext(){if(rtSlide<RT_SLIDES.length-1){rtSlide++;rtRender();}else rlStartGameScreen();}
+function rtNext(){if(rtSlide<RT_SLIDES.length-1){rtSlide++;rtRender();}else rlShowReady();}
 function rtPrev(){if(rtSlide>0){rtSlide--;rtRender();}}
-function rtSkip(){rlStartGameScreen();}
+function rtSkip(){rlShowReady();}
 
 // ── 게임 시작
+// ── 준비 대기 화면
+let rrUnsub=null;
+
+function rlShowReady(){
+  rumiShowScreen('rscr-ready');
+  // 내 준비상태 초기화
+  if(!rlRoomId)return;
+  // 준비 화면 구독
+  if(rrUnsub){rrUnsub();rrUnsub=null;}
+  rrUnsub=db.collection('rummikub_rooms').doc(rlRoomId).onSnapshot(snap=>{
+    if(!snap.exists)return;
+    const data=snap.data();
+    rrRender(data);
+    // 게임 시작 신호 감지
+    if(data.status==='playing'){
+      if(rrUnsub){rrUnsub();rrUnsub=null;}
+      rlStartGameScreen();
+    }
+  });
+}
+
+function rrRender(data){
+  const me=RL_USER();
+  const players=data.players||[];
+  const ready=data.ready||{};
+  const grid=document.getElementById('rr-pgrid');
+  if(!grid)return;
+  grid.innerHTML='';
+
+  players.forEach((p,i)=>{
+    const slot=document.createElement('div');
+    const col=p.color||RL_AVC[i%RL_AVC.length];
+    const isReady=ready[p.name]===true;
+    const isHost2=data.host===p.name;
+    slot.className='rw-pslot filled'+(p.name===me?' me':'');
+    if(isReady)slot.style.borderColor='#38B86A';
+    slot.innerHTML=`
+      <div class="rw-pav" style="background:${col}22;border:2px solid ${col}">${p.name.charAt(0)}</div>
+      <div class="rw-pname">${p.name}${p.name===me?' <span style="font-size:10px;opacity:.6">(나)</span>':''}</div>
+      <div class="rw-phost" style="color:${isReady?'#38B86A':'#6A6088'}">${isReady?'✅ 준비완료':isHost2?'👑 대기 중':'🎮 대기 중'}</div>`;
+    grid.appendChild(slot);
+  });
+
+  const allReady=players.length>1&&players.every(p=>ready[p.name]===true);
+  const readyBtn=document.getElementById('rr-ready-btn');
+  const startBtn=document.getElementById('rr-start-btn');
+  const hint=document.getElementById('rr-hint');
+  const isHost=data.host===me;
+
+  if(isHost){
+    if(readyBtn)readyBtn.style.display='none';
+    if(startBtn){
+      startBtn.style.display='flex';
+      startBtn.disabled=!allReady;
+    }
+    if(hint)hint.textContent=allReady?'모두 준비됐습니다! 게임을 시작하세요 🎮':
+      `${players.filter(p=>ready[p.name]).length}/${players.length}명 준비완료`;
+  } else {
+    const meReady=ready[me]===true;
+    if(readyBtn){
+      readyBtn.style.display='flex';
+      readyBtn.disabled=meReady;
+      readyBtn.textContent=meReady?'준비완료 ✓':'준비 완료 ✓';
+      readyBtn.style.background=meReady?'linear-gradient(135deg,#1E6A3A,#289050)':'linear-gradient(135deg,#1E5A8A,#2878B8)';
+    }
+    if(startBtn)startBtn.style.display='none';
+    if(hint)hint.textContent=meReady?'호스트가 게임을 시작할 때까지 기다려주세요':'준비 버튼을 눌러주세요!';
+  }
+}
+
+async function rlSetReady(){
+  if(!rlRoomId)return;
+  const me=RL_USER();
+  try{
+    await db.collection('rummikub_rooms').doc(rlRoomId).update({
+      ['ready.'+me]:true
+    });
+  }catch(e){rlToast('오류: '+e.message);}
+}
+
+async function rlFinalStart(){
+  if(!rlIsHost||!rlRoomId)return;
+  // 준비 대기 구독 해제
+  if(rrUnsub){rrUnsub();rrUnsub=null;}
+  await rlStartGameScreen();
+}
+
 async function rlStartGameScreen(){
   // 방 구독 정리 (중복 호출 방지)
   if(rlRoomUnsub){rlRoomUnsub();rlRoomUnsub=null;}
@@ -2407,7 +2603,9 @@ async function rgInitGame(){
     rgSubscribeGame(); // 이후 실시간 업데이트용
   }catch(e){
     if(window._rgTimeoutId)clearTimeout(window._rgTimeoutId);
-    rgShowError('초기화 오류: '+e.message);
+    console.error('rgInitGame error:', e);
+    rgShowError('게임 초기화 실패 — 로비로 돌아가 다시 시도해주세요.
+('+e.message+')');
   }
 }
 
@@ -2682,6 +2880,51 @@ function rumiPwConfirm(){
     document.getElementById('rumi-pw-inp').focus();
   }
 }
+</script>
+
+
+<!-- 메모 확대 오버레이 -->
+<div class="memo-expand-bg" id="memo-expand-bg" onclick="closeMemoExpand(event)">
+  <div class="memo-expand-card" id="memo-expand-card">
+    <div class="memo-expand-pin"></div>
+    <div class="memo-expand-author" id="memo-expand-author"></div>
+    <div class="memo-expand-text" id="memo-expand-text"></div>
+    <div class="memo-expand-footer">
+      <span class="memo-expand-time" id="memo-expand-time"></span>
+      <button class="memo-expand-close" onclick="document.getElementById('memo-expand-bg').classList.remove('open')">닫기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openMemoExpand(text, author, color, time){
+  const bg = document.getElementById('memo-expand-bg');
+  const card = document.getElementById('memo-expand-card');
+  document.getElementById('memo-expand-text').textContent = text;
+  document.getElementById('memo-expand-author').textContent = author;
+  document.getElementById('memo-expand-author').style.color = color || '#7A5C38';
+  document.getElementById('memo-expand-time').textContent = time || '';
+  card.style.background = color ? lightenColor(color) : '#FFF9C4';
+  bg.classList.add('open');
+}
+function closeMemoExpand(e){
+  if(e.target === document.getElementById('memo-expand-bg'))
+    document.getElementById('memo-expand-bg').classList.remove('open');
+}
+function lightenColor(hex){
+  // 색상별 포스트잇 배경색 매핑
+  const map = {
+    '#FFF9C4':'#FFFDE7','#C8F5E9':'#E0FAF4','#FFD6CC':'#FFE8E0',
+    '#D6E8FF':'#E8F2FF','#F0D6FF':'#F8EEFF','#FFDDE8':'#FFEFF4',
+    '#E8FFD6':'#F2FFE8',
+  };
+  return map[hex] || hex || '#FFF9C4';
+}
+// ESC로 닫기
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape')
+    document.getElementById('memo-expand-bg').classList.remove('open');
+});
 </script>
 
 </body>
