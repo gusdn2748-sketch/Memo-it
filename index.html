@@ -525,7 +525,7 @@ to{opacity:1;transform:translateY(0)}
 ══════════════════════════════════ */
 #rumi-app{
   position:fixed;inset:0;z-index:500;
-  background:#0C0A18;
+  background:linear-gradient(150deg,#FFF8F0 0%,#FFF0F8 25%,#F0F8FF 60%,#F0FFF5 100%);
   display:none;flex-direction:column;
   font-family:'Noto Sans KR',sans-serif;
 }
@@ -583,30 +583,30 @@ to{opacity:1;transform:translateY(0)}
 .rltd-g{background:linear-gradient(145deg,#0E2814,#081508);border:1.5px solid #28A050;color:#58D878}
 .rltd-o{background:linear-gradient(145deg,#2E1208,#180A04);border:1.5px solid #D07028;color:#FFA858}
 .rltd-j{background:linear-gradient(145deg,#281C48,#161028);border:1.5px solid #C8A830;color:#FFD850;font-size:22px;text-shadow:0 0 14px rgba(255,216,80,.55)}
-.rl-gtitle{font-family:'Black Han Sans',sans-serif;font-size:44px;color:var(--rgold);letter-spacing:3px;text-shadow:0 0 40px var(--rgg),0 3px 0 rgba(0,0,0,.6);margin-bottom:5px}
-.rl-gsub{font-size:11px;color:var(--rm);letter-spacing:2.5px;text-transform:uppercase}
-.rl-ucard{background:var(--rc);border:1px solid var(--rbr);border-radius:12px;padding:13px 16px;display:flex;align-items:center;gap:10px}
+.rl-gtitle{font-family:'Black Han Sans',sans-serif;font-size:44px;color:#8B5E00;letter-spacing:3px;text-shadow:0 2px 0 rgba(0,0,0,.15);margin-bottom:5px}
+.rl-gsub{font-size:11px;color:#8A7E68;letter-spacing:2.5px;text-transform:uppercase}
+.rl-ucard{background:rgba(255,255,255,.85);border:1px solid var(--rbr);border-radius:12px;padding:13px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 10px rgba(0,0,0,.08);backdrop-filter:blur(8px)}
 .rl-ldot{width:8px;height:8px;background:#38C06A;border-radius:50%;flex-shrink:0;box-shadow:0 0 8px rgba(56,192,106,.5);animation:rlldp 2.5s ease-in-out infinite}
 @keyframes rlldp{0%,100%{opacity:1}50%{opacity:.35}}
 .rl-uname{font-size:15px;font-weight:600;flex:1;color:var(--rt)}
 .rl-ubadge{font-size:11px;color:var(--rm);background:var(--rs);border:1px solid var(--rbr);padding:3px 9px;border-radius:20px}
-.rl-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.rl-btn{padding:20px 14px;border-radius:12px;border:1.5px solid;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;transition:all .2s;font-family:'Noto Sans KR',sans-serif;position:relative;overflow:hidden}
+.rl-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:stretch}
+.rl-btn{padding:18px 14px;border-radius:12px;border:1.5px solid;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:all .2s;font-family:'Noto Sans KR',sans-serif;position:relative;overflow:hidden;min-height:110px;width:100%}
 .rl-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(145deg,rgba(255,255,255,.07) 0%,transparent 55%);pointer-events:none}
 .rl-btn:hover{transform:translateY(-3px)}.rl-btn:active{transform:none}
-.rl-btn-icon{font-size:36px;filter:drop-shadow(0 3px 8px rgba(0,0,0,.5))}
-.rl-btn-label{font-size:15px;font-weight:700;color:#fff}
+.rl-btn-icon{font-size:30px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.2))}
+.rl-btn-label{font-size:15px;font-weight:700;color:#fff;margin-top:2px}
 .rl-btn-sub{font-size:11px;color:rgba(255,255,255,.48)}
 .rl-bc{background:linear-gradient(145deg,#2A1C4C,#3C2A72);border-color:#543A90}
 .rl-bc:hover{box-shadow:0 10px 30px rgba(84,58,144,.3);border-color:#7050B8}
 .rl-bj{background:linear-gradient(145deg,#183428,#224A38);border-color:#2C7040}
 .rl-bj:hover{box-shadow:0 10px 30px rgba(44,112,64,.3);border-color:#3A9058}
-.rl-rlist-wrap{background:var(--rc);border:1px solid var(--rbr);border-radius:12px;overflow:hidden}
+.rl-rlist-wrap{background:rgba(255,255,255,.85);border:1px solid var(--rbr);border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.08);display:flex;flex-direction:column}
 .rl-rlist-top{padding:11px 16px;border-bottom:1px solid var(--rbr);display:flex;align-items:center}
 .rl-rlist-title{font-size:11px;font-weight:600;color:var(--rm);letter-spacing:.6px;text-transform:uppercase;flex:1}
 .rl-rlist-ref{background:none;border:none;color:var(--rm);cursor:pointer;font-size:16px;padding:2px 7px;border-radius:4px;transition:color .15s}
 .rl-rlist-ref:hover{color:var(--rt)}
-.rl-rlist{max-height:150px;overflow-y:auto;padding:8px}
+.rl-rlist{overflow-y:auto;padding:8px;flex:1}
 .rl-rlist::-webkit-scrollbar{width:3px}.rl-rlist::-webkit-scrollbar-thumb{background:var(--rbr);border-radius:2px}
 .rl-ritem{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:8px;border:1px solid transparent;cursor:pointer;transition:all .15s;margin-bottom:4px}
 .rl-ritem:last-child{margin-bottom:0}
@@ -617,27 +617,27 @@ to{opacity:1;transform:translateY(0)}
 .rl-ritem-detail{font-size:11px;color:var(--rm);margin-top:2px}
 .rl-rbadge{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;flex-shrink:0;border:1px solid}
 .rl-rbw{background:rgba(56,184,106,.1);color:#58D878;border-color:rgba(56,184,106,.22)}
-.rl-rempty{text-align:center;padding:22px;color:var(--rf);font-size:13px}
+.rl-rempty{text-align:center;padding:22px;color:#A09080;font-size:13px}
 
 /* ─ 모달 */
-.rl-mbg{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:600;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;backdrop-filter:blur(6px)}
+.rl-mbg{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:700;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;backdrop-filter:blur(6px)}
 .rl-mbg.open{opacity:1;pointer-events:all}
-.rl-modal{background:var(--rc);border:1px solid var(--rbr2);border-radius:16px;padding:28px 32px;width:min(380px,92vw);box-shadow:0 28px 70px rgba(0,0,0,.7);animation:rlmIn .2s ease}
+.rl-modal{background:#FFFFFF;border:1px solid var(--rbr2);border-radius:16px;padding:28px 32px;width:min(380px,92vw);box-shadow:0 12px 40px rgba(0,0,0,.15);animation:rlmIn .2s ease}
 @keyframes rlmIn{from{transform:scale(.95) translateY(8px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
-.rl-mtitle{font-family:'Black Han Sans',sans-serif;font-size:22px;color:var(--rgold);margin-bottom:20px;text-align:center;letter-spacing:1px}
+.rl-mtitle{font-family:'Black Han Sans',sans-serif;font-size:22px;color:#8B5E00;margin-bottom:20px;text-align:center;letter-spacing:1px}
 .rl-mfield{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
-.rl-mfield label{font-size:11px;font-weight:600;color:var(--rm);letter-spacing:.5px;text-transform:uppercase}
-.rl-mfield input,.rl-mfield select{font-family:'Noto Sans KR',sans-serif;font-size:15px;background:var(--rs);border:1px solid var(--rbr);border-radius:8px;padding:11px 13px;color:var(--rt);outline:none;transition:border-color .15s}
-.rl-mfield input:focus,.rl-mfield select:focus{border-color:var(--ra)}
+.rl-mfield label{font-size:11px;font-weight:600;color:#8A7E68;letter-spacing:.5px;text-transform:uppercase}
+.rl-mfield input,.rl-mfield select{font-family:'Noto Sans KR',sans-serif;font-size:15px;background:#FAF7F2;border:1.5px solid #DDD5C4;border-radius:8px;padding:11px 13px;color:#2A2418;outline:none;transition:border-color .15s}
+.rl-mfield input:focus,.rl-mfield select:focus{border-color:#7B6FA0;box-shadow:0 0 0 3px rgba(123,111,160,.12)}
 .rl-mfield select option{background:var(--rc)}
 .rl-mbtns{display:flex;gap:10px;margin-top:20px}
-.rl-mbtn{flex:1;padding:12px;border-radius:8px;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-size:14px;font-weight:600;transition:all .15s}
+.rl-mbtn{flex:1;padding:12px;border-radius:8px;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-size:14px;font-weight:600;transition:all .15s;display:flex;align-items:center;justify-content:center}
 .rl-mbc{background:var(--rs);color:var(--rm);border:1px solid var(--rbr)}.rl-mbc:hover{color:var(--rt)}
-.rl-mbk{background:linear-gradient(135deg,var(--ra),var(--ra2));color:#fff}.rl-mbk:hover{transform:translateY(-1px)}
+.rl-mbk{background:linear-gradient(135deg,#7B6FA0,#9A8FC0);color:#fff!important;font-weight:700}.rl-mbk:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(123,111,160,.35)}
 
 /* ─ 대기실 */
 .rw-wrap{width:min(540px,100%);display:flex;flex-direction:column;gap:14px}
-.rw-hdr{background:var(--rc);border:1px solid var(--rbr);border-radius:12px;padding:20px 24px;text-align:center;position:relative;overflow:hidden}
+.rw-hdr{background:rgba(255,255,255,.85);border:1px solid var(--rbr);border-radius:12px;padding:20px 24px;text-align:center;position:relative;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.08)}
 .rw-hdr::before{content:'';position:absolute;inset:0;background:linear-gradient(145deg,rgba(245,200,66,.05) 0%,transparent 60%);pointer-events:none}
 .rw-rtitle{font-family:'Black Han Sans',sans-serif;font-size:26px;color:var(--rgold);letter-spacing:1px;margin-bottom:8px}
 .rw-crow{display:flex;align-items:center;justify-content:center;gap:8px}
@@ -645,14 +645,14 @@ to{opacity:1;transform:translateY(0)}
 .rw-cval{font-family:'DM Mono',monospace;font-size:16px;font-weight:700;color:var(--ra2);letter-spacing:5px;background:var(--rs);border:1px solid var(--rbr);padding:4px 13px;border-radius:8px}
 .rw-cnt{font-size:12px;color:var(--rm)}
 .rw-pgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.rw-pslot{background:var(--rc);border:1.5px solid var(--rbr);border-radius:12px;padding:18px;display:flex;flex-direction:column;align-items:center;gap:8px;min-height:108px;justify-content:center;transition:all .2s}
+.rw-pslot{background:rgba(255,255,255,.8);border:1.5px solid var(--rbr);border-radius:12px;padding:18px;display:flex;flex-direction:column;align-items:center;gap:8px;min-height:108px;justify-content:center;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.07)}
 .rw-pslot.filled{border-color:var(--rbr2)}.rw-pslot.me{border-color:var(--ra);background:rgba(139,111,191,.06)}
 .rw-pav{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.4);position:relative}
 .rw-pav::after{content:'';position:absolute;inset:0;border-radius:50%;background:linear-gradient(145deg,rgba(255,255,255,.15) 0%,transparent 55%)}
 .rw-pname{font-size:14px;font-weight:600;color:var(--rt)}.rw-phost{font-size:11px;color:var(--rgold)}
 .rw-pempty{color:var(--rf);font-size:13px;display:flex;flex-direction:column;align-items:center;gap:5px}
 .rw-peicon{font-size:26px;opacity:.3}
-.rw-optrow{background:var(--rc);border:1px solid var(--rbr);border-radius:12px;padding:13px 16px;display:flex;align-items:center;justify-content:space-between}
+.rw-optrow{background:rgba(255,255,255,.8);border:1px solid var(--rbr);border-radius:12px;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.07)}
 .rw-optlbl{font-size:13px;color:var(--rt2)}.rw-optsub{font-size:11px;color:var(--rm);margin-top:2px}
 .rw-twrp{position:relative;width:42px;height:24px;flex-shrink:0}
 .rw-twrp input{opacity:0;width:0;height:0;position:absolute}
@@ -682,11 +682,11 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 .rt-tile{width:44px;height:60px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:19px;position:relative;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.1);transition:transform .15s;flex-shrink:0}
 .rt-tile::after{content:'';position:absolute;inset:0;background:linear-gradient(145deg,rgba(255,255,255,.1) 0%,transparent 55%)}
 .rt-tile:hover{transform:translateY(-4px)}
-.rt-tile-r{background:linear-gradient(145deg,#381010,#1C0808);border:1.5px solid #C03030;color:#FF7070}
-.rt-tile-b{background:linear-gradient(145deg,#101840,#08082C);border:1.5px solid #2860D0;color:#6898FF}
-.rt-tile-g{background:linear-gradient(145deg,#0E2814,#081508);border:1.5px solid #28A050;color:#58D878}
-.rt-tile-o{background:linear-gradient(145deg,#2E1208,#180A04);border:1.5px solid #D07028;color:#FFA858}
-.rt-tile-j{background:linear-gradient(145deg,#281C48,#161028);border:1.5px solid #C8A830;color:#FFD850;font-size:22px;text-shadow:0 0 12px rgba(255,216,80,.5)}
+.rt-tile-r{background:linear-gradient(145deg,#FF6B6B,#E83030);border:2px solid #C02020;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.3);box-shadow:0 4px 10px rgba(220,40,40,.25)}
+.rt-tile-b{background:linear-gradient(145deg,#5B9BFF,#2B6EDD);border:2px solid #1A56C0;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.3);box-shadow:0 4px 10px rgba(40,100,220,.25)}
+.rt-tile-g{background:linear-gradient(145deg,#52C878,#28A050);border:2px solid #1A7838;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.3);box-shadow:0 4px 10px rgba(40,160,80,.25)}
+.rt-tile-o{background:linear-gradient(145deg,#FFB830,#F08A00);border:2px solid #C06800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.3);box-shadow:0 4px 10px rgba(240,138,0,.25)}
+.rt-tile-j{background:linear-gradient(145deg,#F0E0FF,#C8A0F0);border:2px solid #9060D0;color:#5020A0;font-size:22px;box-shadow:0 4px 10px rgba(150,80,240,.25)}
 .rt-visual{background:var(--rs);border:1px solid var(--rbr);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px}
 .rt-sdemo{display:flex;align-items:center;gap:10px}
 .rt-sdlbl{font-size:11px;color:var(--rm);min-width:118px;line-height:1.4}
@@ -708,7 +708,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 
 /* ─ 게임 */
 .rg-wrap{display:flex;flex-direction:column;height:100%;overflow:hidden;padding:8px;gap:6px;max-width:1280px;margin:0 auto;width:100%}
-.rg-topbar{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid var(--rbr);border-radius:10px;padding:0 14px;height:46px;flex-shrink:0}
+.rg-topbar{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.85);border:1px solid var(--rbr);border-radius:10px;padding:0 14px;height:46px;flex-shrink:0;backdrop-filter:blur(8px);}
 .rg-gtitle{font-family:'Black Han Sans',sans-serif;font-size:17px;color:var(--rgold);letter-spacing:1px}
 .rg-turnindicator{display:flex;align-items:center;gap:7px;padding:5px 13px;border-radius:20px;font-size:13px;font-weight:600;background:rgba(128,96,176,.18);border:1px solid rgba(128,96,176,.35);white-space:nowrap;color:var(--rt)}
 .rg-tdot{width:7px;height:7px;border-radius:50%;background:var(--rgold);animation:rgdp 1s ease-in-out infinite}
@@ -720,47 +720,81 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 .rg-topbtn{padding:5px 13px;border-radius:7px;border:1px solid var(--rbr);background:rgba(255,255,255,.04);color:var(--rm);cursor:pointer;font-size:12px;font-family:'Noto Sans KR',sans-serif;transition:all .15s}
 .rg-topbtn:hover{color:var(--rt);border-color:var(--rbr2)}
 .rg-main{display:grid;grid-template-columns:1fr 192px;gap:8px;flex:1;min-height:0}
-.rg-boardwrap{background:var(--rtable);border:1px solid #142014;border-radius:10px;position:relative;overflow:auto;background-image:radial-gradient(rgba(255,255,255,.015) 1px,transparent 1px);background-size:28px 28px}
+.rg-boardwrap{
+  background:#3D7A50;
+  border:2px solid #2A5C3A;border-radius:12px;position:relative;overflow:auto;
+  background-image:
+    radial-gradient(rgba(255,255,255,.06) 1px,transparent 1px),
+    linear-gradient(160deg,#4A8A5E 0%,#3A7048 50%,#325E40 100%);
+  background-size:20px 20px, 100% 100%;
+  box-shadow:inset 0 2px 12px rgba(0,0,0,.2),0 4px 16px rgba(0,0,0,.15);
+}
 .rg-boardwrap::-webkit-scrollbar{width:5px;height:5px}.rg-boardwrap::-webkit-scrollbar-thumb{background:#1E3A1E;border-radius:3px}
 .rg-boardinner{min-width:580px;min-height:300px;padding:14px;display:flex;flex-wrap:wrap;gap:10px;align-content:flex-start;align-items:flex-start}
 .rg-bempty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:rgba(255,255,255,.1);gap:8px;pointer-events:none}
 .rg-bempty-icon{font-size:36px;opacity:.4}.rg-bempty-text{font-size:12px}
-.rg-setgrp{display:flex;gap:3px;padding:8px 10px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);border-radius:7px;flex-wrap:nowrap;position:relative;transition:border-color .15s}
+.rg-setgrp{display:flex;gap:3px;padding:8px 10px;background:rgba(255,255,255,.25);border:1.5px solid rgba(255,255,255,.5);border-radius:7px;flex-wrap:nowrap;position:relative;transition:all .15s;box-shadow:0 2px 8px rgba(0,0,0,.12)}
 .rg-setgrp.valid{border-color:rgba(56,184,106,.5)}.rg-setgrp.invalid{border-color:rgba(217,64,64,.7);animation:rgshake .28s ease}
 @keyframes rgshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 .rg-setgrp.droptgt,.rg-setgrp.selected-target{border-color:var(--rgold);background:rgba(245,200,66,.08);cursor:pointer;}
 .rg-setgrp:hover{border-color:rgba(255,255,255,.18);}
-.rg-addsetbtn{display:flex;align-items:center;justify-content:center;width:40px;height:56px;border-radius:7px;border:1.5px dashed rgba(255,255,255,.12);color:rgba(255,255,255,.2);font-size:20px;cursor:pointer;transition:all .15s;flex-shrink:0;align-self:flex-start}
-.rg-addsetbtn:hover{border-color:rgba(255,255,255,.3);color:rgba(255,255,255,.4)}
+.rg-addsetbtn{display:flex;align-items:center;justify-content:center;width:44px;height:60px;border-radius:7px;border:2px dashed rgba(255,255,255,.6);color:rgba(255,255,255,.7);font-size:20px;cursor:pointer;transition:all .15s;flex-shrink:0;align-self:flex-start;background:rgba(255,255,255,.15)}
+.rg-addsetbtn:hover{border-color:rgba(255,255,255,.9);color:#fff;background:rgba(255,255,255,.25)}
 .rg-tile{width:40px;height:56px;border-radius:6px;border:1.5px solid;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;cursor:grab;box-shadow:0 4px 10px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.1);transition:transform .12s,box-shadow .12s;flex-shrink:0;position:relative;overflow:hidden}
 .rg-tile::after{content:'';position:absolute;inset:0;background:linear-gradient(145deg,rgba(255,255,255,.1) 0%,transparent 55%);pointer-events:none}
 .rg-tile:active{cursor:grabbing}
 .rg-tile:hover:not(.dragging):not(.ghost):not(.rg-selected){transform:translateY(-4px);box-shadow:0 7px 16px rgba(0,0,0,.65)}
 .rg-selected{transform:translateY(-12px)!important;box-shadow:0 0 0 3px #F5C842,0 12px 24px rgba(0,0,0,.7)!important;z-index:10;position:relative;}
 .rg-tile.dragging{opacity:.4;transform:scale(.9)}.rg-tile.ghost{opacity:.25;pointer-events:none}
-.rg-tile-r{background:linear-gradient(145deg,#381010,#1C0808);border-color:#C03030;color:#FF7070}
-.rg-tile-b{background:linear-gradient(145deg,#101840,#08082C);border-color:#2860D0;color:#6898FF}
-.rg-tile-g{background:linear-gradient(145deg,#0E2814,#081508);border-color:#28A050;color:#58D878}
-.rg-tile-o{background:linear-gradient(145deg,#2E1208,#180A04);border-color:#D07028;color:#FFA858}
-.rg-tile-j{background:linear-gradient(145deg,#281C48,#161028);border-color:#C8A830;color:#FFD850;font-size:20px;text-shadow:0 0 10px rgba(255,216,80,.5)}
+.rg-tile-r{
+  background:linear-gradient(145deg,#FF6B6B,#E83030);
+  border:2px solid #C02020;color:#fff;
+  text-shadow:0 1px 2px rgba(0,0,0,.3);
+  box-shadow:0 4px 10px rgba(220,40,40,.35),inset 0 1px 0 rgba(255,255,255,.3);
+}
+.rg-tile-b{
+  background:linear-gradient(145deg,#5B9BFF,#2B6EDD);
+  border:2px solid #1A56C0;color:#fff;
+  text-shadow:0 1px 2px rgba(0,0,0,.3);
+  box-shadow:0 4px 10px rgba(40,100,220,.35),inset 0 1px 0 rgba(255,255,255,.3);
+}
+.rg-tile-g{
+  background:linear-gradient(145deg,#52C878,#28A050);
+  border:2px solid #1A7838;color:#fff;
+  text-shadow:0 1px 2px rgba(0,0,0,.3);
+  box-shadow:0 4px 10px rgba(40,160,80,.35),inset 0 1px 0 rgba(255,255,255,.3);
+}
+.rg-tile-o{
+  background:linear-gradient(145deg,#FFB830,#F08A00);
+  border:2px solid #C06800;color:#fff;
+  text-shadow:0 1px 2px rgba(0,0,0,.3);
+  box-shadow:0 4px 10px rgba(240,138,0,.35),inset 0 1px 0 rgba(255,255,255,.3);
+}
+.rg-tile-j{
+  background:linear-gradient(145deg,#F0E0FF,#C8A0F0);
+  border:2px solid #9060D0;color:#5020A0;font-size:20px;
+  text-shadow:0 1px 2px rgba(255,255,255,.5);
+  box-shadow:0 4px 10px rgba(150,80,240,.35),inset 0 1px 0 rgba(255,255,255,.5);
+}
 .rg-side{display:flex;flex-direction:column;gap:8px;min-height:0;overflow:hidden}
-.rg-sidebox{background:rgba(255,255,255,.035);border:1px solid var(--rbr);border-radius:10px;padding:10px;flex-shrink:0}
-.rg-sidetitle{font-size:10px;font-weight:600;color:var(--rm);letter-spacing:.6px;text-transform:uppercase;margin-bottom:8px}
+.rg-sidebox{background:rgba(255,255,255,.9);border:1px solid var(--rbr);border-radius:10px;padding:10px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.rg-sidetitle{font-size:10px;font-weight:600;color:var(--rt2);letter-spacing:.6px;text-transform:uppercase;margin-bottom:8px}
 .rg-prow{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:7px;margin-bottom:3px;transition:background .15s}
 .rg-prow.myturn{background:rgba(128,96,176,.18);border:1px solid rgba(128,96,176,.3)}
 .rg-prow:last-child{margin-bottom:0}
 .rg-pav{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;position:relative}
 .rg-pav::after{content:'';position:absolute;inset:0;border-radius:50%;background:linear-gradient(145deg,rgba(255,255,255,.15) 0%,transparent 55%)}
 .rg-prow-name{font-size:12px;font-weight:500;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--rt)}
+.rg-prow-count{font-size:11px;color:var(--rt2);font-family:'DM Mono',monospace}
 .rg-prow-count{font-size:11px;color:var(--rm);font-family:'DM Mono',monospace}
-.rg-logpanel{flex:1;background:rgba(255,255,255,.025);border:1px solid var(--rbr);border-radius:10px;padding:10px;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+.rg-logpanel{flex:1;background:rgba(255,255,255,.9);border:1px solid var(--rbr);border-radius:10px;padding:10px;min-height:0;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 2px 8px rgba(0,0,0,.08)}
 .rg-logscroll{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:3px}
 .rg-logscroll::-webkit-scrollbar{width:2px}.rg-logscroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:1px}
-.rg-logentry{font-size:11px;color:var(--rm);line-height:1.55}
-.rg-logentry.mine{color:rgba(245,200,66,.75)}.rg-logentry.win{color:#50FF80;font-weight:600}
-.rg-handarea{background:rgba(255,255,255,.04);border:1px solid var(--rbr);border-radius:10px;padding:10px 14px;display:flex;flex-direction:column;gap:8px;flex-shrink:0}
+.rg-logentry{font-size:11px;color:var(--rt2);line-height:1.55}
+.rg-logentry.mine{color:#8A6A00;font-weight:500}.rg-logentry.win{color:#1A7A30;font-weight:700}
+.rg-handarea{background:rgba(255,255,255,.88);border:1px solid var(--rbr);border-radius:10px;padding:10px 14px;display:flex;flex-direction:column;gap:8px;flex-shrink:0;box-shadow:0 -2px 12px rgba(0,0,0,.1)}
 .rg-handtop{display:flex;align-items:center;gap:8px}
-.rg-handlabel{font-size:11px;font-weight:600;color:var(--rm);letter-spacing:.5px;text-transform:uppercase;flex:1}
+.rg-handlabel{font-size:11px;font-weight:600;color:var(--rt2);letter-spacing:.5px;text-transform:uppercase;flex:1}
 .rg-handcount{font-size:12px;font-weight:700;color:var(--rgold);font-family:'DM Mono',monospace}
 .rg-handtiles{display:flex;gap:5px;flex-wrap:wrap;max-height:128px;overflow-y:auto;padding:2px}
 .rg-handtiles::-webkit-scrollbar{height:3px}.rg-handtiles::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
@@ -901,6 +935,27 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 .rg-tile.dragging{opacity:.35!important;transform:scale(.9)!important}
 .rg-handtiles.drag-over{background:rgba(245,200,66,.06);border-radius:8px;}
 
+
+/* 루미큐브 게임 배경 계절 장식 */
+#rscr-game::before{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse at 10% 20%,rgba(255,182,193,.25) 0%,transparent 40%),
+    radial-gradient(ellipse at 90% 15%,rgba(144,238,144,.2) 0%,transparent 35%),
+    radial-gradient(ellipse at 50% 90%,rgba(173,216,230,.2) 0%,transparent 40%),
+    radial-gradient(ellipse at 80% 80%,rgba(255,218,185,.2) 0%,transparent 35%);
+}
+#rscr-game .rg-wrap{position:relative;z-index:1}
+
+/* 게임 타일 hover 효과 개선 */
+.rg-tile{transition:transform .12s,box-shadow .12s}
+.rg-tile:hover:not(.dragging){transform:translateY(-6px) scale(1.05)!important;}
+.rg-tile:active{transform:scale(.95)!important;cursor:grabbing!important}
+
+/* 세트 valid/invalid 밝은 테마 */
+.rg-setgrp.valid{border-color:#28A050!important;background:rgba(40,160,80,.12)!important}
+.rg-setgrp.invalid{border-color:#E83030!important;background:rgba(232,48,48,.08)!important}
+
 </style>
 </head>
 <body>
@@ -976,7 +1031,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v04.21.02</div>
+  <div class="splash-ver">v04.21.03</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -1995,7 +2050,7 @@ init();
     <span class="rumi-topbar-title" id="rumi-topbar-title">🀱 루미큐브</span>
   </div>
   <!-- ── 로비 화면 ── -->
-  <div class="rumi-screen active" id="rscr-lobby" style="background:radial-gradient(ellipse at 20% 30%,rgba(139,111,191,.1) 0%,transparent 55%),radial-gradient(ellipse at 80% 70%,rgba(56,120,232,.07) 0%,transparent 50%),#0C0A18">
+  <div class="rumi-screen active" id="rscr-lobby" style="background:transparent">
     <div class="rl-wrap">
       <div class="rl-hdr">
         <div class="rl-tdeco">
@@ -2017,23 +2072,18 @@ init();
           <span class="rl-btn-label">방 만들기</span>
           <span class="rl-btn-sub">새 게임 시작</span>
         </button>
-        <button class="rl-btn rl-bj" onclick="rlOpenJoin()">
-          <span class="rl-btn-icon">🚪</span>
-          <span class="rl-btn-label">방 참가하기</span>
-          <span class="rl-btn-sub">코드로 입장</span>
-        </button>
-      </div>
-      <div class="rl-rlist-wrap">
-        <div class="rl-rlist-top">
-          <span class="rl-rlist-title">열린 방 목록</span>
-          <button class="rl-rlist-ref" onclick="rlSubscribeRooms()">↻</button>
+        <div class="rl-rlist-wrap" style="flex:1;display:flex;flex-direction:column;min-height:0">
+          <div class="rl-rlist-top">
+            <span class="rl-rlist-title">열린 방 목록</span>
+            <button class="rl-rlist-ref" onclick="rlSubscribeRooms()">↻</button>
+          </div>
+          <div class="rl-rlist" id="rl-room-list" style="max-height:none;flex:1"><div class="rl-rempty">열린 방이 없습니다</div></div>
         </div>
-        <div class="rl-rlist" id="rl-room-list"><div class="rl-rempty">열린 방이 없습니다</div></div>
       </div>
     </div>
   </div>
   <!-- ── 대기실 ── -->
-  <div class="rumi-screen" id="rscr-waiting" style="background:#0C0A18">
+  <div class="rumi-screen" id="rscr-waiting" style="background:transparent">
     <div class="rw-wrap">
       <div class="rw-hdr">
         <div class="rw-rtitle" id="rw-rname">--</div>
@@ -2056,7 +2106,7 @@ init();
     </div>
   </div>
   <!-- ── 튜토리얼 이후 준비 대기 ── -->
-  <div class="rumi-screen" id="rscr-ready" style="background:#0C0A18">
+  <div class="rumi-screen" id="rscr-ready" style="background:transparent">
     <div class="rw-wrap">
       <div class="rw-hdr">
         <div class="rw-rtitle">🎲 준비 확인</div>
@@ -2078,7 +2128,7 @@ init();
   </div>
 
   <!-- ── 튜토리얼 ── -->
-  <div class="rumi-screen" id="rscr-tuto" style="background:#0C0A18">
+  <div class="rumi-screen" id="rscr-tuto" style="background:transparent">
     <div class="rt-wrap">
       <div class="rt-hdr">
         <span class="rt-title">📖 게임 방법</span>
@@ -2095,7 +2145,7 @@ init();
     </div>
   </div>
   <!-- ── 게임 ── -->
-  <div class="rumi-screen" id="rscr-game" style="background:#090812;padding:0">
+  <div class="rumi-screen" id="rscr-game" style="padding:0;background:linear-gradient(160deg,#FFF5F0 0%,#FFF0F5 30%,#F0F5FF 60%,#F0FFF5 100%)">
     <div class="rg-wrap">
       <div class="rg-topbar">
         <span class="rg-gtitle">🀱 루미큐브</span>
@@ -2163,19 +2213,7 @@ init();
     </div>
   </div>
 </div>
-<!-- 방 참가 모달 -->
-<div class="rl-mbg" id="rl-join-modal">
-  <div class="rl-modal">
-    <div class="rl-mtitle">🚪 방 참가하기</div>
-    <div class="rl-mfield"><label>방 코드</label>
-      <input type="text" id="rl-jcode-inp" placeholder="XXXX" maxlength="4" style="text-align:center;letter-spacing:7px;font-size:26px;font-family:'DM Mono',monospace;text-transform:uppercase;color:#EDE8F8"/>
-    </div>
-    <div class="rl-mbtns">
-      <button class="rl-mbtn rl-mbc" onclick="rlCloseJoin()">취소</button>
-      <button class="rl-mbtn rl-mbk" onclick="rlJoinByCode()">입장</button>
-    </div>
-  </div>
-</div>
+
 <div class="rl-toast" id="rl-toast"></div>
 
 
@@ -2778,6 +2816,29 @@ function rgUpdateButtons(){
   if(_bp)_bp.disabled=!rgHasPlayed||!rgAllValid();
   if(_bu)_bu.disabled=!rgHasPlayed;
   if(_bd)_bd.disabled=rgHasPlayed;
+}
+
+function rgRender(data){
+  if(!document.getElementById('rg-turnlabel'))return;
+  const me=RL_USER(), isMe=data.turn===me;
+  const _tl=document.getElementById('rg-turnlabel');
+  const _dc=document.getElementById('rg-deckcount');
+  const _bp=document.getElementById('rg-btn-place');
+  const _bd=document.getElementById('rg-btn-draw');
+  const _bu=document.getElementById('rg-btn-undo');
+  if(_tl)_tl.textContent=isMe?'✨ 내 차례!':data.turn+'의 차례';
+  if(_dc)_dc.textContent='더미 '+(data.deck||[]).length+'장';
+  if(_bp)_bp.disabled=!isMe||!rgHasPlayed||!rgAllValid();
+  if(_bd)_bd.disabled=!isMe||rgHasPlayed;
+  if(_bu)_bu.disabled=!isMe||!rgHasPlayed;
+  rgRenderHand();rgRenderBoard();rgRenderPlayers(data);rgRenderLog(data.log||[]);
+  if(data.timerEnabled&&isMe)rgStartTimer();else rgStopTimer();
+  if(isMe&&!rgHasPlayed){
+    rgBoardSnap=JSON.parse(JSON.stringify(data.board||[]));
+    rgHandSnap=[...(data.hands[me]||[])];
+    rgLocalBoard=JSON.parse(JSON.stringify(data.board||[]));
+    rgLocalHand=[...rgHandSnap];
+  }
 }
 
 function rgRenderHand(){
