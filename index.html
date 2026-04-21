@@ -2230,12 +2230,22 @@ async function rlJoinRoom(rid){
 function rlEnterWaiting(rid){
   rumiShowScreen('rscr-waiting');
   if(rlRoomUnsub)rlRoomUnsub();
+  let _rlGameEntered=false;
   rlRoomUnsub=db.collection('rummikub_rooms').doc(rid).onSnapshot(snap=>{
     if(!snap.exists){rlToast('방이 사라졌습니다');rumiShowLobby();return;}
     const data=snap.data();
-    rlRenderWaiting(data);
-    if(data.status==='tutorial')rlShowTutorial();
-    else if(data.status==='playing')rlStartGameScreen();
+    // 게임 진입 이후엔 대기실 렌더 스킵
+    if(!_rlGameEntered) rlRenderWaiting(data);
+    if(data.status==='tutorial'&&!_rlGameEntered){
+      _rlGameEntered=true;
+      // 방 구독 해제 후 튜토리얼
+      if(rlRoomUnsub){rlRoomUnsub();rlRoomUnsub=null;}
+      rlShowTutorial();
+    } else if(data.status==='playing'&&!_rlGameEntered){
+      _rlGameEntered=true;
+      if(rlRoomUnsub){rlRoomUnsub();rlRoomUnsub=null;}
+      rlStartGameScreen();
+    }
   });
 }
 function rlRenderWaiting(data){
@@ -2312,13 +2322,36 @@ function rtSkip(){rlStartGameScreen();}
 
 // ── 게임 시작
 async function rlStartGameScreen(){
+  // 방 구독 정리 (중복 호출 방지)
+  if(rlRoomUnsub){rlRoomUnsub();rlRoomUnsub=null;}
+  // 상태 완전 초기화
+  rgGameStarted=false;rgHasPlayed=false;
+  rgLocalBoard=[];rgLocalHand=[];rgBoardSnap=null;rgHandSnap=null;
+  if(rgGameUnsub){rgGameUnsub();rgGameUnsub=null;}
+  clearInterval(rgTimerInterval);
+
   rumiShowScreen('rscr-game');
   document.getElementById('rumi-topbar').style.display='none';
-  document.getElementById('rs-loading').classList.remove('hide');
-  document.getElementById('rs-loading').style.display='flex';
+  const ls=document.getElementById('rs-loading');
+  ls.classList.remove('hide');ls.style.display='flex';
   document.getElementById('rs-error').classList.remove('show');
-  if(rlIsHost) await rgInitGame();
-  else rgSubscribeGame();
+  document.getElementById('rs-load-msg').textContent='게임 데이터 불러오는 중...';
+
+  // 15초 타임아웃
+  const timeout=setTimeout(()=>{
+    if(!rgGameStarted){
+      rgShowError('연결 시간이 초과됐습니다. 다시 시도해주세요.');
+    }
+  },15000);
+  window._rgTimeoutId=timeout;
+
+  try{
+    if(rlIsHost) await rgInitGame();
+    else rgSubscribeGame();
+  }catch(e){
+    clearTimeout(timeout);
+    rgShowError('연결 오류: '+e.message);
+  }
 }
 
 // ── 게임 엔진
@@ -2335,52 +2368,79 @@ function rgCreateDeck(){
 function rgShuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
 
 async function rgInitGame(){
+  if(!rlRoomId){rgShowError('방 정보가 없습니다.');return;}
   try{
+    document.getElementById('rs-load-msg').textContent='게임 초기화 중...';
     const snap=await db.collection('rummikub_rooms').doc(rlRoomId).get();
     if(!snap.exists){rgShowError('방을 찾을 수 없습니다.');return;}
     const rd=snap.data();
-    if(rd.status==='playing'){rgSubscribeGame();return;}
+    // 이미 playing이면 초기화 스킵
+    if(rd.status==='playing'||rd.status==='finished'){
+      document.getElementById('rs-load-msg').textContent='게임 연결 중...';
+      rgSubscribeGame();return;
+    }
     const players=rd.players.map(p=>p.name);
+    if(players.length<2){rgShowError('플레이어가 부족합니다.');return;}
     const deck=rgCreateDeck();const hands={};let di=0;
     players.forEach(p=>{hands[p]=deck.slice(di,di+14);di+=14;});
     const fp={};players.forEach(p=>{fp[p]=false;});
+    document.getElementById('rs-load-msg').textContent='타일 나눠주는 중...';
     await db.collection('rummikub_rooms').doc(rlRoomId).update({
       status:'playing',board:[],deck:deck.slice(di),hands,turn:players[0],firstPlay:fp,
       timerEnabled:rd.timerEnabled||false,
       log:['🎮 게임 시작! '+players.join(', ')+' 참가'],
     });
+    document.getElementById('rs-load-msg').textContent='게임 연결 중...';
     rgSubscribeGame();
-  }catch(e){rgShowError('초기화 오류: '+e.message);}
+  }catch(e){
+    if(window._rgTimeoutId)clearTimeout(window._rgTimeoutId);
+    rgShowError('초기화 오류: '+e.message);
+  }
 }
 function rgSubscribeGame(){
+  if(!rlRoomId){rgShowError('방 정보가 없습니다. 로비로 돌아가 다시 시도해주세요.');return;}
   if(rgGameUnsub)rgGameUnsub();
   rgGameUnsub=db.collection('rummikub_rooms').doc(rlRoomId).onSnapshot(snap=>{
     if(!snap.exists){rgShowError('방이 사라졌습니다.');return;}
     const data=snap.data();
+    // playing 또는 finished 상태일 때만 처리
     if(data.status==='playing'||data.status==='finished'){
       rgG=data;
       if(!rgGameStarted){
         rgGameStarted=true;
-        document.getElementById('rs-loading').classList.add('hide');
-        rgLocalHand=[...(rgG.hands[RL_USER()]||[])];
-        rgLocalBoard=JSON.parse(JSON.stringify(rgG.board));
-        rgBoardSnap=JSON.parse(JSON.stringify(rgG.board));
+        // 타임아웃 취소
+        if(window._rgTimeoutId)clearTimeout(window._rgTimeoutId);
+        // 로딩 화면 숨기기
+        const ls=document.getElementById('rs-loading');
+        ls.classList.add('hide');
+        setTimeout(()=>{ls.style.display='none';},400);
+        // 초기 상태 설정
+        const me=RL_USER();
+        rgLocalHand=[...(data.hands[me]||[])];
+        rgLocalBoard=JSON.parse(JSON.stringify(data.board||[]));
+        rgBoardSnap=JSON.parse(JSON.stringify(data.board||[]));
         rgHandSnap=[...rgLocalHand];
       }
       if(!rgHasPlayed){
-        rgLocalHand=[...(rgG.hands[RL_USER()]||[])];
-        rgLocalBoard=JSON.parse(JSON.stringify(rgG.board));
+        const me=RL_USER();
+        rgLocalHand=[...(data.hands[me]||[])];
+        rgLocalBoard=JSON.parse(JSON.stringify(data.board||[]));
       }
       rgRender(data);
     }
     if(data.status==='finished')rgShowWin(data);
-  },err=>{rgShowError('연결 오류: '+err.message);});
+  },err=>{
+    if(window._rgTimeoutId)clearTimeout(window._rgTimeoutId);
+    rgShowError('Firebase 연결 오류: '+err.message);
+  });
 }
 function rgShowError(msg){
+  if(window._rgTimeoutId)clearTimeout(window._rgTimeoutId);
   document.getElementById('rs-loading').classList.add('hide');
+  document.getElementById('rs-loading').style.display='none';
   const e=document.getElementById('rs-error');
   e.classList.add('show');e.style.display='flex';
-  document.getElementById('rs-err-msg').textContent=msg;
+  document.getElementById('rs-err-msg').textContent=msg||'알 수 없는 오류가 발생했습니다.';
 }
 
 function rgMakeTile(tile){
