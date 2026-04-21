@@ -2470,6 +2470,11 @@ function rrRender(data){
   const me=RL_USER();
   const players=data.players||[];
   const ready=data.ready||{};
+  const host=data.host;
+  // 호스트 제외 참가자만 준비 체크
+  const guests=players.filter(p=>p.name!==host);
+  const allGuestsReady=guests.length>0&&guests.every(p=>ready[p.name]===true);
+
   const grid=document.getElementById('rr-pgrid');
   if(!grid)return;
   grid.innerHTML='';
@@ -2477,46 +2482,53 @@ function rrRender(data){
   players.forEach((p,i)=>{
     const slot=document.createElement('div');
     const col=p.color||RL_AVC[i%RL_AVC.length];
-    const isReady=ready[p.name]===true;
-    const isHost2=data.host===p.name;
+    const isHost2=p.name===host;
+    const isReady=isHost2?true:ready[p.name]===true; // 호스트는 항상 준비완료 표시
     slot.className='rw-pslot filled'+(p.name===me?' me':'');
     if(isReady)slot.style.borderColor='#38B86A';
     slot.innerHTML=`
       <div class="rw-pav" style="background:${col}22;border:2px solid ${col}">${p.name.charAt(0)}</div>
       <div class="rw-pname">${p.name}${p.name===me?' <span style="font-size:10px;opacity:.6">(나)</span>':''}</div>
-      <div class="rw-phost" style="color:${isReady?'#38B86A':'#6A6088'}">${isReady?'✅ 준비완료':isHost2?'👑 대기 중':'🎮 대기 중'}</div>`;
+      <div class="rw-phost" style="color:${isReady?'#38B86A':'#6A6088'}">${isHost2?'👑 방장':isReady?'✅ 준비완료':'🎮 대기 중'}</div>`;
     grid.appendChild(slot);
   });
 
-  const allReady=players.length>1&&players.every(p=>ready[p.name]===true);
   const readyBtn=document.getElementById('rr-ready-btn');
   const startBtn=document.getElementById('rr-start-btn');
   const hint=document.getElementById('rr-hint');
-  const isHost=data.host===me;
+  const isHost=me===host;
 
   if(isHost){
+    // 호스트: 준비버튼 없음, 게임시작 버튼만
     if(readyBtn)readyBtn.style.display='none';
     if(startBtn){
       startBtn.style.display='flex';
-      startBtn.disabled=!allReady;
+      startBtn.disabled=!allGuestsReady;
     }
-    if(hint)hint.textContent=allReady?'모두 준비됐습니다! 게임을 시작하세요 🎮':
-      `${players.filter(p=>ready[p.name]).length}/${players.length}명 준비완료`;
+    const readyCount=guests.filter(p=>ready[p.name]===true).length;
+    if(hint)hint.textContent=allGuestsReady
+      ?'모두 준비됐습니다! 게임을 시작하세요 🎮'
+      :`${readyCount}/${guests.length}명 준비완료 — 기다리는 중...`;
   } else {
+    // 참가자: 준비버튼만
     const meReady=ready[me]===true;
     if(readyBtn){
       readyBtn.style.display='flex';
       readyBtn.disabled=meReady;
       readyBtn.textContent=meReady?'준비완료 ✓':'준비 완료 ✓';
-      readyBtn.style.background=meReady?'linear-gradient(135deg,#1E6A3A,#289050)':'linear-gradient(135deg,#1E5A8A,#2878B8)';
+      readyBtn.style.background=meReady
+        ?'linear-gradient(135deg,#1E6A3A,#289050)'
+        :'linear-gradient(135deg,#1E5A8A,#2878B8)';
     }
     if(startBtn)startBtn.style.display='none';
-    if(hint)hint.textContent=meReady?'호스트가 게임을 시작할 때까지 기다려주세요':'준비 버튼을 눌러주세요!';
+    if(hint)hint.textContent=meReady
+      ?'방장이 게임을 시작할 때까지 기다려주세요 ⏳'
+      :'준비 버튼을 눌러주세요!';
   }
 }
 
 async function rlSetReady(){
-  if(!rlRoomId)return;
+  if(!rlRoomId||rlIsHost)return; // 호스트는 준비 불가
   const me=RL_USER();
   try{
     await db.collection('rummikub_rooms').doc(rlRoomId).update({
