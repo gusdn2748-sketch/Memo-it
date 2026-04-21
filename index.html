@@ -728,13 +728,15 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 .rg-setgrp{display:flex;gap:3px;padding:8px 10px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);border-radius:7px;flex-wrap:nowrap;position:relative;transition:border-color .15s}
 .rg-setgrp.valid{border-color:rgba(56,184,106,.5)}.rg-setgrp.invalid{border-color:rgba(217,64,64,.7);animation:rgshake .28s ease}
 @keyframes rgshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
-.rg-setgrp.droptgt{border-color:var(--rgold);background:rgba(245,200,66,.06)}
+.rg-setgrp.droptgt,.rg-setgrp.selected-target{border-color:var(--rgold);background:rgba(245,200,66,.08);cursor:pointer;}
+.rg-setgrp:hover{border-color:rgba(255,255,255,.18);}
 .rg-addsetbtn{display:flex;align-items:center;justify-content:center;width:40px;height:56px;border-radius:7px;border:1.5px dashed rgba(255,255,255,.12);color:rgba(255,255,255,.2);font-size:20px;cursor:pointer;transition:all .15s;flex-shrink:0;align-self:flex-start}
 .rg-addsetbtn:hover{border-color:rgba(255,255,255,.3);color:rgba(255,255,255,.4)}
 .rg-tile{width:40px;height:56px;border-radius:6px;border:1.5px solid;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;cursor:grab;box-shadow:0 4px 10px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.1);transition:transform .12s,box-shadow .12s;flex-shrink:0;position:relative;overflow:hidden}
 .rg-tile::after{content:'';position:absolute;inset:0;background:linear-gradient(145deg,rgba(255,255,255,.1) 0%,transparent 55%);pointer-events:none}
 .rg-tile:active{cursor:grabbing}
-.rg-tile:hover:not(.dragging):not(.ghost){transform:translateY(-4px);box-shadow:0 7px 16px rgba(0,0,0,.65)}
+.rg-tile:hover:not(.dragging):not(.ghost):not(.rg-selected){transform:translateY(-4px);box-shadow:0 7px 16px rgba(0,0,0,.65)}
+.rg-selected{transform:translateY(-12px)!important;box-shadow:0 0 0 3px #F5C842,0 12px 24px rgba(0,0,0,.7)!important;z-index:10;position:relative;}
 .rg-tile.dragging{opacity:.4;transform:scale(.9)}.rg-tile.ghost{opacity:.25;pointer-events:none}
 .rg-tile-r{background:linear-gradient(145deg,#381010,#1C0808);border-color:#C03030;color:#FF7070}
 .rg-tile-b{background:linear-gradient(145deg,#101840,#08082C);border-color:#2860D0;color:#6898FF}
@@ -873,6 +875,32 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
   opacity:0;transition:opacity .15s;
   pointer-events:none;
 }
+
+/* 루미큐브 유효성 흔들림 */
+@keyframes rgInvalidShake{
+  0%,100%{transform:translateX(0)}
+  15%{transform:translateX(-6px)}
+  30%{transform:translateX(6px)}
+  45%{transform:translateX(-5px)}
+  60%{transform:translateX(5px)}
+  75%{transform:translateX(-3px)}
+  90%{transform:translateX(3px)}
+}
+.rg-setgrp.shaking{
+  animation:rgInvalidShake .5s ease!important;
+  border-color:#FF4040!important;
+  background:rgba(255,64,64,.1)!important;
+}
+.rg-setgrp.valid{border-color:rgba(56,184,106,.55)!important}
+.rg-setgrp.invalid{border-color:rgba(217,64,64,.6)!important}
+.rg-drop-zone.droptgt,.rg-setgrp.droptgt{
+  border-color:#F5C842!important;
+  background:rgba(245,200,66,.1)!important;
+  transform:scale(1.02);
+}
+.rg-tile.dragging{opacity:.35!important;transform:scale(.9)!important}
+.rg-handtiles.drag-over{background:rgba(245,200,66,.06);border-radius:8px;}
+
 </style>
 </head>
 <body>
@@ -2103,7 +2131,7 @@ init();
         </div>
         <div class="rg-handtiles" id="rg-handtiles"></div>
         <div class="rg-handactions">
-          <button class="rg-abtn rg-aplace" id="rg-btn-place" onclick="rgConfirmPlay()" disabled>놓기 ✓</button>
+          <button class="rg-abtn rg-aplace" id="rg-btn-place" onclick="rgConfirmPlay()" disabled>완료 ✓</button>
           <button class="rg-abtn rg-adraw"  id="rg-btn-draw"  onclick="rgDrawTile()"    disabled>가져오기</button>
           <button class="rg-abtn rg-aundo"  id="rg-btn-undo"  onclick="rgUndo()"        disabled>되돌리기</button>
         </div>
@@ -2677,34 +2705,81 @@ function rgShowError(msg){
   document.getElementById('rs-err-msg').textContent=msg||'알 수 없는 오류가 발생했습니다.';
 }
 
-function rgMakeTile(tile){
+function rgMakeTile(tile,draggable=false){
   const el=document.createElement('div');
   el.className='rg-tile '+(tile.joker?'rg-tile-j':RG_CMAP[tile.col]);
   el.textContent=tile.joker?'★':tile.num;
+  el.dataset.tileId=String(tile.id);
+  if(draggable){
+    el.draggable=true;
+    el.style.cursor='grab';
+    el.addEventListener('dragstart',e=>{
+      rgDragTile=tile;
+      el.classList.add('dragging');
+      e.dataTransfer.effectAllowed='move';
+      e.dataTransfer.setData('text/plain',String(tile.id));
+    });
+    el.addEventListener('dragend',()=>{
+      el.classList.remove('dragging');
+      document.querySelectorAll('.rg-setgrp,.rg-drop-zone').forEach(z=>z.classList.remove('droptgt'));
+    });
+  }
   return el;
 }
-function rgRender(data){
-  if(!document.getElementById('rg-turnlabel'))return; // 게임 화면 미준비
-  const me=RL_USER(),isMe=data.turn===me;
-  const _tl=document.getElementById('rg-turnlabel');
-  const _dc=document.getElementById('rg-deckcount');
-  const _bp=document.getElementById('rg-btn-place');
-  const _bd=document.getElementById('rg-btn-draw');
-  const _bu=document.getElementById('rg-btn-undo');
-  if(_tl)_tl.textContent=isMe?'✨ 내 차례!':data.turn+'의 차례';
-  if(_dc)_dc.textContent='더미 '+(data.deck||[]).length+'장';
-  if(_bp)_bp.disabled=!isMe||!rgHasPlayed;
-  if(_bd)_bd.disabled=!isMe||rgHasPlayed;
-  if(_bu)_bu.disabled=!isMe||!rgHasPlayed;
-  rgRenderHand();rgRenderBoard();rgRenderPlayers(data);rgRenderLog(data.log||[]);
-  if(data.timerEnabled&&isMe)rgStartTimer();else rgStopTimer();
-  if(isMe&&!rgHasPlayed){
-    rgBoardSnap=JSON.parse(JSON.stringify(data.board||[]));
-    rgHandSnap=[...(data.hands[me]||[])];
-    rgLocalBoard=JSON.parse(JSON.stringify(data.board||[]));
-    rgLocalHand=[...rgHandSnap];
-  }
+
+// ── 드롭 존 공통 핸들러
+function rgMakeDropZone(el, onDrop){
+  el.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';el.classList.add('droptgt');});
+  el.addEventListener('dragleave',e=>{if(!el.contains(e.relatedTarget))el.classList.remove('droptgt');});
+  el.addEventListener('drop',e=>{
+    e.preventDefault();e.stopPropagation();
+    el.classList.remove('droptgt');
+    if(!rgDragTile)return;
+    onDrop(rgDragTile);
+    rgDragTile=null;
+  });
 }
+
+// ── 손패에서 타일 제거
+function rgRemoveFromHand(tile){
+  const i=rgLocalHand.findIndex(t=>t.id===tile.id);
+  if(i!==-1)rgLocalHand.splice(i,1);
+}
+
+// ── 보드에서 타일 제거 (세트가 비면 세트도 제거)
+function rgRemoveFromBoard(tile){
+  for(let si=rgLocalBoard.length-1;si>=0;si--){
+    const ti=rgLocalBoard[si].findIndex(t=>t.id===tile.id);
+    if(ti!==-1){
+      rgLocalBoard[si].splice(ti,1);
+      if(rgLocalBoard[si].length===0)rgLocalBoard.splice(si,1);
+      return true;
+    }
+  }
+  return false;
+}
+
+// ── 타일이 손패에 있는지 확인
+function rgIsInHand(tile){
+  return rgLocalHand.some(t=>t.id===tile.id);
+}
+
+function rgAfterMove(){
+  rgHasPlayed=true;
+  rgUpdateButtons();
+  rgRenderHand();
+  rgRenderBoard();
+}
+
+function rgUpdateButtons(){
+  const _bp=document.getElementById('rg-btn-place');
+  const _bu=document.getElementById('rg-btn-undo');
+  const _bd=document.getElementById('rg-btn-draw');
+  if(_bp)_bp.disabled=!rgHasPlayed||!rgAllValid();
+  if(_bu)_bu.disabled=!rgHasPlayed;
+  if(_bd)_bd.disabled=rgHasPlayed;
+}
+
 function rgRenderHand(){
   const me=RL_USER();
   const ct=document.getElementById('rg-handtiles');
@@ -2713,47 +2788,101 @@ function rgRenderHand(){
   const hand=rgHasPlayed?rgLocalHand:(rgG.hands[me]||[]);
   ct.innerHTML='';
   if(hc)hc.textContent=hand.length+'장';
-  hand.forEach((tile,i)=>{
-    const el=rgMakeTile(tile);
-    el.addEventListener('click',()=>rgTileClick('hand',i,tile));
-    el.addEventListener('mousedown',e=>rgDragStart(e,'hand',i,tile));
+  const isMyTurn=rgG.turn===me;
+  hand.forEach((tile)=>{
+    const el=rgMakeTile(tile,isMyTurn);
     ct.appendChild(el);
   });
+  // 손패 영역 자체를 드롭존으로 (보드→손패 회수)
+  if(isMyTurn){
+    ct.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';});
+    ct.addEventListener('drop',e=>{
+      e.preventDefault();
+      if(!rgDragTile)return;
+      const tile=rgDragTile;rgDragTile=null;
+      // 보드에 있으면 제거 후 손패로
+      if(!rgIsInHand(tile)){
+        rgRemoveFromBoard(tile);
+        rgLocalHand.push(tile);
+        rgAfterMove();
+      }
+    });
+  }
 }
+
 function rgRenderBoard(){
   const inner=document.getElementById('rg-boardinner');
   const bempty=document.getElementById('rg-bempty');
   if(!inner)return;
   const board=rgHasPlayed?rgLocalBoard:(rgG.board||[]);
   inner.innerHTML='';
-  if(bempty)bempty.style.display=board.length===0?'flex':'none';
+  if(bempty)bempty.style.display=board.length===0&&!rgHasPlayed?'flex':'none';
+  const me=RL_USER();
+  const isMyTurn=rgG.turn===me;
+
   board.forEach((set,si)=>{
-    const grp=document.createElement('div');grp.className='rg-setgrp';
-    if(rgHasPlayed)grp.classList.add(rgIsValid(set)?'valid':'invalid');
-    set.forEach((tile,ti)=>{
-      const el=rgMakeTile(tile);
-      if(rgG.turn===RL_USER()){
-        el.addEventListener('click',()=>rgTileClick('board',si,tile,ti));
-        el.addEventListener('mousedown',e=>rgDragStart(e,'board',si,tile,ti));
-      }
+    const grp=document.createElement('div');
+    grp.className='rg-setgrp';
+    if(rgHasPlayed){
+      const valid=rgIsValid(set);
+      grp.classList.add(valid?'valid':'invalid');
+    }
+
+    set.forEach((tile)=>{
+      const el=rgMakeTile(tile,isMyTurn);
+      // 보드 타일도 드래그 가능 (재배치용)
       grp.appendChild(el);
     });
-    grp.addEventListener('dragover',e=>{e.preventDefault();grp.classList.add('droptgt');});
-    grp.addEventListener('dragleave',()=>grp.classList.remove('droptgt'));
-    grp.addEventListener('drop',e=>{e.preventDefault();grp.classList.remove('droptgt');rgDropSet(si);});
+
+    // 세트에 드롭 → 타일 이 세트에 추가
+    if(isMyTurn){
+      rgMakeDropZone(grp,(tile)=>{
+        const wasInHand=rgIsInHand(tile);
+        if(wasInHand)rgRemoveFromHand(tile);
+        else rgRemoveFromBoard(tile);
+        // 해당 세트가 아직 존재하는지 확인 (제거로 인해 인덱스 변경 가능)
+        const board2=rgLocalBoard;
+        // 세트를 찾아서 추가
+        const targetSet=board2[si]||(board2[si-1]);
+        if(targetSet){
+          // 세트가 바뀌었을 수 있으니 grp과 매칭
+          // grp의 첫 타일 id로 세트 찾기
+          const firstId=grp.querySelector('[data-tile-id]')?.dataset.tileId;
+          const realSi=firstId?board2.findIndex(s=>s.some(t=>String(t.id)===firstId)):si;
+          const actualSi=realSi!==-1?realSi:Math.min(si,board2.length-1);
+          if(board2[actualSi])board2[actualSi].push(tile);
+          else board2.push([tile]);
+        } else {
+          board2.push([tile]);
+        }
+        rgAfterMove();
+      });
+    }
     inner.appendChild(grp);
   });
-  if(rgG.turn===RL_USER()){
-    const ab=document.createElement('div');ab.className='rg-addsetbtn';ab.textContent='+';
-    ab.addEventListener('click',()=>{if(rgDragTile)rgAddNewSet();});inner.appendChild(ab);
+
+  // 새 세트 드롭존
+  if(isMyTurn){
+    const newZone=document.createElement('div');
+    newZone.className='rg-addsetbtn rg-drop-zone';
+    newZone.innerHTML='<span style="font-size:13px;line-height:1.4;text-align:center">새<br>세트</span>';
+    rgMakeDropZone(newZone,(tile)=>{
+      if(rgIsInHand(tile))rgRemoveFromHand(tile);
+      else rgRemoveFromBoard(tile);
+      rgLocalBoard.push([tile]);
+      rgAfterMove();
+    });
+    inner.appendChild(newZone);
   }
 }
+
 function rgRenderPlayers(data){
   const list=document.getElementById('rg-plist');
   if(!list)return;
   list.innerHTML='';
   (data.players||[]).forEach((p,i)=>{
-    const row=document.createElement('div');row.className='rg-prow'+(data.turn===p.name?' myturn':'');
+    const row=document.createElement('div');
+    row.className='rg-prow'+(data.turn===p.name?' myturn':'');
     const col=p.color||RL_AVC[i%RL_AVC.length];
     const hc=(data.hands[p.name]||[]).length;
     row.innerHTML=`<div class="rg-pav" style="background:${col}22;border:1.5px solid ${col}">${p.name.charAt(0)}</div>
@@ -2762,6 +2891,7 @@ function rgRenderPlayers(data){
     list.appendChild(row);
   });
 }
+
 function rgRenderLog(logs){
   const me=RL_USER();
   const el=document.getElementById('rg-gamelog');
@@ -2773,66 +2903,21 @@ function rgRenderLog(logs){
     d.textContent=l;el.appendChild(d);
   });
 }
-function rgTileClick(src,idx,tile,tIdx){
-  const me=RL_USER();
-  if(rgG.turn!==me)return;rgHasPlayed=true;
-  if(src==='hand'){rgLocalHand.splice(idx,1);rgLocalBoard.push([tile]);}
-  else{const s=rgLocalBoard[idx];s.splice(tIdx,1);if(s.length===0)rgLocalBoard.splice(idx,1);rgLocalHand.push(tile);}
+
+// ── 되돌리기
+function rgUndo(){
+  rgLocalBoard=JSON.parse(JSON.stringify(rgBoardSnap||[]));
+  rgLocalHand=[...(rgHandSnap||[])];
+  rgHasPlayed=false;rgDragTile=null;
+  const _bp=document.getElementById('rg-btn-place');
+  const _bu=document.getElementById('rg-btn-undo');
+  const _bd=document.getElementById('rg-btn-draw');
+  if(_bp)_bp.disabled=true;
+  if(_bu)_bu.disabled=true;
+  if(_bd)_bd.disabled=false;
   rgRenderHand();rgRenderBoard();
-  const _bp2=document.getElementById('rg-btn-place');
-  const _bu2=document.getElementById('rg-btn-undo');
-  if(_bp2)_bp2.disabled=!rgAllValid();
-  if(_bu2)_bu2.disabled=false;
 }
-function rgDragStart(e,src,idx,tile,tIdx){
-  if(rgG.turn!==RL_USER())return;
-  // 기존 리스너 먼저 제거 (중복 방지)
-  document.removeEventListener('mousemove',rgMoveDrag);
-  document.removeEventListener('mouseup',rgEndDrag);
-  rgDragTile={src,idx,tile,tIdx};
-  const ov=document.getElementById('rg-dragov');
-  if(!ov)return;
-  ov.className='rg-dragov '+(tile.joker?'rg-tile-j':RG_CMAP[tile.col]);
-  ov.textContent=tile.joker?'★':tile.num;
-  ov.style.display='flex';
-  rgMoveDrag(e);
-  document.addEventListener('mousemove',rgMoveDrag);
-  document.addEventListener('mouseup',rgEndDrag);
-}
-function rgMoveDrag(e){
-  const ov=document.getElementById('rg-dragov');
-  if(ov){ov.style.left=(e.clientX-20)+'px';ov.style.top=(e.clientY-28)+'px';}
-}
-function rgEndDrag(){
-  const ov=document.getElementById('rg-dragov');
-  if(ov)ov.style.display='none';
-  document.removeEventListener('mousemove',rgMoveDrag);
-  document.removeEventListener('mouseup',rgEndDrag);
-  rgDragTile=null;
-}
-function rgDropSet(si){
-  if(!rgDragTile||rgG.turn!==RL_USER())return;
-  const{src,idx,tile,tIdx}=rgDragTile;rgHasPlayed=true;
-  if(src==='hand')rgLocalHand.splice(idx,1);
-  else{rgLocalBoard[idx].splice(tIdx,1);if(rgLocalBoard[idx].length===0)rgLocalBoard.splice(idx,1);}
-  const tsi=Math.min(si,rgLocalBoard.length-1);
-  if(rgLocalBoard[tsi])rgLocalBoard[tsi].push(tile);else rgLocalBoard.push([tile]);
-  rgRenderHand();rgRenderBoard();
-  const _bpd=document.getElementById('rg-btn-place');
-  const _bud=document.getElementById('rg-btn-undo');
-  if(_bpd)_bpd.disabled=!rgAllValid();
-  if(_bud)_bud.disabled=false;
-}
-function rgAddNewSet(){
-  if(!rgDragTile)return;const{src,idx,tile,tIdx}=rgDragTile;rgHasPlayed=true;
-  if(src==='hand')rgLocalHand.splice(idx,1);
-  else{rgLocalBoard[idx].splice(tIdx,1);if(rgLocalBoard[idx].length===0)rgLocalBoard.splice(idx,1);}
-  rgLocalBoard.push([tile]);rgRenderHand();rgRenderBoard();
-  const _bpa=document.getElementById('rg-btn-place');
-  const _bua=document.getElementById('rg-btn-undo');
-  if(_bpa)_bpa.disabled=!rgAllValid();
-  if(_bua)_bua.disabled=false;
-}
+
 function rgIsValid(set){
   if(set.length<3)return false;
   const nj=set.filter(t=>!t.joker);if(nj.length===0)return false;
@@ -2845,24 +2930,65 @@ function rgAllValid(){return rgLocalBoard.every(s=>rgIsValid(s));}
 async function rgConfirmPlay(){
   const me=RL_USER();
   if(!rgHasPlayed)return;
-  if(!rgAllValid()){rlToast('유효하지 않은 세트가 있습니다!');return;}
+
+  // ── 유효성 검사 + 힌트 표시
+  const invalidSets=[];
+  rgLocalBoard.forEach((set,si)=>{
+    if(!rgIsValid(set))invalidSets.push(si);
+  });
+  if(invalidSets.length>0){
+    // 잘못된 세트 흔들기
+    const grps=document.querySelectorAll('.rg-setgrp');
+    invalidSets.forEach(si=>{
+      if(grps[si]){
+        grps[si].classList.remove('shaking');
+        void grps[si].offsetWidth; // reflow
+        grps[si].classList.add('shaking');
+        setTimeout(()=>grps[si].classList.remove('shaking'),600);
+      }
+    });
+    rlToast('❌ 완성되지 않은 세트가 있습니다!');
+    return;
+  }
+
+  // ── 첫 플레이 30점 검사
   if(!rgG.firstPlay[me]){
     const oldIds=new Set((rgBoardSnap||[]).flat().map(t=>t.id));
-    const addedSum=rgLocalBoard.flat().filter(t=>!t.joker&&!oldIds.has(t.id)).reduce((a,t)=>a+t.num,0);
-    if(addedSum<30){rlToast('첫 플레이는 30점 이상이어야 합니다 (현재 '+addedSum+'점)');return;}
+    const added=rgLocalBoard.flat().filter(t=>!t.joker&&!oldIds.has(t.id));
+    const addedSum=added.reduce((a,t)=>a+t.num,0);
+    if(addedSum<30){
+      rlToast('❌ 첫 플레이는 30점 이상이어야 합니다 (현재 '+addedSum+'점)');
+      return;
+    }
   }
+
+  // ── 보드에 최소 1장 이상 내려놨는지 확인
+  const oldIds2=new Set((rgBoardSnap||[]).flat().map(t=>t.id));
+  const newTiles=rgLocalBoard.flat().filter(t=>!oldIds2.has(t.id));
+  if(newTiles.length===0){
+    rlToast('타일을 최소 1장 이상 내려놓아야 합니다');
+    return;
+  }
+
   const won=rgLocalHand.length===0;
   const players=rgG.players.map(p=>p.name);
   const ni=(players.indexOf(me)+1)%players.length;
-  const log=[...(rgG.log||[]),me+'이(가) 타일을 내려놓았습니다'];
+  const log=[...(rgG.log||[]),me+'이(가) 타일 '+newTiles.length+'장을 내려놓았습니다'];
   if(won)log.push('🏆 '+me+' 승리!');
   try{
     await db.collection('rummikub_rooms').doc(rlRoomId).update({
-      board:rgLocalBoard,['hands.'+me]:rgLocalHand,
-      turn:won?me:players[ni],['firstPlay.'+me]:true,
-      status:won?'finished':'playing',winner:won?me:null,log,
+      board:rgLocalBoard,
+      ['hands.'+me]:rgLocalHand,
+      turn:won?me:players[ni],
+      ['firstPlay.'+me]:true,
+      status:won?'finished':'playing',
+      winner:won?me:null,
+      log,
     });
-    rgHasPlayed=false;rgStopTimer();
+    rgHasPlayed=false;
+    rgDragTile=null;
+    rgStopTimer();
+    rgUpdateButtons();
   }catch(e){rlToast('오류: '+e.message);}
 }
 async function rgDrawTile(){
