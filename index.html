@@ -525,7 +525,7 @@ to{opacity:1;transform:translateY(0)}
 ══════════════════════════════════ */
 #rumi-app{
   position:fixed;inset:0;z-index:500;
-  background:linear-gradient(150deg,#FFF8F0 0%,#FFF0F8 25%,#F0F8FF 60%,#F0FFF5 100%);
+  background:linear-gradient(160deg,#060818 0%,#0A0E28 50%,#06101A 100%);
   display:none;flex-direction:column;
   font-family:'Noto Sans KR',sans-serif;
 }
@@ -583,12 +583,12 @@ to{opacity:1;transform:translateY(0)}
 .rltd-g{background:linear-gradient(145deg,#0E2814,#081508);border:1.5px solid #28A050;color:#58D878}
 .rltd-o{background:linear-gradient(145deg,#2E1208,#180A04);border:1.5px solid #D07028;color:#FFA858}
 .rltd-j{background:linear-gradient(145deg,#281C48,#161028);border:1.5px solid #C8A830;color:#FFD850;font-size:22px;text-shadow:0 0 14px rgba(255,216,80,.55)}
-.rl-gtitle{font-family:'Black Han Sans',sans-serif;font-size:44px;color:#8B5E00;letter-spacing:3px;text-shadow:0 2px 0 rgba(0,0,0,.15);margin-bottom:5px}
-.rl-gsub{font-size:11px;color:#8A7E68;letter-spacing:2.5px;text-transform:uppercase}
-.rl-ucard{background:rgba(255,255,255,.85);border:1px solid var(--rbr);border-radius:12px;padding:13px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 10px rgba(0,0,0,.08);backdrop-filter:blur(8px)}
+.rl-gtitle{font-family:'Black Han Sans',sans-serif;font-size:44px;color:#C8B8FF;letter-spacing:3px;text-shadow:0 0 30px rgba(140,120,255,.4),0 2px 0 rgba(0,0,0,.5);margin-bottom:5px}
+.rl-gsub{font-size:11px;color:rgba(160,150,220,.6);letter-spacing:2.5px;text-transform:uppercase}
+.rl-ucard{background:rgba(20,24,60,.8);border:1px solid var(--rbr);border-radius:12px;padding:13px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 16px rgba(0,0,0,.4);backdrop-filter:blur(8px)}
 .rl-ldot{width:8px;height:8px;background:#38C06A;border-radius:50%;flex-shrink:0;box-shadow:0 0 8px rgba(56,192,106,.5);animation:rlldp 2.5s ease-in-out infinite}
 @keyframes rlldp{0%,100%{opacity:1}50%{opacity:.35}}
-.rl-uname{font-size:15px;font-weight:600;flex:1;color:var(--rt)}
+.rl-uname{font-size:15px;font-weight:600;flex:1;color:#C8B8FF}
 .rl-ubadge{font-size:11px;color:var(--rm);background:var(--rs);border:1px solid var(--rbr);padding:3px 9px;border-radius:20px}
 .rl-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:stretch}
 .rl-btn{padding:18px 14px;border-radius:12px;border:1.5px solid;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:all .2s;font-family:'Noto Sans KR',sans-serif;position:relative;overflow:hidden;min-height:110px;width:100%}
@@ -601,33 +601,33 @@ to{opacity:1;transform:translateY(0)}
 .rl-bc:hover{box-shadow:0 10px 30px rgba(84,58,144,.3);border-color:#7050B8}
 .rl-bj{background:linear-gradient(145deg,#183428,#224A38);border-color:#2C7040}
 .rl-bj:hover{box-shadow:0 10px 30px rgba(44,112,64,.3);border-color:#3A9058}
-.rl-rlist-wrap{background:rgba(255,255,255,.85);border:1px solid var(--rbr);border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.08);display:flex;flex-direction:column}
+.rl-rlist-wrap{background:rgba(15,20,55,.85);border:1px solid var(--rbr);border-radius:12px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,.5);display:flex;flex-direction:column;backdrop-filter:blur(8px)}
 .rl-rlist-top{padding:11px 16px;border-bottom:1px solid var(--rbr);display:flex;align-items:center}
-.rl-rlist-title{font-size:11px;font-weight:600;color:var(--rm);letter-spacing:.6px;text-transform:uppercase;flex:1}
+.rl-rlist-title{font-size:11px;font-weight:600;color:rgba(160,150,220,.7);letter-spacing:.6px;text-transform:uppercase;flex:1}
 .rl-rlist-ref{background:none;border:none;color:var(--rm);cursor:pointer;font-size:16px;padding:2px 7px;border-radius:4px;transition:color .15s}
 .rl-rlist-ref:hover{color:var(--rt)}
 .rl-rlist{overflow-y:auto;padding:8px;flex:1}
 .rl-rlist::-webkit-scrollbar{width:3px}.rl-rlist::-webkit-scrollbar-thumb{background:var(--rbr);border-radius:2px}
-.rl-ritem{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:8px;border:1px solid transparent;cursor:pointer;transition:all .15s;margin-bottom:4px}
+.rl-ritem{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:8px;border:1px solid transparent;cursor:pointer;transition:all .15s;margin-bottom:4px;color:var(--rt)}
 .rl-ritem:last-child{margin-bottom:0}
-.rl-ritem:hover{background:var(--rc2);border-color:var(--rbr)}
+.rl-ritem:hover{background:rgba(40,50,120,.5);border-color:var(--rbr)}
 .rl-ritem-icon{font-size:22px;flex-shrink:0}
 .rl-ritem-info{flex:1;min-width:0}
 .rl-ritem-name{font-size:14px;font-weight:600;color:var(--rt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rl-ritem-detail{font-size:11px;color:var(--rm);margin-top:2px}
 .rl-rbadge{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;flex-shrink:0;border:1px solid}
 .rl-rbw{background:rgba(56,184,106,.1);color:#58D878;border-color:rgba(56,184,106,.22)}
-.rl-rempty{text-align:center;padding:22px;color:#A09080;font-size:13px}
+.rl-rempty{text-align:center;padding:22px;color:rgba(100,90,160,.6);font-size:13px}
 
 /* ─ 모달 */
 .rl-mbg{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:700;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;backdrop-filter:blur(6px)}
 .rl-mbg.open{opacity:1;pointer-events:all}
-.rl-modal{background:#FFFFFF;border:1px solid var(--rbr2);border-radius:16px;padding:28px 32px;width:min(380px,92vw);box-shadow:0 12px 40px rgba(0,0,0,.15);animation:rlmIn .2s ease}
+.rl-modal{background:#141830;border:1px solid var(--rbr2);border-radius:16px;padding:28px 32px;width:min(380px,92vw);box-shadow:0 20px 60px rgba(0,0,0,.7);animation:rlmIn .2s ease}
 @keyframes rlmIn{from{transform:scale(.95) translateY(8px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
 .rl-mtitle{font-family:'Black Han Sans',sans-serif;font-size:22px;color:#8B5E00;margin-bottom:20px;text-align:center;letter-spacing:1px}
 .rl-mfield{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
-.rl-mfield label{font-size:11px;font-weight:600;color:#8A7E68;letter-spacing:.5px;text-transform:uppercase}
-.rl-mfield input,.rl-mfield select{font-family:'Noto Sans KR',sans-serif;font-size:15px;background:#FAF7F2;border:1.5px solid #DDD5C4;border-radius:8px;padding:11px 13px;color:#2A2418;outline:none;transition:border-color .15s}
+.rl-mfield label{font-size:11px;font-weight:600;color:var(--rm);letter-spacing:.5px;text-transform:uppercase}
+.rl-mfield input,.rl-mfield select{font-family:'Noto Sans KR',sans-serif;font-size:15px;background:rgba(10,14,40,.8);border:1.5px solid var(--rbr);border-radius:8px;padding:11px 13px;color:var(--rt);outline:none;transition:border-color .15s}
 .rl-mfield input:focus,.rl-mfield select:focus{border-color:#7B6FA0;box-shadow:0 0 0 3px rgba(123,111,160,.12)}
 .rl-mfield select option{background:var(--rc)}
 .rl-mbtns{display:flex;gap:10px;margin-top:20px}
@@ -637,7 +637,7 @@ to{opacity:1;transform:translateY(0)}
 
 /* ─ 대기실 */
 .rw-wrap{width:min(540px,100%);display:flex;flex-direction:column;gap:14px}
-.rw-hdr{background:rgba(255,255,255,.85);border:1px solid var(--rbr);border-radius:12px;padding:20px 24px;text-align:center;position:relative;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.rw-hdr{background:rgba(15,20,55,.85);border:1px solid var(--rbr);border-radius:12px;padding:20px 24px;text-align:center;position:relative;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,.4);backdrop-filter:blur(8px)}
 .rw-hdr::before{content:'';position:absolute;inset:0;background:linear-gradient(145deg,rgba(245,200,66,.05) 0%,transparent 60%);pointer-events:none}
 .rw-rtitle{font-family:'Black Han Sans',sans-serif;font-size:26px;color:var(--rgold);letter-spacing:1px;margin-bottom:8px}
 .rw-crow{display:flex;align-items:center;justify-content:center;gap:8px}
@@ -645,14 +645,14 @@ to{opacity:1;transform:translateY(0)}
 .rw-cval{font-family:'DM Mono',monospace;font-size:16px;font-weight:700;color:var(--ra2);letter-spacing:5px;background:var(--rs);border:1px solid var(--rbr);padding:4px 13px;border-radius:8px}
 .rw-cnt{font-size:12px;color:var(--rm)}
 .rw-pgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.rw-pslot{background:rgba(255,255,255,.8);border:1.5px solid var(--rbr);border-radius:12px;padding:18px;display:flex;flex-direction:column;align-items:center;gap:8px;min-height:108px;justify-content:center;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.rw-pslot{background:rgba(15,20,55,.8);border:1.5px solid var(--rbr);border-radius:12px;padding:18px;display:flex;flex-direction:column;align-items:center;gap:8px;min-height:108px;justify-content:center;transition:all .2s;backdrop-filter:blur(8px)}
 .rw-pslot.filled{border-color:var(--rbr2)}.rw-pslot.me{border-color:var(--ra);background:rgba(139,111,191,.06)}
 .rw-pav{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.4);position:relative}
 .rw-pav::after{content:'';position:absolute;inset:0;border-radius:50%;background:linear-gradient(145deg,rgba(255,255,255,.15) 0%,transparent 55%)}
 .rw-pname{font-size:14px;font-weight:600;color:var(--rt)}.rw-phost{font-size:11px;color:var(--rgold)}
 .rw-pempty{color:var(--rf);font-size:13px;display:flex;flex-direction:column;align-items:center;gap:5px}
 .rw-peicon{font-size:26px;opacity:.3}
-.rw-optrow{background:rgba(255,255,255,.8);border:1px solid var(--rbr);border-radius:12px;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.rw-optrow{background:rgba(15,20,55,.8);border:1px solid var(--rbr);border-radius:12px;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(8px)}
 .rw-optlbl{font-size:13px;color:var(--rt2)}.rw-optsub{font-size:11px;color:var(--rm);margin-top:2px}
 .rw-twrp{position:relative;width:42px;height:24px;flex-shrink:0}
 .rw-twrp input{opacity:0;width:0;height:0;position:absolute}
@@ -730,7 +730,11 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
   box-shadow:inset 0 2px 12px rgba(0,0,0,.2),0 4px 16px rgba(0,0,0,.15);
 }
 .rg-boardwrap::-webkit-scrollbar{width:5px;height:5px}.rg-boardwrap::-webkit-scrollbar-thumb{background:#1E3A1E;border-radius:3px}
-.rg-boardinner{min-width:580px;min-height:300px;padding:14px;display:flex;flex-wrap:wrap;gap:10px;align-content:flex-start;align-items:flex-start}
+.rg-boardinner{
+  min-width:580px;min-height:300px;padding:20px;
+  display:flex;flex-wrap:wrap;gap:10px;
+  align-content:center;align-items:center;justify-content:center;
+}
 .rg-bempty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:rgba(255,255,255,.1);gap:8px;pointer-events:none}
 .rg-bempty-icon{font-size:36px;opacity:.4}.rg-bempty-text{font-size:12px}
 .rg-setgrp{display:flex;gap:3px;padding:8px 10px;background:rgba(255,255,255,.25);border:1.5px solid rgba(255,255,255,.5);border-radius:7px;flex-wrap:nowrap;position:relative;transition:all .15s;box-shadow:0 2px 8px rgba(0,0,0,.12)}
@@ -798,8 +802,16 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 .rg-handcount{font-size:12px;font-weight:700;color:var(--rgold);font-family:'DM Mono',monospace}
 .rg-handtiles{display:flex;gap:5px;flex-wrap:wrap;max-height:128px;overflow-y:auto;padding:2px}
 .rg-handtiles::-webkit-scrollbar{height:3px}.rg-handtiles::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
-.rg-handactions{display:flex;gap:8px}
-.rg-abtn{flex:1;padding:9px;border-radius:7px;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:600;transition:all .15s}
+.rg-handactions{display:flex;gap:0;justify-content:center;align-items:center;padding:4px 0}
+.rg-abtn{
+  padding:12px 22px;border-radius:50px;border:none;cursor:pointer;
+  font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:700;
+  transition:all .2s;margin:0 8px;
+  display:flex;align-items:center;gap:6px;white-space:nowrap;
+  box-shadow:0 4px 12px rgba(0,0,0,.3);
+}
+.rg-abtn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.4)}
+.rg-abtn:active:not(:disabled){transform:translateY(0)}
 .rg-aplace{background:rgba(56,184,106,.18);color:#50E080;border:1px solid rgba(56,184,106,.3)}.rg-aplace:hover:not(:disabled){background:rgba(56,184,106,.3)}
 .rg-adraw{background:rgba(128,96,176,.18);color:#A880D8;border:1px solid rgba(128,96,176,.3)}.rg-adraw:hover:not(:disabled){background:rgba(128,96,176,.3)}
 .rg-aundo{background:rgba(224,160,48,.14);color:#E0A030;border:1px solid rgba(224,160,48,.25)}.rg-aundo:hover:not(:disabled){background:rgba(224,160,48,.26)}
@@ -936,25 +948,150 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 .rg-handtiles.drag-over{background:rgba(245,200,66,.06);border-radius:8px;}
 
 
-/* 루미큐브 게임 배경 계절 장식 */
+/* ── 우주 게임 배경 */
+#rscr-game{position:relative;}
 #rscr-game::before{
   content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
   background:
-    radial-gradient(ellipse at 10% 20%,rgba(255,182,193,.25) 0%,transparent 40%),
-    radial-gradient(ellipse at 90% 15%,rgba(144,238,144,.2) 0%,transparent 35%),
-    radial-gradient(ellipse at 50% 90%,rgba(173,216,230,.2) 0%,transparent 40%),
-    radial-gradient(ellipse at 80% 80%,rgba(255,218,185,.2) 0%,transparent 35%);
+    radial-gradient(ellipse at 20% 30%,rgba(30,20,80,.9) 0%,transparent 55%),
+    radial-gradient(ellipse at 80% 70%,rgba(10,30,60,.8) 0%,transparent 50%),
+    #060818;
 }
-#rscr-game .rg-wrap{position:relative;z-index:1}
+/* 별 캔버스 */
+#space-canvas{position:absolute;inset:0;z-index:0;pointer-events:none}
+#rscr-game .rg-space-wrap{position:relative;z-index:1;display:flex;flex-direction:column;height:100%;padding:8px;gap:6px}
 
-/* 게임 타일 hover 효과 개선 */
+/* 게임 타일 hover */
 .rg-tile{transition:transform .12s,box-shadow .12s}
 .rg-tile:hover:not(.dragging){transform:translateY(-6px) scale(1.05)!important;}
 .rg-tile:active{transform:scale(.95)!important;cursor:grabbing!important}
 
-/* 세트 valid/invalid 밝은 테마 */
-.rg-setgrp.valid{border-color:#28A050!important;background:rgba(40,160,80,.12)!important}
-.rg-setgrp.invalid{border-color:#E83030!important;background:rgba(232,48,48,.08)!important}
+/* 우주 topbar */
+.rg-topbar{
+  background:rgba(10,15,40,.85)!important;
+  border:1px solid rgba(100,120,255,.25)!important;
+  backdrop-filter:blur(12px);
+}
+.rg-gtitle{color:#C8B8FF!important}
+.rg-turnindicator{background:rgba(80,60,160,.3)!important;border-color:rgba(140,120,255,.4)!important;color:#E0D8FF!important}
+.rg-deckcount{color:rgba(200,190,255,.6)!important}
+.rg-topbtn{background:rgba(255,255,255,.06)!important;border-color:rgba(255,255,255,.15)!important;color:rgba(200,190,255,.7)!important}
+.rg-topbtn:hover{color:#fff!important;border-color:rgba(200,190,255,.4)!important}
+
+/* 우주 보드 */
+.rg-boardwrap{
+  background:rgba(5,12,35,.7)!important;
+  border:1.5px solid rgba(80,100,200,.3)!important;
+  box-shadow:inset 0 0 40px rgba(20,40,120,.4),0 0 20px rgba(60,80,200,.15)!important;
+  background-image:
+    radial-gradient(rgba(255,255,255,.04) 1px,transparent 1px),
+    linear-gradient(160deg,rgba(20,40,100,.5) 0%,rgba(5,15,50,.8) 100%)!important;
+  background-size:24px 24px, 100% 100%!important;
+}
+.rg-bempty-icon{color:rgba(150,140,255,.3)!important}
+.rg-bempty-text{color:rgba(150,140,255,.3)!important}
+
+/* 우주 세트 */
+.rg-setgrp{background:rgba(20,30,80,.6)!important;border-color:rgba(100,120,255,.25)!important}
+.rg-setgrp:hover{border-color:rgba(160,150,255,.5)!important}
+.rg-setgrp.valid{border-color:rgba(60,200,100,.6)!important;background:rgba(20,80,40,.4)!important}
+.rg-setgrp.invalid{border-color:rgba(220,60,60,.7)!important;background:rgba(80,10,10,.4)!important}
+.rg-setgrp.droptgt,.rg-setgrp.selected-target{border-color:#C8B800!important;background:rgba(200,184,0,.1)!important}
+.rg-addsetbtn{border-color:rgba(150,140,255,.4)!important;color:rgba(180,170,255,.6)!important;background:rgba(40,30,100,.4)!important}
+.rg-addsetbtn:hover{border-color:rgba(200,190,255,.8)!important;color:#fff!important;background:rgba(60,50,140,.5)!important}
+
+/* 우주 사이드 패널 */
+.rg-sidebox{background:rgba(10,15,45,.8)!important;border:1px solid rgba(80,100,200,.25)!important;backdrop-filter:blur(8px);}
+.rg-logpanel{background:rgba(10,15,45,.8)!important;border:1px solid rgba(80,100,200,.25)!important;backdrop-filter:blur(8px);}
+.rg-sidetitle{color:rgba(160,150,255,.7)!important}
+.rg-prow-name{color:#E0D8FF!important}
+.rg-prow-count{color:rgba(160,150,220,.6)!important}
+.rg-logentry{color:rgba(160,155,200,.7)!important}
+.rg-logentry.mine{color:rgba(220,200,80,.85)!important;font-weight:500}
+.rg-logentry.win{color:#50FF80!important;font-weight:700}
+
+/* 우주 손패 */
+.rg-handarea{background:rgba(10,15,45,.85)!important;border:1px solid rgba(80,100,200,.3)!important;backdrop-filter:blur(8px);}
+.rg-handlabel{color:rgba(160,150,255,.7)!important}
+.rg-handcount{color:#C8B8FF!important}
+
+/* 우주 버튼 */
+.rg-aplace{
+  background:linear-gradient(135deg,#1A6A3A,#28A060)!important;
+  color:#fff!important;border:none!important;
+  box-shadow:0 4px 14px rgba(30,140,80,.4)!important;
+}
+.rg-aplace:hover:not(:disabled){background:linear-gradient(135deg,#228A4A,#30B870)!important;box-shadow:0 6px 20px rgba(40,160,90,.5)!important}
+.rg-adraw{
+  background:linear-gradient(135deg,#1A3A8A,#2858C8)!important;
+  color:#fff!important;border:none!important;
+  box-shadow:0 4px 14px rgba(30,80,180,.4)!important;
+}
+.rg-adraw:hover:not(:disabled){background:linear-gradient(135deg,#2248A8,#3068E0)!important;box-shadow:0 6px 20px rgba(40,90,200,.5)!important}
+.rg-aundo{
+  background:linear-gradient(135deg,#6A4A10,#A07020)!important;
+  color:#fff!important;border:none!important;
+  box-shadow:0 4px 14px rgba(120,80,20,.35)!important;
+}
+.rg-aundo:hover:not(:disabled){background:linear-gradient(135deg,#7A5818,#B88030)!important}
+.rg-abtn:disabled{
+  background:rgba(255,255,255,.06)!important;
+  color:rgba(255,255,255,.25)!important;
+  border:1px solid rgba(255,255,255,.08)!important;
+  box-shadow:none!important;cursor:default;
+}
+
+/* 승리 오버레이 */
+.rg-winov{backdrop-filter:blur(12px)!important;background:rgba(2,5,20,.88)!important}
+.rg-wincard{background:rgba(10,15,50,.95)!important;border:1px solid rgba(200,184,255,.3)!important;box-shadow:0 0 60px rgba(120,80,255,.3)!important}
+.rg-wintitle{color:#C8B8FF!important}
+.rg-winsub{color:rgba(200,190,220,.8)!important}
+.rg-winbtn{background:linear-gradient(135deg,#4A3090,#7050C0)!important}
+
+/* 타이머 */
+.rg-timerdisp{color:#C8B8FF!important}
+.rg-timerdisp.warn{color:#FF7070!important}
+
+/* ── 원형 테이블 플레이어 섹션 */
+.rg-table-section{
+  flex-shrink:0;height:180px;position:relative;width:200px;align-self:center;
+}
+.rg-round-table{
+  border-radius:50%;
+  border:1.5px solid rgba(100,120,255,.25);
+  background:radial-gradient(circle,rgba(15,25,70,.9) 0%,rgba(5,12,45,.95) 100%);
+  box-shadow:0 0 20px rgba(60,80,200,.15),inset 0 0 15px rgba(20,40,120,.3);
+  position:absolute;transform:translate(-50%,-50%);
+  display:flex;align-items:center;justify-content:center;
+}
+.rg-player-seat{
+  position:absolute;display:flex;flex-direction:column;align-items:center;gap:3px;
+  transform:translate(-50%,-50%);transition:all .3s;
+}
+.rg-player-seat.active-turn .rg-seat-icon{
+  filter:drop-shadow(0 0 6px rgba(255,220,80,.9));
+  animation:rgIconBounce .8s ease-in-out infinite;
+}
+.rg-player-seat.is-me .rg-seat-name{color:#C8B8FF!important;font-weight:700}
+@keyframes rgIconBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.rg-seat-icon{font-size:22px;line-height:1;transition:all .3s}
+.rg-seat-name{font-size:8.5px;color:rgba(170,160,220,.75);font-weight:500;white-space:nowrap;text-align:center;max-width:48px;overflow:hidden;text-overflow:ellipsis}
+.rg-seat-count{font-size:8px;color:rgba(150,140,200,.6);font-family:'DM Mono',monospace}
+.rg-seat-cards{display:flex;gap:1px;flex-wrap:wrap;justify-content:center;max-width:44px;margin-top:1px}
+.rg-seat-card-pip{
+  width:4px;height:6px;border-radius:1px;
+  background:rgba(180,170,255,.4);border:0.5px solid rgba(255,255,255,.2);
+  transition:background .3s;
+}
+.rg-seat-card-pip.few{background:rgba(80,220,120,.7);}
+.rg-seat-card-pip.many{background:rgba(220,70,70,.65);}
+.rg-seat-myturn-ring{
+  position:absolute;inset:-5px;border-radius:50%;
+  border:2px solid rgba(255,215,60,.85);
+  animation:rgTurnPulse 1.8s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes rgTurnPulse{0%,100%{opacity:.9;transform:scale(1)}50%{opacity:.3;transform:scale(1.15)}}
 
 </style>
 </head>
@@ -2050,7 +2187,7 @@ init();
     <span class="rumi-topbar-title" id="rumi-topbar-title">🀱 루미큐브</span>
   </div>
   <!-- ── 로비 화면 ── -->
-  <div class="rumi-screen active" id="rscr-lobby" style="background:transparent">
+  <div class="rumi-screen active" id="rscr-lobby" style="background:transparent;position:relative">
     <div class="rl-wrap">
       <div class="rl-hdr">
         <div class="rl-tdeco">
@@ -2145,45 +2282,44 @@ init();
     </div>
   </div>
   <!-- ── 게임 ── -->
-  <div class="rumi-screen" id="rscr-game" style="padding:0;background:linear-gradient(160deg,#FFF5F0 0%,#FFF0F5 30%,#F0F5FF 60%,#F0FFF5 100%)">
-    <div class="rg-wrap">
+  <div class="rumi-screen" id="rscr-game" style="padding:0;background:#060818;overflow:hidden">
+    <canvas id="space-canvas"></canvas>
+    <div class="rg-space-wrap">
       <div class="rg-topbar">
-        <span class="rg-gtitle">🀱 루미큐브</span>
+        <span class="rg-gtitle">🌌 루미큐브</span>
         <div class="rg-turnindicator"><div class="rg-tdot"></div><span id="rg-turnlabel">연결 중...</span></div>
         <div class="rg-timerdisp" id="rg-timerdisp" style="display:none">60</div>
-        <span class="rg-deckcount" id="rg-deckcount">더미 -- 장</span>
+        <span class="rg-deckcount" id="rg-deckcount">🂠 -- 장</span>
         <button class="rg-topbtn" onclick="rumiLeave()">나가기</button>
       </div>
-      <div class="rg-main">
+      <div class="rg-main" style="grid-template-columns:1fr 200px">
         <div class="rg-boardwrap">
           <div class="rg-boardinner" id="rg-boardinner">
             <div class="rg-bempty" id="rg-bempty">
-              <div class="rg-bempty-icon">🀱</div>
-              <div class="rg-bempty-text">타일을 내려놓으면 여기에 표시됩니다</div>
+              <div class="rg-bempty-icon">🌌</div>
+              <div class="rg-bempty-text">타일을 드래그해 여기에 내려놓으세요</div>
             </div>
           </div>
         </div>
         <div class="rg-side">
-          <div class="rg-sidebox">
-            <div class="rg-sidetitle">플레이어</div>
-            <div id="rg-plist"></div>
-          </div>
+          <!-- 원형 테이블 -->
+          <div class="rg-table-section" id="rg-table-section"></div>
           <div class="rg-logpanel">
-            <div class="rg-sidetitle">게임 로그</div>
+            <div class="rg-sidetitle">📡 게임 로그</div>
             <div class="rg-logscroll" id="rg-gamelog"></div>
           </div>
         </div>
       </div>
       <div class="rg-handarea">
         <div class="rg-handtop">
-          <span class="rg-handlabel">내 패</span>
+          <span class="rg-handlabel">✋ 내 패</span>
           <span class="rg-handcount" id="rg-handcount">0장</span>
         </div>
         <div class="rg-handtiles" id="rg-handtiles"></div>
         <div class="rg-handactions">
           <button class="rg-abtn rg-aplace" id="rg-btn-place" onclick="rgConfirmPlay()" disabled>완료 ✓</button>
-          <button class="rg-abtn rg-adraw"  id="rg-btn-draw"  onclick="rgDrawTile()"    disabled>가져오기</button>
-          <button class="rg-abtn rg-aundo"  id="rg-btn-undo"  onclick="rgUndo()"        disabled>되돌리기</button>
+          <button class="rg-abtn rg-adraw"  id="rg-btn-draw"  onclick="rgDrawTile()"    disabled>🂠 카드받기</button>
+          <button class="rg-abtn rg-aundo"  id="rg-btn-undo"  onclick="rgUndo()"        disabled>↩ 되돌리기</button>
         </div>
       </div>
     </div>
@@ -2193,7 +2329,7 @@ init();
         <div class="rg-winemoji" id="rg-winemoji">🏆</div>
         <div class="rg-wintitle" id="rg-wintitle">승리!</div>
         <div class="rg-winsub"   id="rg-winsub"></div>
-        <button class="rg-winbtn" onclick="rumiLeave()">로비로 돌아가기</button>
+        <button class="rg-winbtn" onclick="rumiLeave()">🌌 타이틀로 돌아가기</button>
       </div>
     </div>
   </div>
@@ -2205,7 +2341,7 @@ init();
     <div class="rl-mtitle">🏠 방 만들기</div>
     <div class="rl-mfield"><label>방 이름</label><input type="text" id="rl-rname-inp" placeholder="예: 현우의 방" maxlength="20"/></div>
     <div class="rl-mfield"><label>최대 인원</label>
-      <select id="rl-max-inp"><option value="2">2명</option><option value="3">3명</option><option value="4" selected>4명</option></select>
+      <select id="rl-max-inp"><option value="2">2명</option><option value="3">3명</option><option value="4">4명</option><option value="5" selected>5명 (기본)</option></select>
     </div>
     <div class="rl-mbtns">
       <button class="rl-mbtn rl-mbc" onclick="rlCloseCreate()">취소</button>
@@ -2275,6 +2411,66 @@ function rumiClose(){
   clearInterval(rgTimerInterval);
   rlRoomId=null;rlIsHost=false;rgHasPlayed=false;rgGameStarted=false;
 }
+
+// ── 우주 배경 (별 + 유성)
+function rgInitSpaceCanvas(){
+  const canvas=document.getElementById('space-canvas');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  canvas.width=canvas.offsetWidth||800;
+  canvas.height=canvas.offsetHeight||600;
+
+  // 별 생성
+  const stars=Array.from({length:180},()=>({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+    r:Math.random()*1.5+.3,
+    alpha:Math.random(),
+    speed:Math.random()*.02+.005,
+    dir:Math.random()>.5?1:-1,
+  }));
+
+  // 유성
+  let meteors=[];
+  function spawnMeteor(){
+    if(Math.random()>.015)return;
+    meteors.push({
+      x:Math.random()*canvas.width,y:0,
+      len:Math.random()*80+40,
+      speed:Math.random()*8+6,
+      alpha:1,
+    });
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    // 별
+    stars.forEach(s=>{
+      s.alpha+=s.speed*s.dir;
+      if(s.alpha>1||s.alpha<.1){s.dir*=-1;}
+      ctx.beginPath();
+      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(220,210,255,${s.alpha})`;
+      ctx.fill();
+    });
+    // 유성
+    spawnMeteor();
+    meteors=meteors.filter(m=>{
+      m.x+=m.speed*.6;m.y+=m.speed;m.alpha-=.02;
+      if(m.alpha<=0)return false;
+      const grad=ctx.createLinearGradient(m.x,m.y,m.x-m.len*.6,m.y-m.len);
+      grad.addColorStop(0,`rgba(255,255,255,${m.alpha})`);
+      grad.addColorStop(1,'rgba(255,255,255,0)');
+      ctx.beginPath();ctx.moveTo(m.x,m.y);ctx.lineTo(m.x-m.len*.6,m.y-m.len);
+      ctx.strokeStyle=grad;ctx.lineWidth=1.5;ctx.stroke();
+      return true;
+    });
+    if(document.getElementById('rscr-game').classList.contains('active'))
+      requestAnimationFrame(draw);
+  }
+  draw();
+}
+
 function rumiLeave(){
   rumiShowScreen('rscr-lobby');
   document.getElementById('rumi-topbar').style.display='flex';
@@ -2706,6 +2902,8 @@ function rgStartFromData(data){
   // 로딩 숨기기
   const ls=document.getElementById('rs-loading');
   ls.style.display='none';
+  // 우주 캔버스 초기화
+  setTimeout(rgInitSpaceCanvas, 100);
   rgRender(data);
 }
 function rgSubscribeGame(){
@@ -2810,12 +3008,14 @@ function rgAfterMove(){
 }
 
 function rgUpdateButtons(){
+  const me=RL_USER();
+  const isMe=rgG.turn===me;
   const _bp=document.getElementById('rg-btn-place');
   const _bu=document.getElementById('rg-btn-undo');
   const _bd=document.getElementById('rg-btn-draw');
-  if(_bp)_bp.disabled=!rgHasPlayed||!rgAllValid();
-  if(_bu)_bu.disabled=!rgHasPlayed;
-  if(_bd)_bd.disabled=rgHasPlayed;
+  if(_bp)_bp.disabled=!isMe||!rgHasPlayed||!rgAllValid();
+  if(_bu)_bu.disabled=!isMe||!rgHasPlayed;
+  if(_bd)_bd.disabled=!isMe||rgHasPlayed;
 }
 
 function rgRender(data){
@@ -2829,7 +3029,7 @@ function rgRender(data){
   if(_tl)_tl.textContent=isMe?'✨ 내 차례!':data.turn+'의 차례';
   if(_dc)_dc.textContent='더미 '+(data.deck||[]).length+'장';
   if(_bp)_bp.disabled=!isMe||!rgHasPlayed||!rgAllValid();
-  if(_bd)_bd.disabled=!isMe||rgHasPlayed;
+  if(_bd)_bd.disabled=!isMe||rgHasPlayed; // 내 차례이고 아직 타일 안 내렸을 때만 활성화
   if(_bu)_bu.disabled=!isMe||!rgHasPlayed;
   rgRenderHand();rgRenderBoard();rgRenderPlayers(data);rgRenderLog(data.log||[]);
   if(data.timerEnabled&&isMe)rgStartTimer();else rgStopTimer();
@@ -2937,19 +3137,76 @@ function rgRenderBoard(){
   }
 }
 
+// 플레이어 아이콘 (나=보름달, 순서대로 배정)
+const RG_SEAT_ICONS=['🌕','⭐','☀️','🌙','🌍'];
+const RG_SEAT_NAMES=['보름달','별','태양','초승달','지구'];
+
 function rgRenderPlayers(data){
-  const list=document.getElementById('rg-plist');
-  if(!list)return;
-  list.innerHTML='';
-  (data.players||[]).forEach((p,i)=>{
-    const row=document.createElement('div');
-    row.className='rg-prow'+(data.turn===p.name?' myturn':'');
-    const col=p.color||RL_AVC[i%RL_AVC.length];
+  const section=document.getElementById('rg-table-section');
+  if(!section)return;
+  section.innerHTML='';
+  const players=data.players||[];
+  const me=RL_USER();
+  const total=players.length;
+  if(total===0)return;
+
+  const W=200, H=180;
+  const cx=W/2, cy=H/2;
+
+  // 섹션 크기 보정
+  section.style.width=W+'px';
+  section.style.height=H+'px';
+
+  // 원형 테이블 (중앙)
+  const tableR=42;
+  const table=document.createElement('div');
+  table.className='rg-round-table';
+  table.style.cssText=`width:${tableR*2}px;height:${tableR*2}px;left:${cx}px;top:${cy}px`;
+  table.innerHTML='<span style="font-size:18px;opacity:.5">🀱</span>';
+  section.appendChild(table);
+
+  // 내 인덱스 찾기
+  const myIdx=players.findIndex(p=>p.name===me);
+
+  // 좌석 반지름 - 인원수에 따라 조정
+  const seatR=total<=2?68:total<=3?66:total<=4?64:62;
+
+  // 각 플레이어 각도 계산
+  // 나는 항상 하단(270도=π*1.5), 나머지를 균등 배분
+  players.forEach((p,i)=>{
+    const offset=i-myIdx; // 나 기준 offset
+    // 하단이 270도(π*1.5), 시계방향으로 배분
+    const angle=(Math.PI*1.5)+(offset/total)*2*Math.PI;
+    const x=cx+seatR*Math.cos(angle);
+    const y=cy+seatR*Math.sin(angle);
+
     const hc=(data.hands[p.name]||[]).length;
-    row.innerHTML=`<div class="rg-pav" style="background:${col}22;border:1.5px solid ${col}">${p.name.charAt(0)}</div>
-      <span class="rg-prow-name">${p.name}${p.name===RL_USER()?' (나)':''}</span>
-      <span class="rg-prow-count">${hc}장</span>`;
-    list.appendChild(row);
+    const isMyTurn=data.turn===p.name;
+    const isMe=p.name===me;
+
+    // 내 인덱스 기준으로 아이콘 배정 (나=보름달🌕)
+    const iconIdx=isMe?0:((i-myIdx+total)%total);
+    const icon=RG_SEAT_ICONS[iconIdx%RG_SEAT_ICONS.length];
+    const iconName=RG_SEAT_NAMES[iconIdx%RG_SEAT_NAMES.length];
+
+    // 카드 핍
+    const pipCount=Math.min(hc,14);
+    const pipClass=hc<=4?'few':hc>=10?'many':'';
+    const pips=Array(pipCount).fill(0).map(()=>`<div class="rg-seat-card-pip ${pipClass}"></div>`).join('');
+
+    const seat=document.createElement('div');
+    seat.className='rg-player-seat'+(isMyTurn?' active-turn':'')+(isMe?' is-me':'');
+    seat.style.cssText=`left:${x}px;top:${y}px`;
+    seat.title=`${iconName} ${p.name} — ${hc}장`;
+
+    seat.innerHTML=`
+      ${isMyTurn?'<div class="rg-seat-myturn-ring"></div>':''}
+      <div class="rg-seat-icon">${icon}</div>
+      <div class="rg-seat-name">${isMe?'나':p.name}</div>
+      <div class="rg-seat-cards">${pips}</div>
+      <div class="rg-seat-count">${hc}장</div>
+    `;
+    section.appendChild(seat);
   });
 }
 
