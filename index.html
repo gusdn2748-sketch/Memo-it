@@ -1073,7 +1073,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
   animation:rgIconBounce .8s ease-in-out infinite;
 }
 .rg-player-seat.is-me .rg-seat-name{color:#C8B8FF!important;font-weight:700}
-@keyframes rgIconBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+50%{transform:translateY(-3px)}}
 .rg-seat-icon{font-size:22px;line-height:1;transition:all .3s}
 .rg-seat-name{font-size:8.5px;color:rgba(170,160,220,.75);font-weight:500;white-space:nowrap;text-align:center;max-width:48px;overflow:hidden;text-overflow:ellipsis}
 .rg-seat-count{font-size:8px;color:rgba(150,140,200,.6);font-family:'DM Mono',monospace}
@@ -1180,7 +1180,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
   animation:rgTurnPulse 1.8s ease-in-out infinite;
 }
 @keyframes rgIconBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-@keyframes rgTurnPulse{0%,100%{opacity:.9}50%{opacity:.25}}
+50%{opacity:.25}}
 
 /* ── 로그 코너 */
 .rg-log-corner{
@@ -1436,7 +1436,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v04.21.03</div>
+  <div class="splash-ver">v04.22.1</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -2642,9 +2642,11 @@ function rgBoardToFS(board){
   return (board||[]).map(set=>({s:(set||[]).map(t=>({id:t.id,col:t.col,num:t.num,joker:t.joker||false}))}));
 }
 function rgBoardFromFS(fsBoard){
-  if(!fsBoard||!fsBoard.length)return[];
-  if(Array.isArray(fsBoard[0]))return fsBoard; // 구형 호환
-  return fsBoard.map(item=>(item&&item.s)?item.s:[]).filter(s=>s.length>0);
+  if(!fsBoard||!Array.isArray(fsBoard)||!fsBoard.length)return[];
+  // 첫 요소가 배열이면 구형 형식 (중첩배열)
+  if(Array.isArray(fsBoard[0]))return fsBoard.filter(s=>Array.isArray(s)&&s.length>0);
+  // 신형: [{s:[...]}]
+  return fsBoard.map(item=>(item&&Array.isArray(item.s))?item.s:[]).filter(s=>s.length>0);
 }
 
 // 상태 변수
@@ -2756,7 +2758,7 @@ async function rlCreateRoom(){
   }catch(e){rlToast('방 만들기 실패: '+e.message);}
 }
 function rlGenCode(){return Math.random().toString(36).slice(2,6).toUpperCase();}
-function rlOpenJoin(){document.getElementById('rl-join-modal').classList.add('open');setTimeout(()=>document.getElementById('rl-jcode-inp').focus(),100);}
+function rlOpenJoin(){document.getElementById('rl-join-modal').classList.add('open');setTimeout(()=>{const el=document.getElementById('rl-jcode-inp');if(el)el.focus();},100);}
 function rlCloseJoin(){document.getElementById('rl-join-modal').classList.remove('open');}
 async function rlJoinByCode(){
   const code=document.getElementById('rl-jcode-inp').value.trim().toUpperCase();
@@ -3036,26 +3038,33 @@ function rgUpdateButtons(){
 // 클릭 배치
 function rgClickHandTile(tile){
   if(rgG.turn!==RL_USER())return;
+  const handIdx=rgLocalHand.findIndex(t=>t.id===tile.id);
+  if(handIdx===-1)return;
   rgHasPlayed=true;
-  const idx=rgLocalHand.findIndex(t=>t.id===tile.id);
-  if(idx===-1)return;
-  rgLocalHand.splice(idx,1);
+  rgLocalHand.splice(handIdx,1);
   // 마지막 세트에 붙일 수 있으면 붙이기, 아니면 새 세트
-  if(rgLocalBoard.length>0){
+  if(rgLocalBoard.length>0&&!tile.joker){
     const lastSet=rgLocalBoard[rgLocalBoard.length-1];
     const nj=lastSet.filter(t=>!t.joker);
-    if(nj.length>0&&!tile.joker){
+    if(nj.length>0){
       const lastNums=nj.map(t=>t.num);
       const lastCols=nj.map(t=>t.col);
-      // 그룹 조건: 같은 번호 + 이 색 없음
-      const isGroup=lastNums.every(n=>n===lastNums[0])&&lastNums[0]===tile.num&&!lastCols.includes(tile.col)&&lastSet.length<4;
-      // 런 조건: 같은 색 + 연속 번호
+      const isGroup=lastNums.every(n=>n===lastNums[0])
+        &&lastNums[0]===tile.num
+        &&!lastCols.includes(tile.col)
+        &&lastSet.length<4;
       const sortedNums=[...lastNums,tile.num].sort((a,b)=>a-b);
-      const isRun=new Set(lastCols).size===1&&lastCols[0]===tile.col&&(Math.max(...sortedNums)-Math.min(...sortedNums)+1)===sortedNums.length;
-      if(isGroup||isRun){lastSet.push(tile);rgLocalBoard[rgLocalBoard.length-1]=rgSortSet(lastSet);rgAfterMove();return;}
+      const isRun=new Set(lastCols).size===1
+        &&lastCols[0]===tile.col
+        &&sortedNums.length>=2
+        &&(sortedNums[sortedNums.length-1]-sortedNums[0]+1)===sortedNums.length;
+      if(isGroup||isRun){
+        lastSet.push(tile);
+        rgLocalBoard[rgLocalBoard.length-1]=rgSortSet(lastSet);
+        rgAfterMove();return;
+      }
     }
   }
-  // 새 세트 생성
   rgLocalBoard.push([tile]);
   rgAfterMove();
 }
@@ -3133,14 +3142,17 @@ function rgRenderBoard(){
       grp.appendChild(el);
     });
     if(isMyTurn){
+      // si를 클로저로 캡처 (재렌더 후 DOM 변경에도 안전)
+      const capturedSi=si;
+      const setSnapshot=set.map(t=>t.id); // 세트 식별자 스냅샷
       rgMakeDropZone(grp,tile=>{
         const wasInHand=rgIsInHand(tile);
         if(wasInHand)rgRemoveFromHand(tile);else rgRemoveFromBoard(tile);
-        // 세트 인덱스 재확인
-        const firstId=grp.querySelector('[data-tile-id]')?.dataset.tileId;
-        const realSi=firstId?rgLocalBoard.findIndex(s=>s.some(t=>String(t.id)===firstId)):si;
-        const actualSi=realSi!==-1?realSi:Math.min(si,rgLocalBoard.length-1);
-        if(rgLocalBoard[actualSi])rgLocalBoard[actualSi].push(tile);else rgLocalBoard.push([tile]);
+        // 스냅샷으로 실제 세트 인덱스 재탐색
+        const realSi=rgLocalBoard.findIndex(s=>s.length>0&&s[0]&&setSnapshot.includes(s[0].id));
+        const actualSi=realSi!==-1?realSi:Math.min(capturedSi,rgLocalBoard.length-1);
+        if(rgLocalBoard[actualSi])rgLocalBoard[actualSi].push(tile);
+        else rgLocalBoard.push([tile]);
         rgAfterMove();
       });
     }
@@ -3193,14 +3205,17 @@ function rgRenderPlayers(data){
   players.forEach((p,i)=>{
     const offset=i-myIdx;
     const isMe=p.name===me;
-    // 나(6시)는 보드 하단 경계에 배치, 다른 플레이어는 테이블 바깥
-    let x,y;
+    // 변수를 먼저 선언 (TDZ 방지)
+    const hc=(data.hands[p.name]||[]).length;
+    const isMyTurn=data.turn===p.name;
+    const iconOffset=(i-myIdx+total)%total;
+    const icon=RG_SEAT_ICONS[iconOffset%RG_SEAT_ICONS.length];
+    const countColor=hc<=4?'#60FF90':hc>=10?'#FF7070':'#E0D8FF';
+
     if(isMe){
-      // 나: 별도 fixed 뱃지로 처리 (보드 밖 아래쪽)
-      // ring에는 추가 안 하고 별도 div에 표시
+      // 나: 별도 뱃지 요소에 표시
       const myBadge=document.getElementById('rg-my-badge');
       if(myBadge){
-        const countColor=hc<=4?'#60FF90':hc>=10?'#FF7070':'#E0D8FF';
         myBadge.innerHTML=`
           ${isMyTurn?'<div class="rg-my-turn-glow"></div>':''}
           <span style="font-size:17px">${icon}</span>
@@ -3209,33 +3224,17 @@ function rgRenderPlayers(data){
         `;
         myBadge.className='rg-my-badge'+(isMyTurn?' my-turn':'');
       }
-      return; // ring에는 추가 안 함
-    } else {
-      const angleDeg=90+(offset/total)*360;
-      const angleRad=(angleDeg*Math.PI)/180;
-      x=cx+rx*Math.cos(angleRad);
-      y=cy+ry*Math.sin(angleRad);
+      return;
     }
-    const hc=(data.hands[p.name]||[]).length;
-    const isMyTurn=data.turn===p.name;
-    const iconOffset=(i-myIdx+total)%total;
-    const icon=RG_SEAT_ICONS[iconOffset%RG_SEAT_ICONS.length];
+
+    const angleDeg=90+(offset/total)*360;
+    const angleRad=(angleDeg*Math.PI)/180;
+    const x=cx+rx*Math.cos(angleRad);
+    const y=cy+ry*Math.sin(angleRad);
     const seat=document.createElement('div');
-    seat.className='rg-player-seat'+(isMyTurn?' active-turn':'')+(isMe?' is-me':'');
+    seat.className='rg-player-seat'+(isMyTurn?' active-turn':'');
     seat.style.cssText=`left:${x}px;top:${y}px`;
-    const countColor=hc<=4?'#60FF90':hc>=10?'#FF7070':'#E0D8FF';
-    if(isMe){
-      // 나: 아이콘+닉네임+장수를 가로로 한 줄에
-      seat.innerHTML=`
-        ${isMyTurn?'<div class="rg-seat-myturn-ring" style="border-radius:20px;inset:-3px -6px"></div>':''}
-        <div style="display:flex;align-items:center;gap:6px;background:rgba(10,14,45,.75);border:1px solid rgba(100,120,255,.25);border-radius:20px;padding:4px 12px;backdrop-filter:blur(6px)">
-          <span style="font-size:18px">${icon}</span>
-          <span style="font-size:11px;color:#C8B8FF;font-weight:700">${p.name}</span>
-          <span style="font-size:12px;font-weight:800;color:${countColor};font-family:'DM Mono',monospace">${hc}장</span>
-        </div>`;
-    } else {
-      seat.innerHTML=`${isMyTurn?'<div class="rg-seat-myturn-ring"></div>':''}<div class="rg-seat-icon">${icon}</div><div class="rg-seat-name">${p.name}</div><div class="rg-seat-count-big" style="color:${countColor}">${hc}장</div>`;
-    }
+    seat.innerHTML=`${isMyTurn?'<div class="rg-seat-myturn-ring"></div>':''}<div class="rg-seat-icon">${icon}</div><div class="rg-seat-name">${p.name}</div><div class="rg-seat-count-big" style="color:${countColor}">${hc}장</div>`;
     ring.appendChild(seat);
   });
 }
