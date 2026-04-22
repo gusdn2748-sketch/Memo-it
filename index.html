@@ -1258,6 +1258,65 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
   border-radius:10px;backdrop-filter:blur(12px);
 }
 
+
+.rg-seat-count-big{
+  font-size:13px;font-weight:800;
+  font-family:'DM Mono',monospace;
+  letter-spacing:.5px;
+  text-shadow:0 0 8px currentColor;
+  margin-top:2px;
+}
+.rg-seat-cards{display:none} /* 핍 숨기기 */
+
+
+/* ── 손패 영역 레이아웃 개선 */
+.rg-handrow{display:flex;align-items:flex-start;gap:16px;}
+.rg-handleft{display:flex;flex-direction:column;gap:10px;flex-shrink:0;min-width:180px;}
+.rg-handtop{display:flex;flex-direction:column;gap:3px;}
+.rg-handlabel{font-size:11px;font-weight:600;color:rgba(160,150,255,.7);letter-spacing:.5px;text-transform:uppercase;}
+.rg-handcount{font-size:12px;font-weight:700;color:#C8B8FF;font-family:'DM Mono',monospace;}
+.rg-handtiles{display:flex;gap:5px;flex-wrap:wrap;flex:1;overflow-y:auto;max-height:140px;padding:2px;align-content:flex-start;}
+.rg-handtiles::-webkit-scrollbar{height:3px;width:3px}
+.rg-handtiles::-webkit-scrollbar-thumb{background:rgba(100,120,255,.25);border-radius:2px}
+/* 버튼 수직 배치 + 적당한 간격 */
+.rg-handactions{display:flex;flex-direction:column;gap:8px;}
+.rg-abtn{
+  padding:9px 18px;border-radius:50px;border:none;cursor:pointer;
+  font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:700;
+  transition:all .2s;width:100%;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  white-space:nowrap;box-shadow:0 3px 10px rgba(0,0,0,.3);
+}
+.rg-abtn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 5px 14px rgba(0,0,0,.4)}
+.rg-abtn:active:not(:disabled){transform:translateY(0)}
+
+
+/* ── 우주 테마 폰트 가시성 */
+.rl-ritem-name{color:#E0D8FF!important;font-size:14px;font-weight:600;}
+.rl-ritem-detail{color:rgba(160,150,220,.65)!important;font-size:11px;margin-top:2px;}
+.rw-rtitle{font-family:'Black Han Sans',sans-serif;font-size:24px;color:#C8B8FF!important;letter-spacing:1px;margin-bottom:8px;}
+.rw-clbl{font-size:12px;color:rgba(160,150,220,.7);}
+.rw-cval{font-family:'DM Mono',monospace;font-size:16px;font-weight:700;color:#A090F0;letter-spacing:5px;background:rgba(20,25,70,.8);border:1px solid rgba(100,120,255,.3);padding:4px 13px;border-radius:8px;}
+.rw-cnt{font-size:12px;color:rgba(160,150,220,.6);}
+.rw-pname{font-size:14px;font-weight:600;color:#E0D8FF;}
+.rw-phost{font-size:11px;color:rgba(160,150,220,.7);}
+.rw-hint{text-align:center;font-size:12px;color:rgba(160,150,220,.7);}
+.rw-optlbl{font-size:13px;color:#E0D8FF;}
+.rw-optsub{font-size:11px;color:rgba(160,150,220,.6);margin-top:2px;}
+.rt-title{font-family:'Black Han Sans',sans-serif;font-size:20px;color:#C8B8FF;letter-spacing:1px;}
+.rt-stitle,.stitle{font-size:18px;font-weight:700;color:#C8B8FF;}
+.rt-stext,.stext{font-size:13px;color:#B0A8D0;line-height:1.85;}
+.rt-stext strong,.stext strong{color:#E0D8FF;font-weight:600;}
+.rt-rtext,.rtext{font-size:13px;color:#A8A0CC;line-height:1.65;}
+.rt-rtext strong,.rtext strong{color:#E0D8FF;}
+.rt-sdlbl,.sdlbl{font-size:11px;color:rgba(160,150,220,.65);min-width:110px;line-height:1.4;}
+.rt-skip,.skipbtn{background:none;border:none;color:rgba(160,150,220,.6);cursor:pointer;font-size:12px;font-family:'Noto Sans KR',sans-serif;transition:color .15s;}
+.rt-skip:hover,.skipbtn:hover{color:#C8B8FF;}
+.rl-uname{color:#C8B8FF!important;font-size:15px;font-weight:600;}
+.rl-ubadge{font-size:11px;color:rgba(160,150,220,.7);background:rgba(20,25,70,.7);border:1px solid rgba(100,120,255,.25);padding:3px 9px;border-radius:20px;}
+.rg-seat-count-big{font-size:14px;font-weight:800;font-family:'DM Mono',monospace;letter-spacing:.5px;text-shadow:0 0 8px currentColor;margin-top:2px;}
+.rg-seat-name{font-size:9px;color:rgba(200,190,255,.85);font-weight:600;white-space:nowrap;max-width:60px;overflow:hidden;text-overflow:ellipsis;text-align:center;}
+
 </style>
 </head>
 <body>
@@ -2481,15 +2540,19 @@ init();
       </div>
       <!-- 내 패 -->
       <div class="rg-handarea">
-        <div class="rg-handtop">
-          <span class="rg-handlabel">✋ 내 패</span>
-          <span class="rg-handcount" id="rg-handcount">0장</span>
-        </div>
-        <div class="rg-handtiles" id="rg-handtiles"></div>
-        <div class="rg-handactions">
-          <button class="rg-abtn rg-adraw"  id="rg-btn-draw"  onclick="rgDrawTile()"    disabled>🂠 카드받기</button>
-          <button class="rg-abtn rg-aplace" id="rg-btn-place" onclick="rgConfirmPlay()" disabled>✓ 완료</button>
-          <button class="rg-abtn rg-aundo"  id="rg-btn-undo"  onclick="rgUndo()"        disabled>↩ 되돌리기</button>
+        <div class="rg-handrow">
+          <div class="rg-handleft">
+            <div class="rg-handtop">
+              <span class="rg-handlabel">✋ 내 패</span>
+              <span class="rg-handcount" id="rg-handcount">0장</span>
+            </div>
+            <div class="rg-handactions">
+              <button class="rg-abtn rg-adraw"  id="rg-btn-draw"  onclick="rgDrawTile()"    disabled>🂠 카드받기</button>
+              <button class="rg-abtn rg-aplace" id="rg-btn-place" onclick="rgConfirmPlay()" disabled>✓ 완료</button>
+              <button class="rg-abtn rg-aundo"  id="rg-btn-undo"  onclick="rgUndo()"        disabled>↩ 되돌리기</button>
+            </div>
+          </div>
+          <div class="rg-handtiles" id="rg-handtiles"></div>
         </div>
       </div>
     </div>
@@ -2736,12 +2799,12 @@ const RT_SLIDES=[
 function rlShowTutorial(){rtSlide=0;rumiShowScreen('rscr-tuto');rtRender();}
 function rtRender(){
   const s=RT_SLIDES[rtSlide];
-  document.getElementById('sdots').innerHTML=RT_SLIDES.map((_,i)=>`<div class="sdot${i===rtSlide?' active':i<rtSlide?' done':''}"></div>`).join('');
-  document.getElementById('tubody').innerHTML=`<div class="stitle">${s.title}</div>${s.text?`<div class="stext">${s.text}</div>`:''}<div class="tvisual">${s.visual}</div>`;
-  document.getElementById('btn-prev').style.visibility=rtSlide===0?'hidden':'visible';
-  const nb=document.getElementById('btn-next');
-  if(rtSlide===RT_SLIDES.length-1){nb.className='tnav tns';nb.textContent='완료 ✓';}
-  else{nb.className='tnav tnn';nb.textContent='다음 →';}
+  document.getElementById('rt-dots').innerHTML=RT_SLIDES.map((_,i)=>`<div class="sdot${i===rtSlide?' active':i<rtSlide?' done':''}"></div>`).join('');
+  document.getElementById('rt-body').innerHTML=`<div class="stitle">${s.title}</div>${s.text?`<div class="stext">${s.text}</div>`:''}<div class="tvisual">${s.visual}</div>`;
+  document.getElementById('rt-prev').style.visibility=rtSlide===0?'hidden':'visible';
+  const nb=document.getElementById('rt-next');
+  if(rtSlide===RT_SLIDES.length-1){nb.className='rt-tnav rt-tns';nb.textContent='완료 ✓';}
+  else{nb.className='rt-tnav rt-tnn';nb.textContent='다음 →';}
 }
 function rtNext(){if(rtSlide<RT_SLIDES.length-1){rtSlide++;rtRender();}else rlShowReady();}
 function rtPrev(){if(rtSlide>0){rtSlide--;rtRender();}}
@@ -2905,7 +2968,10 @@ function rgRemoveFromBoard(tile){
 function rgIsInHand(tile){return rgLocalHand.some(t=>t.id===tile.id);}
 
 function rgAfterMove(){
-  rgHasPlayed=true;rgUpdateButtons();rgRenderHand();rgRenderBoard();
+  rgHasPlayed=true;
+  // 런 세트 자동 정렬
+  rgLocalBoard=rgLocalBoard.map(set=>rgSortSet(set));
+  rgUpdateButtons();rgRenderHand();rgRenderBoard();
 }
 
 function rgUpdateButtons(){
@@ -2925,8 +2991,24 @@ function rgClickHandTile(tile){
   const idx=rgLocalHand.findIndex(t=>t.id===tile.id);
   if(idx===-1)return;
   rgLocalHand.splice(idx,1);
+  // 마지막 세트에 붙일 수 있으면 붙이기, 아니면 새 세트
+  if(rgLocalBoard.length>0){
+    const lastSet=rgLocalBoard[rgLocalBoard.length-1];
+    const nj=lastSet.filter(t=>!t.joker);
+    if(nj.length>0&&!tile.joker){
+      const lastNums=nj.map(t=>t.num);
+      const lastCols=nj.map(t=>t.col);
+      // 그룹 조건: 같은 번호 + 이 색 없음
+      const isGroup=lastNums.every(n=>n===lastNums[0])&&lastNums[0]===tile.num&&!lastCols.includes(tile.col)&&lastSet.length<4;
+      // 런 조건: 같은 색 + 연속 번호
+      const sortedNums=[...lastNums,tile.num].sort((a,b)=>a-b);
+      const isRun=new Set(lastCols).size===1&&lastCols[0]===tile.col&&(Math.max(...sortedNums)-Math.min(...sortedNums)+1)===sortedNums.length;
+      if(isGroup||isRun){lastSet.push(tile);rgLocalBoard[rgLocalBoard.length-1]=rgSortSet(lastSet);rgAfterMove();return;}
+    }
+  }
+  // 새 세트 생성
   rgLocalBoard.push([tile]);
-  rgUpdateButtons();rgRenderHand();rgRenderBoard();
+  rgAfterMove();
 }
 function rgClickBoardTile(tile,si){
   if(rgG.turn!==RL_USER())return;
@@ -3054,7 +3136,8 @@ function rgRenderPlayers(data){
     const seat=document.createElement('div');
     seat.className='rg-player-seat'+(isMyTurn?' active-turn':'')+(isMe?' is-me':'');
     seat.style.cssText=`left:${x}px;top:${y}px`;
-    seat.innerHTML=`${isMyTurn?'<div class="rg-seat-myturn-ring"></div>':''}<div class="rg-seat-icon">${icon}</div><div class="rg-seat-name">${isMe?'나 ('+p.name+')':p.name}</div><div class="rg-seat-cards">${pips}</div><div class="rg-seat-count">${hc}장</div>`;
+    const countColor=hc<=4?'#60FF90':hc>=10?'#FF7070':'#E0D8FF';
+    seat.innerHTML=`${isMyTurn?'<div class="rg-seat-myturn-ring"></div>':''}<div class="rg-seat-icon">${icon}</div><div class="rg-seat-name">${isMe?'나 ('+p.name+')':p.name}</div><div class="rg-seat-count-big" style="color:${countColor}">${hc}장</div>`;
     ring.appendChild(seat);
   });
 }
@@ -3075,6 +3158,26 @@ function rgToggleLog(){
 function rgSanitizeBoard(){
   rgLocalBoard=rgLocalBoard.filter(set=>Array.isArray(set)&&set.length>0).map(set=>set.filter(t=>t&&typeof t.id!=='undefined'));
   rgLocalBoard=rgLocalBoard.filter(set=>set.length>0);
+}
+
+
+// 세트 정렬 (런: 숫자순, 그룹: 색상순)
+function rgSortSet(set){
+  // 조커가 없는 경우만 정렬 (조커는 사용자가 놓은 위치 유지)
+  if(!set||set.length===0)return set;
+  const hasJoker=set.some(t=>t.joker);
+  // 조커 있으면 정렬하지 않음 - 사용자가 직접 위치 결정
+  if(hasJoker)return set;
+  const nj=set.filter(t=>!t.joker);
+  if(nj.length===0)return set;
+  const cols=nj.map(t=>t.col);
+  const nums=nj.map(t=>t.num);
+  // 런(같은 색, 다른 숫자): 숫자 오름차순 정렬
+  if(new Set(cols).size===1&&new Set(nums).size>1){
+    return [...set].sort((a,b)=>a.num-b.num);
+  }
+  // 그룹(같은 숫자): 정렬 불필요 (색 순서 무관)
+  return set;
 }
 
 // 유효성 검사
