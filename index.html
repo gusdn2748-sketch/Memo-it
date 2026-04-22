@@ -626,10 +626,10 @@ to{opacity:1;transform:translateY(0)}
 @keyframes rlmIn{from{transform:scale(.95) translateY(8px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
 .rl-mtitle{font-family:'Black Han Sans',sans-serif;font-size:22px;color:#8B5E00;margin-bottom:20px;text-align:center;letter-spacing:1px}
 .rl-mfield{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
-.rl-mfield label{font-size:11px;font-weight:600;color:var(--rm);letter-spacing:.5px;text-transform:uppercase}
-.rl-mfield input,.rl-mfield select{font-family:'Noto Sans KR',sans-serif;font-size:15px;background:rgba(10,14,40,.8);border:1.5px solid var(--rbr);border-radius:8px;padding:11px 13px;color:var(--rt);outline:none;transition:border-color .15s}
+.rl-mfield label{font-size:11px;font-weight:600;color:rgba(180,170,255,.8);letter-spacing:.5px;text-transform:uppercase}
+.rl-mfield input,.rl-mfield select{font-family:'Noto Sans KR',sans-serif;font-size:15px;background:rgba(10,14,40,.95);border:1.5px solid var(--rbr);border-radius:8px;padding:11px 13px;color:#E8E0FF!important;outline:none;transition:border-color .15s}
 .rl-mfield input:focus,.rl-mfield select:focus{border-color:#7B6FA0;box-shadow:0 0 0 3px rgba(123,111,160,.12)}
-.rl-mfield select option{background:var(--rc)}
+.rl-mfield select option{background:#141830;color:#E8E0FF}
 .rl-mbtns{display:flex;gap:10px;margin-top:20px}
 .rl-mbtn{flex:1;padding:12px;border-radius:8px;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-size:14px;font-weight:600;transition:all .15s;display:flex;align-items:center;justify-content:center}
 .rl-mbc{background:var(--rs);color:var(--rm);border:1px solid var(--rbr)}.rl-mbc:hover{color:var(--rt)}
@@ -827,7 +827,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 .rg-winbtn{padding:13px 36px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--ra),var(--ra2));color:#fff;font-family:'Black Han Sans',sans-serif;font-size:17px;cursor:pointer;transition:all .15s;letter-spacing:1px}
 .rg-winbtn:hover{transform:translateY(-2px)}
 /* 루미 토스트 */
-.rl-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(8px);background:var(--rc2);color:var(--rt);padding:10px 20px;border-radius:10px;font-size:13px;font-weight:500;opacity:0;transition:all .25s;pointer-events:none;white-space:nowrap;z-index:900;box-shadow:0 8px 24px rgba(0,0,0,.5);border:1px solid var(--rbr2)}
+.rl-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(8px);background:rgba(20,24,60,.95);color:#E8E0FF;padding:12px 24px;border-radius:12px;font-size:14px;font-weight:600;opacity:0;transition:all .25s;pointer-events:none;white-space:pre;z-index:1000;box-shadow:0 8px 24px rgba(0,0,0,.5);border:1px solid var(--rbr2)}
 .rl-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 
@@ -1316,6 +1316,10 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 .rl-ubadge{font-size:11px;color:rgba(160,150,220,.7);background:rgba(20,25,70,.7);border:1px solid rgba(100,120,255,.25);padding:3px 9px;border-radius:20px;}
 .rg-seat-count-big{font-size:14px;font-weight:800;font-family:'DM Mono',monospace;letter-spacing:.5px;text-shadow:0 0 8px currentColor;margin-top:2px;}
 .rg-seat-name{font-size:9px;color:rgba(200,190,255,.85);font-weight:600;white-space:nowrap;max-width:60px;overflow:hidden;text-overflow:ellipsis;text-align:center;}
+
+
+.rl-mfield input::placeholder{color:rgba(160,150,220,.4);}
+.rl-mfield input::-webkit-input-placeholder{color:rgba(160,150,220,.4);}
 
 </style>
 </head>
@@ -3123,21 +3127,38 @@ function rgRenderPlayers(data){
   const rx=bw/2+64;const ry=bh/2+56;
   players.forEach((p,i)=>{
     const offset=i-myIdx;
-    const angleDeg=90+(offset/total)*360; // 6시=90도
-    const angleRad=(angleDeg*Math.PI)/180;
-    const x=cx+rx*Math.cos(angleRad);const y=cy+ry*Math.sin(angleRad);
+    const isMe=p.name===me;
+    // 나(6시)는 보드 하단 경계에 배치, 다른 플레이어는 테이블 바깥
+    let x,y;
+    if(isMe){
+      // 나: 테이블 하단 안쪽 (겹침 방지)
+      x=cx; y=bTop+bh-28;
+    } else {
+      const angleDeg=90+(offset/total)*360;
+      const angleRad=(angleDeg*Math.PI)/180;
+      x=cx+rx*Math.cos(angleRad);
+      y=cy+ry*Math.sin(angleRad);
+    }
     const hc=(data.hands[p.name]||[]).length;
-    const isMyTurn=data.turn===p.name;const isMe=p.name===me;
+    const isMyTurn=data.turn===p.name;
     const iconOffset=(i-myIdx+total)%total;
     const icon=RG_SEAT_ICONS[iconOffset%RG_SEAT_ICONS.length];
-    const pipCount=Math.min(hc,14);
-    const pipClass=hc<=4?'few':hc>=10?'many':'';
-    const pips=Array(pipCount).fill(0).map(()=>`<div class="rg-seat-card-pip ${pipClass}"></div>`).join('');
     const seat=document.createElement('div');
     seat.className='rg-player-seat'+(isMyTurn?' active-turn':'')+(isMe?' is-me':'');
     seat.style.cssText=`left:${x}px;top:${y}px`;
     const countColor=hc<=4?'#60FF90':hc>=10?'#FF7070':'#E0D8FF';
-    seat.innerHTML=`${isMyTurn?'<div class="rg-seat-myturn-ring"></div>':''}<div class="rg-seat-icon">${icon}</div><div class="rg-seat-name">${isMe?'나 ('+p.name+')':p.name}</div><div class="rg-seat-count-big" style="color:${countColor}">${hc}장</div>`;
+    if(isMe){
+      // 나: 아이콘+닉네임+장수를 가로로 한 줄에
+      seat.innerHTML=`
+        ${isMyTurn?'<div class="rg-seat-myturn-ring" style="border-radius:20px;inset:-3px -6px"></div>':''}
+        <div style="display:flex;align-items:center;gap:6px;background:rgba(10,14,45,.75);border:1px solid rgba(100,120,255,.25);border-radius:20px;padding:4px 12px;backdrop-filter:blur(6px)">
+          <span style="font-size:18px">${icon}</span>
+          <span style="font-size:11px;color:#C8B8FF;font-weight:700">${p.name}</span>
+          <span style="font-size:12px;font-weight:800;color:${countColor};font-family:'DM Mono',monospace">${hc}장</span>
+        </div>`;
+    } else {
+      seat.innerHTML=`${isMyTurn?'<div class="rg-seat-myturn-ring"></div>':''}<div class="rg-seat-icon">${icon}</div><div class="rg-seat-name">${p.name}</div><div class="rg-seat-count-big" style="color:${countColor}">${hc}장</div>`;
+    }
     ring.appendChild(seat);
   });
 }
