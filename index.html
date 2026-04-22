@@ -731,9 +731,16 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 }
 .rg-boardwrap::-webkit-scrollbar{width:5px;height:5px}.rg-boardwrap::-webkit-scrollbar-thumb{background:#1E3A1E;border-radius:3px}
 .rg-boardinner{
-  min-width:580px;min-height:300px;padding:20px;
-  display:flex;flex-wrap:wrap;gap:10px;
-  align-content:center;align-items:center;justify-content:center;
+  /* 한 줄 최대 폭을 제한해서 자연스러운 줄바꿈 유도 */
+  max-width:100%;
+  min-height:60px;
+  padding:14px 16px;
+  display:flex;flex-wrap:wrap;gap:9px;
+  align-content:flex-start;align-items:flex-start;
+  justify-content:flex-start;
+  box-sizing:border-box;
+  transition:zoom .2s ease;
+  width:100%;
 }
 .rg-bempty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:rgba(255,255,255,.1);gap:8px;pointer-events:none}
 .rg-bempty-icon{font-size:36px;opacity:.4}.rg-bempty-text{font-size:12px}
@@ -1128,9 +1135,11 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 /* 실제 스크롤 콘텐츠 영역 - 클리핑 없음 */
 .rg-board-scroll{
   position:relative;z-index:1;
-  width:92%;height:88%;
+  width:94%;height:90%;
   overflow:hidden;
-  display:flex;align-items:center;justify-content:center;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
 }
 .rg-boardinner{
   min-width:460px;min-height:200px;
@@ -1436,7 +1445,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v04.22.1</div>
+  <div class="splash-ver">v04.22.2</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -3175,17 +3184,77 @@ function rgAutoScale(){
   const scroll=document.getElementById('rg-board-scroll');
   const inner=document.getElementById('rg-boardinner');
   if(!scroll||!inner)return;
-  // 현재 배율 초기화 후 실제 크기 측정
-  inner.style.transform='scale(1)';
-  const sw=scroll.clientWidth;
+
+  // ── 초기화
+  inner.style.zoom='';
+  inner.style.transform='';
+  inner.style.width='';
+  inner.querySelectorAll('.rg-row-break').forEach(el=>el.remove());
+
+  const availW=scroll.clientWidth-28;
+  inner.style.width=availW+'px';
+
+  // ── 총 타일 수 계산
+  const allTiles=inner.querySelectorAll('.rg-tile');
+  const totalTiles=allTiles.length;
+  if(totalTiles===0)return;
+
   const sh=scroll.clientHeight;
-  const iw=inner.scrollWidth;
-  const ih=inner.scrollHeight;
-  const scaleX=sw/iw;
-  const scaleY=sh/ih;
-  const scale=Math.min(scaleX,scaleY,1); // 1 이상으로는 확대 안 함
-  const finalScale=Math.max(scale,0.38); // 최소 38% (너무 작으면 읽기 불가)
-  inner.style.transform=`scale(${finalScale.toFixed(3)})`;
+
+  // ── zoom으로 타일 축소 → flex-wrap이 레이아웃 자동 재계산
+  // 타일 기준 적정 zoom: 총 타일이 많을수록 작게
+  // TILE_W=47px 기준으로 한 줄 최대 타일 수와 행 수 예측
+  function tryLayout(zoom){
+    const tileW=Math.round((44+3)*zoom);
+    const setG=inner.querySelectorAll('.rg-setgrp');
+    const maxPerRow=Math.floor(availW/tileW);
+    let rows=1,rowTiles=0;
+    setG.forEach(grp=>{
+      const tc=Math.max(grp.querySelectorAll('.rg-tile').length,1);
+      if(rowTiles>0&&rowTiles+tc>maxPerRow){rows++;rowTiles=tc;}
+      else rowTiles+=tc;
+    });
+    const ROW_H=Math.round((60+18)*zoom); // 타일높이+패딩
+    return rows*ROW_H;
+  }
+
+  // zoom 1.0부터 시작해서 높이가 맞을 때까지 줄임
+  let zoom=1.0;
+  const MIN_ZOOM=0.42;
+  while(zoom>MIN_ZOOM&&tryLayout(zoom)>sh-20){
+    zoom=Math.round((zoom-0.04)*100)/100;
+  }
+
+  // zoom 적용 (레이아웃 재계산됨)
+  if(zoom<1.0){
+    inner.style.zoom=zoom.toFixed(2);
+  }
+
+  // 타일 수 기준 줄바꿈 마커 삽입
+  const tileW2=Math.round((44+3)*zoom);
+  const maxPerRow2=Math.floor(availW/tileW2);
+  const setGroups=inner.querySelectorAll('.rg-setgrp');
+  let rowTiles=0;
+  setGroups.forEach(grp=>{
+    const tc=Math.max(grp.querySelectorAll('.rg-tile').length,1);
+    if(rowTiles>0&&rowTiles+tc>maxPerRow2){
+      const br=document.createElement('div');
+      br.className='rg-row-break';
+      br.style.cssText='width:100%;height:0;flex-basis:100%;';
+      inner.insertBefore(br,grp);
+      rowTiles=tc;
+    } else {
+      rowTiles+=tc;
+    }
+    // 세트 내부도 줄바꿈 허용 (13장 런 등)
+    if(tc>maxPerRow2){
+      grp.style.flexWrap='wrap';
+      grp.style.maxWidth=availW+'px';
+    } else {
+      grp.style.flexWrap='nowrap';
+      grp.style.maxWidth='';
+    }
+  });
 }
 
 // 플레이어 원형 배치
