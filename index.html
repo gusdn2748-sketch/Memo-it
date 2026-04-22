@@ -1093,6 +1093,171 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 }
 @keyframes rgTurnPulse{0%,100%{opacity:.9;transform:scale(1)}50%{opacity:.3;transform:scale(1.15)}}
 
+
+/* ── 새 원형 테이블 레이아웃 ── */
+.rg-space-wrap{
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;height:100%;
+  padding:6px 8px 8px;gap:6px;
+  max-width:1400px;margin:0 auto;width:100%;
+}
+.rg-table-area{
+  flex:1;position:relative;display:flex;
+  align-items:center;justify-content:center;min-height:0;
+}
+/* 원형/타원 테이블 */
+.rg-oval-board{
+  width:min(680px,78vw);
+  height:min(360px,52vh);
+  border-radius:50%;
+  background:
+    radial-gradient(ellipse at 50% 40%,rgba(30,50,100,.9) 0%,rgba(8,18,55,.95) 60%,rgba(4,10,40,1) 100%);
+  border:2px solid rgba(80,110,220,.3);
+  box-shadow:
+    0 0 50px rgba(40,70,200,.15),
+    inset 0 0 40px rgba(10,30,100,.4),
+    0 0 0 6px rgba(255,255,255,.03);
+  position:relative;overflow:auto;
+  display:flex;align-items:center;justify-content:center;
+}
+.rg-oval-board::-webkit-scrollbar{width:4px;height:4px}
+.rg-oval-board::-webkit-scrollbar-thumb{background:rgba(100,120,255,.25);border-radius:2px}
+.rg-boardinner{
+  min-width:480px;min-height:220px;
+  padding:20px 30px;
+  display:flex;flex-wrap:wrap;gap:10px;
+  align-content:center;align-items:center;justify-content:center;
+  width:100%;
+}
+.rg-bempty{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:20px;text-align:center;
+}
+
+/* 플레이어 링 (테이블 주변) */
+#rg-players-ring{
+  position:absolute;inset:-10px;pointer-events:none;z-index:2;
+}
+.rg-player-seat{
+  position:absolute;transform:translate(-50%,-50%);
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  pointer-events:none;
+}
+.rg-seat-icon{font-size:24px;line-height:1;transition:all .3s}
+.rg-seat-name{
+  font-size:9px;color:rgba(180,170,230,.8);
+  font-weight:600;white-space:nowrap;max-width:56px;
+  overflow:hidden;text-overflow:ellipsis;text-align:center;
+}
+.rg-seat-count{font-size:9px;color:rgba(150,140,200,.6);font-family:'DM Mono',monospace}
+.rg-seat-cards{display:flex;gap:1.5px;flex-wrap:wrap;justify-content:center;max-width:48px;margin-top:2px}
+.rg-seat-card-pip{
+  width:5px;height:7px;border-radius:1px;
+  background:rgba(180,170,255,.35);
+}
+.rg-seat-card-pip.few{background:rgba(60,220,100,.7)}
+.rg-seat-card-pip.many{background:rgba(220,60,60,.65)}
+.rg-player-seat.active-turn .rg-seat-icon{
+  filter:drop-shadow(0 0 8px rgba(255,215,60,.9));
+  animation:rgIconBounce .9s ease-in-out infinite;
+}
+.rg-player-seat.is-me .rg-seat-name{color:#C8B8FF;font-weight:700}
+.rg-seat-myturn-ring{
+  position:absolute;inset:-5px;border-radius:50%;
+  border:2px solid rgba(255,215,60,.8);
+  animation:rgTurnPulse 1.8s ease-in-out infinite;
+}
+@keyframes rgIconBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes rgTurnPulse{0%,100%{opacity:.9}50%{opacity:.25}}
+
+/* ── 로그 코너 */
+.rg-log-corner{
+  position:absolute;bottom:8px;right:8px;
+  width:180px;z-index:10;
+  background:rgba(8,12,40,.88);
+  border:1px solid rgba(80,100,200,.25);
+  border-radius:10px;
+  backdrop-filter:blur(8px);
+  overflow:hidden;
+  transition:height .25s ease;
+}
+.rg-log-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:6px 10px;cursor:pointer;
+  font-size:10px;font-weight:600;color:rgba(160,150,220,.7);
+  letter-spacing:.5px;text-transform:uppercase;
+  border-bottom:1px solid rgba(80,100,200,.15);
+  user-select:none;
+}
+.rg-log-header:hover{color:rgba(200,190,255,.9)}
+.rg-log-body{
+  max-height:140px;overflow-y:auto;padding:6px 8px;
+  display:flex;flex-direction:column;gap:2px;
+}
+.rg-log-body::-webkit-scrollbar{width:2px}
+.rg-log-body::-webkit-scrollbar-thumb{background:rgba(100,120,255,.25);border-radius:1px}
+.rg-log-corner.collapsed .rg-log-body{display:none}
+.rg-logentry{font-size:10px;color:rgba(150,145,195,.7);line-height:1.5}
+.rg-logentry.mine{color:rgba(220,200,80,.8);font-weight:500}
+.rg-logentry.win{color:#50FF80;font-weight:700}
+
+/* ── 세트 그룹 */
+.rg-setgrp{
+  display:flex;gap:3px;padding:7px 9px;
+  background:rgba(15,25,70,.7);
+  border:1.5px solid rgba(100,120,255,.2);
+  border-radius:9px;position:relative;
+  transition:all .15s;
+  box-shadow:0 2px 8px rgba(0,0,0,.3);
+  flex-wrap:nowrap;
+}
+.rg-setgrp:hover{border-color:rgba(160,150,255,.4)!important}
+.rg-setgrp.valid{border-color:rgba(50,200,90,.55)!important;background:rgba(10,60,30,.5)!important}
+.rg-setgrp.invalid{border-color:rgba(220,50,50,.7)!important;background:rgba(60,5,5,.4)!important}
+.rg-setgrp.droptgt{border-color:#C8B800!important;background:rgba(200,184,0,.1)!important;transform:scale(1.03)}
+.rg-addsetbtn{
+  display:flex;align-items:center;justify-content:center;
+  width:46px;height:62px;border-radius:9px;
+  border:2px dashed rgba(140,130,255,.4);
+  color:rgba(160,150,255,.5);font-size:13px;
+  cursor:pointer;transition:all .2s;flex-shrink:0;
+  background:rgba(30,25,80,.4);
+}
+.rg-addsetbtn:hover{border-color:rgba(200,190,255,.8);color:#fff;background:rgba(50,40,120,.5)}
+
+/* ── 손패 */
+.rg-handarea{
+  background:rgba(8,12,40,.88);border:1px solid rgba(80,100,200,.25);
+  border-radius:12px;padding:10px 14px;
+  display:flex;flex-direction:column;gap:8px;flex-shrink:0;
+  backdrop-filter:blur(10px);
+}
+.rg-handtop{display:flex;align-items:center;gap:8px}
+.rg-handlabel{font-size:11px;font-weight:600;color:rgba(160,150,255,.7);letter-spacing:.5px;text-transform:uppercase;flex:1}
+.rg-handcount{font-size:12px;font-weight:700;color:#C8B8FF;font-family:'DM Mono',monospace}
+.rg-handtiles{display:flex;gap:5px;flex-wrap:wrap;max-height:140px;overflow-y:auto;padding:2px}
+.rg-handtiles::-webkit-scrollbar{height:3px}
+.rg-handtiles::-webkit-scrollbar-thumb{background:rgba(100,120,255,.25);border-radius:2px}
+
+/* ── 액션 버튼 */
+.rg-handactions{display:flex;gap:0;justify-content:center;align-items:center;padding:4px 0}
+.rg-abtn{
+  padding:11px 24px;border-radius:50px;border:none;cursor:pointer;
+  font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:700;
+  transition:all .2s;margin:0 8px;
+  display:flex;align-items:center;gap:6px;white-space:nowrap;
+  box-shadow:0 4px 14px rgba(0,0,0,.35);
+}
+.rg-abtn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 7px 20px rgba(0,0,0,.45)}
+.rg-abtn:active:not(:disabled){transform:translateY(0)}
+
+/* ── topbar */
+.rg-topbar{
+  display:flex;align-items:center;gap:10px;padding:0 14px;height:44px;flex-shrink:0;
+  background:rgba(8,12,40,.88)!important;border:1px solid rgba(80,100,200,.22)!important;
+  border-radius:10px;backdrop-filter:blur(12px);
+}
+
 </style>
 </head>
 <body>
@@ -2285,6 +2450,7 @@ init();
   <div class="rumi-screen" id="rscr-game" style="padding:0;background:#060818;overflow:hidden">
     <canvas id="space-canvas"></canvas>
     <div class="rg-space-wrap">
+      <!-- 상단바 -->
       <div class="rg-topbar">
         <span class="rg-gtitle">🌌 루미큐브</span>
         <div class="rg-turnindicator"><div class="rg-tdot"></div><span id="rg-turnlabel">연결 중...</span></div>
@@ -2292,24 +2458,28 @@ init();
         <span class="rg-deckcount" id="rg-deckcount">🂠 -- 장</span>
         <button class="rg-topbtn" onclick="rumiLeave()">나가기</button>
       </div>
-      <div class="rg-main" style="grid-template-columns:1fr 200px">
-        <div class="rg-boardwrap">
+      <!-- 중앙 테이블 영역 -->
+      <div class="rg-table-area">
+        <!-- 플레이어들 (테이블 주변) -->
+        <div id="rg-players-ring"></div>
+        <!-- 원형 테이블 (보드) -->
+        <div class="rg-oval-board" id="rg-boardwrap">
           <div class="rg-boardinner" id="rg-boardinner">
             <div class="rg-bempty" id="rg-bempty">
-              <div class="rg-bempty-icon">🌌</div>
-              <div class="rg-bempty-text">타일을 드래그해 여기에 내려놓으세요</div>
+              <div style="font-size:32px;opacity:.35">🌌</div>
+              <div style="font-size:12px;color:rgba(150,140,255,.4);margin-top:6px">타일을 드래그 또는 클릭해서 올려보세요</div>
             </div>
           </div>
         </div>
-        <div class="rg-side">
-          <!-- 원형 테이블 -->
-          <div class="rg-table-section" id="rg-table-section"></div>
-          <div class="rg-logpanel">
-            <div class="rg-sidetitle">📡 게임 로그</div>
-            <div class="rg-logscroll" id="rg-gamelog"></div>
+        <!-- 로그 (우측 하단 코너) -->
+        <div class="rg-log-corner" id="rg-log-corner">
+          <div class="rg-log-header" onclick="rgToggleLog()">
+            <span>📡 로그</span><span id="rg-log-arrow">▲</span>
           </div>
+          <div class="rg-log-body" id="rg-gamelog"></div>
         </div>
       </div>
+      <!-- 내 패 -->
       <div class="rg-handarea">
         <div class="rg-handtop">
           <span class="rg-handlabel">✋ 내 패</span>
@@ -2317,8 +2487,8 @@ init();
         </div>
         <div class="rg-handtiles" id="rg-handtiles"></div>
         <div class="rg-handactions">
-          <button class="rg-abtn rg-aplace" id="rg-btn-place" onclick="rgConfirmPlay()" disabled>완료 ✓</button>
           <button class="rg-abtn rg-adraw"  id="rg-btn-draw"  onclick="rgDrawTile()"    disabled>🂠 카드받기</button>
+          <button class="rg-abtn rg-aplace" id="rg-btn-place" onclick="rgConfirmPlay()" disabled>✓ 완료</button>
           <button class="rg-abtn rg-aundo"  id="rg-btn-undo"  onclick="rgUndo()"        disabled>↩ 되돌리기</button>
         </div>
       </div>
@@ -2354,36 +2524,32 @@ init();
 
 
 <script>
-/* ════════════════════════════════════
-   RUMMIKUB JS (통합)
-════════════════════════════════════ */
+/* RUMMIKUB JS */
 
-// ── Firebase (이미 초기화됨, 재사용)
-// db 변수는 메모잇 코드에서 이미 선언됨
+// Firebase board 직렬화/역직렬화 (Firestore 중첩배열 불가)
+function rgBoardToFS(board){
+  return (board||[]).map(set=>({s:(set||[]).map(t=>({id:t.id,col:t.col,num:t.num,joker:t.joker||false}))}));
+}
+function rgBoardFromFS(fsBoard){
+  if(!fsBoard||!fsBoard.length)return[];
+  if(Array.isArray(fsBoard[0]))return fsBoard; // 구형 호환
+  return fsBoard.map(item=>(item&&item.s)?item.s:[]).filter(s=>s.length>0);
+}
 
-// ── 전체 변수 선언 (최상단)
-const RL_USER  = () => localStorage.getItem('tm-username') || '플레이어';
-const RL_COLOR = () => localStorage.getItem('tm-user-color') || '#7B5EA7';
-const RL_AVC   = ['#D94040','#3878E8','#38B86A','#E87828','#8B6FBF','#00AACC'];
+// 상태 변수
+const RL_USER=()=>localStorage.getItem('tm-username')||'플레이어';
+const RL_COLOR=()=>localStorage.getItem('tm-user-color')||'#7B5EA7';
+const RL_AVC=['#D94040','#3878E8','#38B86A','#E87828','#8B6FBF','#00AACC'];
 
-let rlRoomId    = null;
-let rlIsHost    = false;
-let rlRoomUnsub = null;
-let rlRoomsUnsub= null;
-let rrUnsub     = null;  // 준비 대기 구독
+let rlRoomId=null,rlIsHost=false,rlRoomUnsub=null,rlRoomsUnsub=null,rrUnsub=null;
+let rgG={board:[],hands:{},deck:[],turn:'',players:[],firstPlay:{},timerEnabled:false};
+let rgLocalBoard=[],rgLocalHand=[],rgBoardSnap=null,rgHandSnap=null;
+let rgHasPlayed=false,rgGameStarted=false,rgDragTile=null;
+let rgGameUnsub=null,rgTimerInterval=null,rgTimerSec=60;
+let rtSlide=0;
 
-// 게임 상태
-let rgG          = {board:[],hands:{},deck:[],turn:'',players:[],firstPlay:{},timerEnabled:false};
-let rgLocalBoard = [], rgLocalHand = [], rgBoardSnap = null, rgHandSnap = null;
-let rgHasPlayed  = false, rgGameStarted = false;
-let rgGameUnsub  = null, rgTimerInterval = null, rgTimerSec = 60, rgDragTile = null;
-
-// 튜토리얼
-let rtSlide = 0;
-
-// ── 화면 제어
+// 화면 제어
 function rumiOpen(){
-  // 로딩/에러 화면 확실하게 숨기기
   const ls=document.getElementById('rs-loading');
   const es=document.getElementById('rs-error');
   if(ls){ls.classList.add('hide');ls.style.display='none';}
@@ -2393,93 +2559,32 @@ function rumiOpen(){
   rlInit();
 }
 function rumiBack(){
-  const active = document.querySelector('#rumi-app .rumi-screen.active');
-  if(!active) return;
-  if(active.id==='rscr-lobby'){
-    rumiClose();
-  } else if(active.id==='rscr-waiting'){
-    rlLeaveRoom();
-  } else {
-    rumiShowLobby();
-  }
+  const active=document.querySelector('#rumi-app .rumi-screen.active');
+  if(!active)return;
+  if(active.id==='rscr-lobby')rumiClose();
+  else if(active.id==='rscr-waiting')rlLeaveRoom();
+  else rumiShowLobby();
 }
 function rumiClose(){
   document.getElementById('rumi-app').classList.remove('open');
   if(rlRoomUnsub){rlRoomUnsub();rlRoomUnsub=null;}
   if(rlRoomsUnsub){rlRoomsUnsub();rlRoomsUnsub=null;}
   if(rgGameUnsub){rgGameUnsub();rgGameUnsub=null;}
+  if(rrUnsub){rrUnsub();rrUnsub=null;}
   clearInterval(rgTimerInterval);
   rlRoomId=null;rlIsHost=false;rgHasPlayed=false;rgGameStarted=false;
 }
-
-// ── 우주 배경 (별 + 유성)
-function rgInitSpaceCanvas(){
-  const canvas=document.getElementById('space-canvas');
-  if(!canvas)return;
-  const ctx=canvas.getContext('2d');
-  canvas.width=canvas.offsetWidth||800;
-  canvas.height=canvas.offsetHeight||600;
-
-  // 별 생성
-  const stars=Array.from({length:180},()=>({
-    x:Math.random()*canvas.width,
-    y:Math.random()*canvas.height,
-    r:Math.random()*1.5+.3,
-    alpha:Math.random(),
-    speed:Math.random()*.02+.005,
-    dir:Math.random()>.5?1:-1,
-  }));
-
-  // 유성
-  let meteors=[];
-  function spawnMeteor(){
-    if(Math.random()>.015)return;
-    meteors.push({
-      x:Math.random()*canvas.width,y:0,
-      len:Math.random()*80+40,
-      speed:Math.random()*8+6,
-      alpha:1,
-    });
-  }
-
-  function draw(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    // 별
-    stars.forEach(s=>{
-      s.alpha+=s.speed*s.dir;
-      if(s.alpha>1||s.alpha<.1){s.dir*=-1;}
-      ctx.beginPath();
-      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-      ctx.fillStyle=`rgba(220,210,255,${s.alpha})`;
-      ctx.fill();
-    });
-    // 유성
-    spawnMeteor();
-    meteors=meteors.filter(m=>{
-      m.x+=m.speed*.6;m.y+=m.speed;m.alpha-=.02;
-      if(m.alpha<=0)return false;
-      const grad=ctx.createLinearGradient(m.x,m.y,m.x-m.len*.6,m.y-m.len);
-      grad.addColorStop(0,`rgba(255,255,255,${m.alpha})`);
-      grad.addColorStop(1,'rgba(255,255,255,0)');
-      ctx.beginPath();ctx.moveTo(m.x,m.y);ctx.lineTo(m.x-m.len*.6,m.y-m.len);
-      ctx.strokeStyle=grad;ctx.lineWidth=1.5;ctx.stroke();
-      return true;
-    });
-    if(document.getElementById('rscr-game').classList.contains('active'))
-      requestAnimationFrame(draw);
-  }
-  draw();
-}
-
 function rumiLeave(){
   rumiShowScreen('rscr-lobby');
   document.getElementById('rumi-topbar').style.display='flex';
-  document.getElementById('rs-loading').classList.add('hide');
-  document.getElementById('rs-error').classList.remove('show');
+  const ls=document.getElementById('rs-loading');
+  const es=document.getElementById('rs-error');
+  if(ls){ls.classList.add('hide');ls.style.display='none';}
+  if(es){es.classList.remove('show');es.style.display='none';}
   if(rgGameUnsub){rgGameUnsub();rgGameUnsub=null;}
   if(rrUnsub){rrUnsub();rrUnsub=null;}
   clearInterval(rgTimerInterval);
-  rgHasPlayed=false;rgGameStarted=false;
+  rgHasPlayed=false;rgGameStarted=false;rgDragTile=null;
   rlRoomId=null;rlIsHost=false;
 }
 function rumiShowScreen(id){
@@ -2489,17 +2594,14 @@ function rumiShowScreen(id){
 function rumiShowLobby(){
   rumiShowScreen('rscr-lobby');
   document.getElementById('rumi-topbar').style.display='flex';
-  document.getElementById('rs-loading').classList.add('hide');
+  const ls=document.getElementById('rs-loading');
+  if(ls){ls.classList.add('hide');ls.style.display='none';}
 }
-
-// ── 토스트
 function rlToast(m){
   const t=document.getElementById('rl-toast');
   t.textContent=m;t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2400);
 }
-
-// ── 초기화
 function rlInit(){
   const ls=document.getElementById('rs-loading');
   const es=document.getElementById('rs-error');
@@ -2511,7 +2613,7 @@ function rlInit(){
   rlSubscribeRooms();
 }
 
-// ── 방 목록
+// 방 목록
 function rlSubscribeRooms(){
   if(rlRoomsUnsub)rlRoomsUnsub();
   rlRoomsUnsub=db.collection('rummikub_rooms').where('status','==','waiting').limit(8)
@@ -2523,43 +2625,27 @@ function rlSubscribeRooms(){
         const r=d.data();
         const item=document.createElement('div');item.className='rl-ritem';
         item.innerHTML=`<div class="rl-ritem-icon">🏠</div>
-          <div class="rl-ritem-info">
-            <div class="rl-ritem-name">${r.name}</div>
-            <div class="rl-ritem-detail">방장 ${r.host} · ${r.timerEnabled?'⏱ 타이머':'타이머 없음'}</div>
-          </div>
+          <div class="rl-ritem-info"><div class="rl-ritem-name">${r.name}</div>
+          <div class="rl-ritem-detail">방장 ${r.host} · ${r.timerEnabled?'⏱ 타이머':'타이머 없음'}</div></div>
           <div class="rl-rbadge rl-rbw">${r.players.length}/${r.maxPlayers}명</div>`;
-        item.onclick=()=>rlJoinRoom(d.id);
-        list.appendChild(item);
+        item.onclick=()=>rlJoinRoom(d.id);list.appendChild(item);
       });
     },()=>{});
 }
 
-// ── 방 만들기
-function rlOpenCreate(){
-  document.getElementById('rl-rname-inp').value=`${RL_USER()}의 방`;
-  document.getElementById('rl-create-modal').classList.add('open');
-}
+// 방 만들기
+function rlOpenCreate(){document.getElementById('rl-rname-inp').value=`${RL_USER()}의 방`;document.getElementById('rl-create-modal').classList.add('open');}
 function rlCloseCreate(){document.getElementById('rl-create-modal').classList.remove('open');}
 async function rlCreateRoom(){
   const name=document.getElementById('rl-rname-inp').value.trim()||`${RL_USER()}의 방`;
   const max=parseInt(document.getElementById('rl-max-inp').value);
   try{
-    const ref=await db.collection('rummikub_rooms').add({
-      name,code:rlGenCode(),maxPlayers:max,host:RL_USER(),
-      players:[{name:RL_USER(),color:RL_COLOR()}],
-      status:'waiting',timerEnabled:false,
-      createdAt:firebase.firestore.FieldValue.serverTimestamp()
-    });
+    const ref=await db.collection('rummikub_rooms').add({name,code:rlGenCode(),maxPlayers:max,host:RL_USER(),players:[{name:RL_USER(),color:RL_COLOR()}],status:'waiting',timerEnabled:false,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
     rlRoomId=ref.id;rlIsHost=true;rlCloseCreate();rlEnterWaiting(ref.id);
   }catch(e){rlToast('방 만들기 실패: '+e.message);}
 }
 function rlGenCode(){return Math.random().toString(36).slice(2,6).toUpperCase();}
-
-// ── 방 참가
-function rlOpenJoin(){
-  document.getElementById('rl-join-modal').classList.add('open');
-  setTimeout(()=>document.getElementById('rl-jcode-inp').focus(),100);
-}
+function rlOpenJoin(){document.getElementById('rl-join-modal').classList.add('open');setTimeout(()=>document.getElementById('rl-jcode-inp').focus(),100);}
 function rlCloseJoin(){document.getElementById('rl-join-modal').classList.remove('open');}
 async function rlJoinByCode(){
   const code=document.getElementById('rl-jcode-inp').value.trim().toUpperCase();
@@ -2568,8 +2654,7 @@ async function rlJoinByCode(){
   if(snap.empty){rlToast('방을 찾을 수 없습니다');return;}
   const doc=snap.docs[0];const data=doc.data();
   if(data.players.length>=data.maxPlayers){rlToast('방이 꽉 찼습니다');return;}
-  if(!data.players.find(p=>p.name===RL_USER()))
-    await db.collection('rummikub_rooms').doc(doc.id).update({players:firebase.firestore.FieldValue.arrayUnion({name:RL_USER(),color:RL_COLOR()})});
+  if(!data.players.find(p=>p.name===RL_USER()))await db.collection('rummikub_rooms').doc(doc.id).update({players:firebase.firestore.FieldValue.arrayUnion({name:RL_USER(),color:RL_COLOR()})});
   rlRoomId=doc.id;rlIsHost=false;rlCloseJoin();rlEnterWaiting(doc.id);
 }
 async function rlJoinRoom(rid){
@@ -2577,91 +2662,53 @@ async function rlJoinRoom(rid){
   const data=doc.data();
   if(!data||data.status!=='waiting'){rlToast('입장할 수 없는 방입니다');return;}
   if(data.players.length>=data.maxPlayers){rlToast('방이 꽉 찼습니다');return;}
-  if(!data.players.find(p=>p.name===RL_USER()))
-    await db.collection('rummikub_rooms').doc(rid).update({players:firebase.firestore.FieldValue.arrayUnion({name:RL_USER(),color:RL_COLOR()})});
+  if(!data.players.find(p=>p.name===RL_USER()))await db.collection('rummikub_rooms').doc(rid).update({players:firebase.firestore.FieldValue.arrayUnion({name:RL_USER(),color:RL_COLOR()})});
   rlRoomId=rid;rlIsHost=data.host===RL_USER();rlEnterWaiting(rid);
 }
 
-// ── 대기실
+// 대기실
 function rlEnterWaiting(rid){
   rumiShowScreen('rscr-waiting');
   if(rlRoomUnsub)rlRoomUnsub();
-  let _rlGameEntered=false;
+  let _entered=false;
   rlRoomUnsub=db.collection('rummikub_rooms').doc(rid).onSnapshot(snap=>{
     if(!snap.exists){rlToast('방이 사라졌습니다');rumiShowLobby();return;}
     const data=snap.data();
-
-    if(_rlGameEntered)return; // 이미 게임 진입했으면 무시
-
-    if(data.status==='waiting'){
-      // 대기실 렌더
-      rlRenderWaiting(data);
-    } else if(data.status==='tutorial'){
-      _rlGameEntered=true;
-      const unsub=rlRoomUnsub;rlRoomUnsub=null;
-      if(unsub)unsub();
-      setTimeout(()=>rlShowTutorial(),50);
-    } else if(data.status==='playing'){
-      _rlGameEntered=true;
-      const unsub=rlRoomUnsub;rlRoomUnsub=null;
-      if(unsub)unsub();
-      setTimeout(()=>rlStartGameScreen(),50);
-    }
-  },err=>{
-    rlToast('연결 오류: '+err.message);
-  });
+    if(_entered)return;
+    if(data.status==='waiting')rlRenderWaiting(data);
+    else if(data.status==='tutorial'){_entered=true;const u=rlRoomUnsub;rlRoomUnsub=null;if(u)u();setTimeout(()=>rlShowTutorial(),50);}
+    else if(data.status==='playing'){_entered=true;const u=rlRoomUnsub;rlRoomUnsub=null;if(u)u();setTimeout(()=>rlStartGameScreen(),50);}
+  },err=>{rlToast('연결 오류: '+err.message);});
 }
 function rlRenderWaiting(data){
-  // null 안전 처리
   const rname=document.getElementById('rw-rname');
   const rcode=document.getElementById('rw-code');
   const rcnt=document.getElementById('rw-cnt');
   const btn=document.getElementById('rw-start');
   const hint=document.getElementById('rw-hint');
   const grid=document.getElementById('rw-pgrid');
-  if(!rname||!btn||!grid)return; // DOM 아직 없으면 스킵
-
+  if(!rname||!btn||!grid)return;
   rname.textContent=data.name||'';
   rcode.textContent=data.code||'----';
-  rcnt.textContent=(data.players||[]).length+'/'+(data.maxPlayers||4)+'명';
+  rcnt.textContent=(data.players||[]).length+'/'+(data.maxPlayers||5)+'명';
   rlIsHost=data.host===RL_USER();
-
-  if(rlIsHost){
-    btn.style.display='flex';
-    btn.disabled=(data.players||[]).length<2;
-    if(hint)hint.textContent=(data.players||[]).length<2
-      ?'2명 이상이어야 시작할 수 있습니다'
-      :'준비 완료! 게임을 시작하세요 👍';
-  } else {
-    btn.style.display='none';
-    if(hint)hint.textContent='방장 '+(data.host||'')+'이(가) 게임을 시작하면 자동으로 입장됩니다';
-  }
-
+  if(rlIsHost){btn.style.display='flex';btn.disabled=(data.players||[]).length<2;if(hint)hint.textContent=(data.players||[]).length<2?'2명 이상이어야 시작할 수 있습니다':'준비 완료! 게임을 시작하세요 👍';}
+  else{btn.style.display='none';if(hint)hint.textContent='방장 '+(data.host||'')+'이(가) 게임을 시작하면 자동으로 입장됩니다';}
   grid.innerHTML='';
-  const maxP=data.maxPlayers||4;
-  for(let i=0;i<maxP;i++){
-    const p=(data.players||[])[i];
-    const slot=document.createElement('div');
+  for(let i=0;i<(data.maxPlayers||5);i++){
+    const p=(data.players||[])[i];const slot=document.createElement('div');
     if(p){
       const col=p.color||RL_AVC[i%RL_AVC.length];
-      const isMe=p.name===RL_USER();
-      const isHost2=data.host===p.name;
+      const isMe=p.name===RL_USER();const isH=data.host===p.name;
       slot.className='rw-pslot filled'+(isMe?' me':'');
-      slot.innerHTML=`<div class="rw-pav" style="background:${col}22;border:2px solid ${col}">${p.name.charAt(0)}</div>
-        <div class="rw-pname">${p.name}${isMe?' <span style="font-size:10px;opacity:.6">(나)</span>':''}</div>
-        <div class="rw-phost">${isHost2?'👑 방장':'🎮 참가자'}</div>`;
-    } else {
-      slot.className='rw-pslot';
-      slot.innerHTML='<div class="rw-pempty"><div class="rw-peicon">•••</div>대기 중</div>';
-    }
+      slot.innerHTML=`<div class="rw-pav" style="background:${col}22;border:2px solid ${col}">${p.name.charAt(0)}</div><div class="rw-pname">${p.name}${isMe?' <span style="font-size:10px;opacity:.6">(나)</span>':''}</div><div class="rw-phost">${isH?'👑 방장':'🎮 참가자'}</div>`;
+    } else {slot.className='rw-pslot';slot.innerHTML='<div class="rw-pempty"><div class="rw-peicon">•••</div>대기 중</div>';}
     grid.appendChild(slot);
   }
 }
 async function rlLeaveRoom(){
   if(!rlRoomId)return;
-  try{
-    const snap=await db.collection('rummikub_rooms').doc(rlRoomId).get();
-    const data=snap.data();if(!data)return;
+  try{const snap=await db.collection('rummikub_rooms').doc(rlRoomId).get();const data=snap.data();if(!data)return;
     const newP=data.players.filter(p=>p.name!==RL_USER());
     if(newP.length===0||rlIsHost)await db.collection('rummikub_rooms').doc(rlRoomId).delete();
     else await db.collection('rummikub_rooms').doc(rlRoomId).update({players:newP});
@@ -2672,183 +2719,91 @@ async function rlLeaveRoom(){
 async function rlStartGame(){
   if(!rlIsHost||!rlRoomId)return;
   const timer=document.getElementById('rw-timer-tog').checked;
-  // ready 필드 초기화
   const snap=await db.collection('rummikub_rooms').doc(rlRoomId).get();
   const players=(snap.data().players||[]).map(p=>p.name);
   const ready={};players.forEach(p=>{ready[p]=false;});
-  await db.collection('rummikub_rooms').doc(rlRoomId).update({
-    status:'tutorial',timerEnabled:timer,ready
-  });
+  await db.collection('rummikub_rooms').doc(rlRoomId).update({status:'tutorial',timerEnabled:timer,ready});
 }
 
-// ── 튜토리얼
+// 튜토리얼
 const RT_SLIDES=[
-  {title:'루미큐브란?',
-   text:'<strong>4가지 색상</strong>(빨강·파랑·초록·주황) 숫자 타일 1~13 각 2세트, <strong>조커 2장</strong> — 총 <strong>106장</strong>. 손패를 먼저 모두 내려놓으면 승리!',
-   visual:`<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">${[1,5,9,13].map(n=>`<div style="display:flex;gap:4px"><div class="rt-tile rt-tile-r">${n}</div><div class="rt-tile rt-tile-b">${n}</div><div class="rt-tile rt-tile-g">${n}</div><div class="rt-tile rt-tile-o">${n}</div></div>`).join('')}<div class="rt-tile rt-tile-j">★</div></div>`},
-  {title:'세트 ① — 그룹',text:'<strong>같은 숫자, 다른 색</strong> 3~4장. 같은 색 2장 이상 불가.',
-   visual:`<div style="display:flex;flex-direction:column;gap:10px"><div class="rt-sdemo"><span class="rt-sdlbl">✅ 3색 같은 숫자</span><div class="rt-sdtiles"><div class="rt-tile rt-tile-r">7</div><div class="rt-tile rt-tile-b">7</div><div class="rt-tile rt-tile-g">7</div></div></div><div class="rt-sdemo"><span class="rt-sdlbl">❌ 같은 색 중복</span><div class="rt-sdtiles"><div class="rt-tile rt-tile-r" style="opacity:.3">7</div><div class="rt-tile rt-tile-r" style="opacity:.3">7</div><div class="rt-tile rt-tile-g">7</div></div></div></div>`},
-  {title:'세트 ② — 런',text:'<strong>같은 색, 연속 숫자</strong> 3장 이상. 1 최소, 13 최대.',
-   visual:`<div style="display:flex;flex-direction:column;gap:10px"><div class="rt-sdemo"><span class="rt-sdlbl">✅ 같은 색 연속</span><div class="rt-sdtiles">${[3,4,5,6,7].map(n=>`<div class="rt-tile rt-tile-b">${n}</div>`).join('')}</div></div><div class="rt-sdemo"><span class="rt-sdlbl">❌ 색 혼합 불가</span><div class="rt-sdtiles"><div class="rt-tile rt-tile-r" style="opacity:.3">5</div><div class="rt-tile rt-tile-b" style="opacity:.3">6</div><div class="rt-tile rt-tile-r" style="opacity:.3">7</div></div></div></div>`},
-  {title:'첫 플레이 & 조커',text:'<strong>첫 플레이</strong>는 내 타일만으로 합계 <strong>30점 이상</strong>. <strong>조커(★)</strong>는 어떤 타일로도 대체 가능.',
-   visual:`<div style="display:flex;flex-direction:column;gap:14px"><div><div style="font-size:12px;color:#6A6088;margin-bottom:7px">30점 예시 (10+10+10)</div><div class="rt-sbar"><div style="display:flex;gap:4px"><div class="rt-tile rt-tile-r">10</div><div class="rt-tile rt-tile-b">10</div><div class="rt-tile rt-tile-g">10</div></div><div class="rt-strack"><div class="rt-sfill" style="width:100%"></div></div><div class="rt-sval">30점 ✅</div></div></div><div><div style="font-size:12px;color:#6A6088;margin-bottom:7px">조커 활용</div><div style="display:flex;gap:5px;align-items:center"><div class="rt-tile rt-tile-o">7</div><div class="rt-tile rt-tile-j">★</div><div class="rt-tile rt-tile-o">9</div><span style="font-size:12px;color:#6A6088;margin-left:8px">★ = 8 역할</span></div></div></div>`},
-  {title:'규칙 & 승리',text:'',
-   visual:`<div class="rt-rulelist"><div class="rt-ruleitem"><span class="rt-ricon">🃏</span><div class="rt-rtext">시작 시 <strong>14장씩</strong> 나눠 가집니다</div></div><div class="rt-ruleitem"><span class="rt-ricon">🔄</span><div class="rt-rtext">내 차례에 세트를 내려놓거나 더미에서 <strong>1장</strong> 가져옵니다</div></div><div class="rt-ruleitem"><span class="rt-ricon">🧩</span><div class="rt-rtext">기존 세트 <strong>재배열</strong> 가능 — 단 모든 세트가 유효해야 함</div></div><div class="rt-ruleitem"><span class="rt-ricon">⚠️</span><div class="rt-rtext">유효하지 않은 상태 종료 시 <strong>패널티 3장</strong></div></div><div class="rt-ruleitem"><span class="rt-ricon">🏆</span><div class="rt-rtext">손패를 <strong>먼저 모두 내려놓으면 승리!</strong></div></div></div>`},
+  {title:'루미큐브란?',text:'<strong>4가지 색상</strong> 숫자 타일 1~13 각 2세트, <strong>조커 2장</strong> — 총 <strong>106장</strong>. 손패를 먼저 모두 내려놓으면 승리!',visual:`<div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center">${[1,5,9,13].map(n=>`<div style="display:flex;gap:3px"><div class="rt-tile rt-tile-r">${n}</div><div class="rt-tile rt-tile-b">${n}</div><div class="rt-tile rt-tile-g">${n}</div><div class="rt-tile rt-tile-o">${n}</div></div>`).join('')}<div class="rt-tile rt-tile-j">★</div></div>`},
+  {title:'세트 ① — 그룹',text:'<strong>같은 숫자, 다른 색</strong> 3~4장.',visual:`<div style="display:flex;flex-direction:column;gap:8px"><div class="rt-sdemo"><span class="rt-sdlbl">✅ 3색 같은 숫자</span><div class="rt-sdtiles"><div class="rt-tile rt-tile-r">7</div><div class="rt-tile rt-tile-b">7</div><div class="rt-tile rt-tile-g">7</div></div></div><div class="rt-sdemo"><span class="rt-sdlbl">❌ 같은 색 중복</span><div class="rt-sdtiles"><div class="rt-tile rt-tile-r" style="opacity:.3">7</div><div class="rt-tile rt-tile-r" style="opacity:.3">7</div><div class="rt-tile rt-tile-g">7</div></div></div></div>`},
+  {title:'세트 ② — 런',text:'<strong>같은 색, 연속 숫자</strong> 3장 이상.',visual:`<div style="display:flex;flex-direction:column;gap:8px"><div class="rt-sdemo"><span class="rt-sdlbl">✅ 같은 색 연속</span><div class="rt-sdtiles">${[3,4,5,6,7].map(n=>`<div class="rt-tile rt-tile-b">${n}</div>`).join('')}</div></div><div class="rt-sdemo"><span class="rt-sdlbl">❌ 색 혼합 불가</span><div class="rt-sdtiles"><div class="rt-tile rt-tile-r" style="opacity:.3">5</div><div class="rt-tile rt-tile-b" style="opacity:.3">6</div><div class="rt-tile rt-tile-r" style="opacity:.3">7</div></div></div></div>`},
+  {title:'첫 플레이 & 조커',text:'첫 플레이는 내 타일만으로 합계 <strong>30점 이상</strong>. <strong>조커★</strong>는 어떤 타일로도 대체.',visual:`<div style="display:flex;gap:5px;align-items:center;margin-top:8px"><div class="rt-tile rt-tile-o">7</div><div class="rt-tile rt-tile-j">★</div><div class="rt-tile rt-tile-o">9</div><span style="font-size:12px;color:var(--rm);margin-left:8px">★ = 8 역할</span></div>`},
+  {title:'규칙 & 승리',text:'',visual:`<div class="rt-rulelist"><div class="rt-ruleitem"><span class="rt-ricon">🃏</span><div class="rt-rtext">시작 시 <strong>14장씩</strong> 나눠 가집니다</div></div><div class="rt-ruleitem"><span class="rt-ricon">🔄</span><div class="rt-rtext">내 차례에 세트를 내려놓거나 더미에서 <strong>1장</strong> 가져옵니다</div></div><div class="rt-ruleitem"><span class="rt-ricon">🧩</span><div class="rt-rtext">기존 세트 <strong>재배열</strong> 가능 — 모든 세트가 유효해야 함</div></div><div class="rt-ruleitem"><span class="rt-ricon">🏆</span><div class="rt-rtext">손패를 <strong>먼저 모두 내려놓으면 승리!</strong></div></div></div>`},
 ];
 function rlShowTutorial(){rtSlide=0;rumiShowScreen('rscr-tuto');rtRender();}
 function rtRender(){
   const s=RT_SLIDES[rtSlide];
-  document.getElementById('rt-dots').innerHTML=RT_SLIDES.map((_,i)=>`<div class="rt-dot${i===rtSlide?' active':i<rtSlide?' done':''}"></div>`).join('');
-  document.getElementById('rt-body').innerHTML=`<div class="rt-stitle">${s.title}</div>${s.text?`<div class="rt-stext">${s.text}</div>`:''}<div class="rt-visual">${s.visual}</div>`;
-  document.getElementById('rt-prev').style.visibility=rtSlide===0?'hidden':'visible';
-  const nb=document.getElementById('rt-next');
-  if(rtSlide===RT_SLIDES.length-1){nb.className='rt-tnav rt-tns';nb.textContent='게임 시작! ▶';}
-  else{nb.className='rt-tnav rt-tnn';nb.textContent='다음 →';}
+  document.getElementById('sdots').innerHTML=RT_SLIDES.map((_,i)=>`<div class="sdot${i===rtSlide?' active':i<rtSlide?' done':''}"></div>`).join('');
+  document.getElementById('tubody').innerHTML=`<div class="stitle">${s.title}</div>${s.text?`<div class="stext">${s.text}</div>`:''}<div class="tvisual">${s.visual}</div>`;
+  document.getElementById('btn-prev').style.visibility=rtSlide===0?'hidden':'visible';
+  const nb=document.getElementById('btn-next');
+  if(rtSlide===RT_SLIDES.length-1){nb.className='tnav tns';nb.textContent='완료 ✓';}
+  else{nb.className='tnav tnn';nb.textContent='다음 →';}
 }
 function rtNext(){if(rtSlide<RT_SLIDES.length-1){rtSlide++;rtRender();}else rlShowReady();}
 function rtPrev(){if(rtSlide>0){rtSlide--;rtRender();}}
 function rtSkip(){rlShowReady();}
 
-// ── 게임 시작
-// ── 준비 대기 화면
-function rlShowReady(){
-  rumiShowScreen('rscr-ready');
-  // 내 준비상태 초기화
+// 준비 대기
+function rlShowReady(){rtSlide=0;rumiShowScreen('rscr-ready');
   if(!rlRoomId)return;
-  // 준비 화면 구독
   if(rrUnsub){rrUnsub();rrUnsub=null;}
   rrUnsub=db.collection('rummikub_rooms').doc(rlRoomId).onSnapshot(snap=>{
-    if(!snap.exists)return;
-    const data=snap.data();
+    if(!snap.exists)return;const data=snap.data();
     rrRender(data);
-    // 게임 시작 신호 감지
-    if(data.status==='playing'){
-      if(rrUnsub){rrUnsub();rrUnsub=null;}
-      rlStartGameScreen();
-    }
+    if(data.status==='playing'){if(rrUnsub){rrUnsub();rrUnsub=null;}rlStartGameScreen();}
   });
 }
-
 function rrRender(data){
-  const me=RL_USER();
-  const players=data.players||[];
-  const ready=data.ready||{};
-  const host=data.host;
-  // 호스트 제외 참가자만 준비 체크
+  const me=RL_USER();const players=data.players||[];const ready=data.ready||{};const host=data.host;
   const guests=players.filter(p=>p.name!==host);
   const allGuestsReady=guests.length>0&&guests.every(p=>ready[p.name]===true);
-
-  const grid=document.getElementById('rr-pgrid');
-  if(!grid)return;
+  const grid=document.getElementById('rr-pgrid');if(!grid)return;
   grid.innerHTML='';
-
   players.forEach((p,i)=>{
     const slot=document.createElement('div');
-    const col=p.color||RL_AVC[i%RL_AVC.length];
-    const isHost2=p.name===host;
-    const isReady=isHost2?true:ready[p.name]===true; // 호스트는 항상 준비완료 표시
-    slot.className='rw-pslot filled'+(p.name===me?' me':'');
-    if(isReady)slot.style.borderColor='#38B86A';
-    slot.innerHTML=`
-      <div class="rw-pav" style="background:${col}22;border:2px solid ${col}">${p.name.charAt(0)}</div>
-      <div class="rw-pname">${p.name}${p.name===me?' <span style="font-size:10px;opacity:.6">(나)</span>':''}</div>
-      <div class="rw-phost" style="color:${isReady?'#38B86A':'#6A6088'}">${isHost2?'👑 방장':isReady?'✅ 준비완료':'🎮 대기 중'}</div>`;
+    const col=p.color||RL_AVC[i%RL_AVC.length];const isH=p.name===host;const isRdy=isH?true:ready[p.name]===true;
+    slot.className='rw-pslot filled'+(p.name===me?' me':'');if(isRdy)slot.style.borderColor='#38B86A';
+    slot.innerHTML=`<div class="rw-pav" style="background:${col}22;border:2px solid ${col}">${p.name.charAt(0)}</div><div class="rw-pname">${p.name}${p.name===me?' (나)':''}</div><div class="rw-phost" style="color:${isRdy?'#38B86A':'#6A6088'}">${isH?'👑 방장':isRdy?'✅ 준비완료':'🎮 대기 중'}</div>`;
     grid.appendChild(slot);
   });
-
-  const readyBtn=document.getElementById('rr-ready-btn');
-  const startBtn=document.getElementById('rr-start-btn');
-  const hint=document.getElementById('rr-hint');
-  const isHost=me===host;
-
-  if(isHost){
-    // 호스트: 준비버튼 없음, 게임시작 버튼만
-    if(readyBtn)readyBtn.style.display='none';
-    if(startBtn){
-      startBtn.style.display='flex';
-      startBtn.disabled=!allGuestsReady;
-    }
-    const readyCount=guests.filter(p=>ready[p.name]===true).length;
-    if(hint)hint.textContent=allGuestsReady
-      ?'모두 준비됐습니다! 게임을 시작하세요 🎮'
-      :`${readyCount}/${guests.length}명 준비완료 — 기다리는 중...`;
-  } else {
-    // 참가자: 준비버튼만
-    const meReady=ready[me]===true;
-    if(readyBtn){
-      readyBtn.style.display='flex';
-      readyBtn.disabled=meReady;
-      readyBtn.textContent=meReady?'준비완료 ✓':'준비 완료 ✓';
-      readyBtn.style.background=meReady
-        ?'linear-gradient(135deg,#1E6A3A,#289050)'
-        :'linear-gradient(135deg,#1E5A8A,#2878B8)';
-    }
-    if(startBtn)startBtn.style.display='none';
-    if(hint)hint.textContent=meReady
-      ?'방장이 게임을 시작할 때까지 기다려주세요 ⏳'
-      :'준비 버튼을 눌러주세요!';
-  }
+  const readyBtn=document.getElementById('rr-ready-btn');const startBtn=document.getElementById('rr-start-btn');const hint=document.getElementById('rr-hint');const isHost=me===host;
+  if(isHost){if(readyBtn)readyBtn.style.display='none';if(startBtn){startBtn.style.display='flex';startBtn.disabled=!allGuestsReady;}if(hint)hint.textContent=allGuestsReady?'모두 준비! 게임을 시작하세요 🎮':`${guests.filter(p=>ready[p.name]).length}/${guests.length}명 준비완료`;}
+  else{const meRdy=ready[me]===true;if(readyBtn){readyBtn.style.display='flex';readyBtn.disabled=meRdy;readyBtn.textContent=meRdy?'준비완료 ✓':'준비 완료 ✓';readyBtn.style.background=meRdy?'linear-gradient(135deg,#1E6A3A,#289050)':'linear-gradient(135deg,#1E5A8A,#2878B8)';}if(startBtn)startBtn.style.display='none';if(hint)hint.textContent=meRdy?'방장이 게임을 시작할 때까지 기다려주세요 ⏳':'준비 버튼을 눌러주세요!';}
 }
+async function rlSetReady(){if(!rlRoomId||rlIsHost)return;try{await db.collection('rummikub_rooms').doc(rlRoomId).update({['ready.'+RL_USER()]:true});}catch(e){rlToast('오류: '+e.message);}}
+async function rlFinalStart(){if(!rlIsHost||!rlRoomId)return;if(rrUnsub){rrUnsub();rrUnsub=null;}await rlStartGameScreen();}
 
-async function rlSetReady(){
-  if(!rlRoomId||rlIsHost)return; // 호스트는 준비 불가
-  const me=RL_USER();
-  try{
-    await db.collection('rummikub_rooms').doc(rlRoomId).update({
-      ['ready.'+me]:true
-    });
-  }catch(e){rlToast('오류: '+e.message);}
-}
-
-async function rlFinalStart(){
-  if(!rlIsHost||!rlRoomId)return;
-  // 준비 대기 구독 해제
-  if(rrUnsub){rrUnsub();rrUnsub=null;}
-  await rlStartGameScreen();
-}
-
+// 게임 시작
 async function rlStartGameScreen(){
-  // 방 구독 정리 (중복 호출 방지)
   if(rlRoomUnsub){rlRoomUnsub();rlRoomUnsub=null;}
-  // 상태 완전 초기화
-  rgGameStarted=false;rgHasPlayed=false;
+  rgGameStarted=false;rgHasPlayed=false;rgDragTile=null;
   rgLocalBoard=[];rgLocalHand=[];rgBoardSnap=null;rgHandSnap=null;
   if(rgGameUnsub){rgGameUnsub();rgGameUnsub=null;}
   clearInterval(rgTimerInterval);
-
   rumiShowScreen('rscr-game');
   document.getElementById('rumi-topbar').style.display='none';
-  const ls=document.getElementById('rs-loading');
-  ls.classList.remove('hide');ls.style.display='flex';
-  document.getElementById('rs-error').classList.remove('show');
+  const ls=document.getElementById('rs-loading');const es=document.getElementById('rs-error');
+  if(ls){ls.classList.remove('hide');ls.style.display='flex';}
+  if(es){es.classList.remove('show');es.style.display='none';}
   document.getElementById('rs-load-msg').textContent='게임 데이터 불러오는 중...';
-
-  // 15초 타임아웃
-  const timeout=setTimeout(()=>{
-    if(!rgGameStarted){
-      rgShowError('연결 시간이 초과됐습니다. 다시 시도해주세요.');
-    }
-  },15000);
+  const timeout=setTimeout(()=>{if(!rgGameStarted)rgShowError('연결 시간 초과. 다시 시도해주세요.');},15000);
   window._rgTimeoutId=timeout;
-
-  try{
-    if(rlIsHost) await rgInitGame();
-    else rgSubscribeGame();
-  }catch(e){
-    clearTimeout(timeout);
-    rgShowError('연결 오류: '+e.message);
-  }
+  try{if(rlIsHost)await rgInitGame();else rgSubscribeGame();}
+  catch(e){clearTimeout(timeout);rgShowError('연결 오류: '+e.message);}
 }
 
-// ── 게임 엔진
+// 게임 엔진
 const RG_COLORS=['r','b','g','o'];
 const RG_CMAP={r:'rg-tile-r',b:'rg-tile-b',g:'rg-tile-g',o:'rg-tile-o'};
 
 function rgCreateDeck(){
   const deck=[];let id=0;
-  for(let s=0;s<2;s++)for(const c of RG_COLORS)for(let n=1;n<=13;n++)deck.push({id:id++,col:c,num:n});
-  deck.push({id:id++,col:'j',num:0,joker:true});
-  deck.push({id:id++,col:'j',num:0,joker:true});
+  for(let s=0;s<2;s++)for(const c of RG_COLORS)for(let n=1;n<=13;n++)deck.push({id:id++,col:c,num:n,joker:false});
+  deck.push({id:id++,col:'j',num:0,joker:true});deck.push({id:id++,col:'j',num:0,joker:true});
   return rgShuffle(deck);
 }
 function rgShuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
@@ -2860,9 +2815,7 @@ async function rgInitGame(){
     const snap=await db.collection('rummikub_rooms').doc(rlRoomId).get();
     if(!snap.exists){rgShowError('방을 찾을 수 없습니다.');return;}
     const rd=snap.data();
-    if(rd.status!=='tutorial'&&rd.status!=='waiting'){
-      rgSubscribeGame();return;
-    }
+    if(rd.status!=='tutorial'&&rd.status!=='waiting'){rgSubscribeGame();return;}
     const players=rd.players.map(p=>p.name);
     if(players.length<2){rgShowError('플레이어 2명 이상 필요합니다.');return;}
     const deck=rgCreateDeck();const hands={};let di=0;
@@ -2875,37 +2828,11 @@ async function rgInitGame(){
       timerEnabled:rd.timerEnabled||false,
       log:['🎮 게임 시작! '+players.join(', ')+' 참가'],
     });
-    // 업데이트 성공 → 바로 게임 화면 열기
-    rgStartFromData({
-      status:'playing',board:[],deck:deck.slice(di),hands,
-      turn:players[0],firstPlay:fp,players:rd.players,
-      timerEnabled:rd.timerEnabled||false,
-      log:['🎮 게임 시작! '+players.join(', ')+' 참가'],
-    });
-    rgSubscribeGame(); // 이후 실시간 업데이트용
-  }catch(e){
-    if(window._rgTimeoutId)clearTimeout(window._rgTimeoutId);
-    console.error('rgInitGame error:', e);
-    rgShowError('게임 초기화 실패. 로비로 돌아가 다시 시도해주세요. ('+e.message+')');
-  }
+    rgStartFromData({status:'playing',board:[],deck:deck.slice(di),hands,turn:players[0],firstPlay:fp,players:rd.players,timerEnabled:rd.timerEnabled||false,log:['🎮 게임 시작! '+players.join(', ')+' 참가']});
+    rgSubscribeGame();
+  }catch(e){if(window._rgTimeoutId)clearTimeout(window._rgTimeoutId);rgShowError('게임 초기화 실패. ('+e.message+')');}
 }
 
-function rgStartFromData(data){
-  if(window._rgTimeoutId)clearTimeout(window._rgTimeoutId);
-  rgG=data;
-  const me=RL_USER();
-  rgLocalHand=[...(data.hands[me]||[])];
-  rgLocalBoard=JSON.parse(JSON.stringify(data.board||[]));
-  rgBoardSnap=JSON.parse(JSON.stringify(data.board||[]));
-  rgHandSnap=[...rgLocalHand];
-  rgGameStarted=true;
-  // 로딩 숨기기
-  const ls=document.getElementById('rs-loading');
-  ls.style.display='none';
-  // 우주 캔버스 초기화
-  setTimeout(rgInitSpaceCanvas, 100);
-  rgRender(data);
-}
 function rgSubscribeGame(){
   if(!rlRoomId){rgShowError('방 정보가 없습니다.');return;}
   if(rgGameUnsub)rgGameUnsub();
@@ -2914,102 +2841,75 @@ function rgSubscribeGame(){
     const data=snap.data();
     if(data.status==='playing'||data.status==='finished'){
       rgG=data;
-      // 비호스트: 처음 playing 감지 시 화면 열기
-      if(!rgGameStarted){
-        rgStartFromData(data);
-        return;
-      }
+      if(!rgGameStarted){rgStartFromData(data);return;}
       if(!rgHasPlayed){
         const me=RL_USER();
         rgLocalHand=[...(data.hands[me]||[])];
-        rgLocalBoard=JSON.parse(JSON.stringify(data.board||[]));
+        rgLocalBoard=rgBoardFromFS(data.board||[]);
       }
       rgRender(data);
     }
     if(data.status==='finished')rgShowWin(data);
-  },err=>{
-    if(window._rgTimeoutId)clearTimeout(window._rgTimeoutId);
-    rgShowError('Firebase 오류: '+err.message);
-  });
-}
-function rgShowError(msg){
-  if(window._rgTimeoutId)clearTimeout(window._rgTimeoutId);
-  document.getElementById('rs-loading').classList.add('hide');
-  document.getElementById('rs-loading').style.display='none';
-  const e=document.getElementById('rs-error');
-  e.classList.add('show');e.style.display='flex';
-  document.getElementById('rs-err-msg').textContent=msg||'알 수 없는 오류가 발생했습니다.';
+  },err=>{if(window._rgTimeoutId)clearTimeout(window._rgTimeoutId);rgShowError('Firebase 오류: '+err.message);});
 }
 
+function rgStartFromData(data){
+  if(window._rgTimeoutId)clearTimeout(window._rgTimeoutId);
+  rgG=data;const me=RL_USER();
+  rgLocalHand=[...(data.hands[me]||[])];
+  rgLocalBoard=rgBoardFromFS(data.board||[]);
+  rgBoardSnap=JSON.parse(JSON.stringify(rgLocalBoard));
+  rgHandSnap=[...rgLocalHand];
+  rgGameStarted=true;
+  const ls=document.getElementById('rs-loading');if(ls){ls.classList.add('hide');ls.style.display='none';}
+  setTimeout(rgInitSpaceCanvas,100);
+  rgRender(data);
+}
+
+function rgShowError(msg){
+  if(window._rgTimeoutId)clearTimeout(window._rgTimeoutId);
+  const ls=document.getElementById('rs-loading');const es=document.getElementById('rs-error');
+  if(ls){ls.classList.add('hide');ls.style.display='none';}
+  if(es){es.classList.add('show');es.style.display='flex';}
+  const em=document.getElementById('rs-err-msg');if(em)em.textContent=msg||'오류가 발생했습니다.';
+}
+
+// 렌더링
 function rgMakeTile(tile,draggable=false){
   const el=document.createElement('div');
   el.className='rg-tile '+(tile.joker?'rg-tile-j':RG_CMAP[tile.col]);
   el.textContent=tile.joker?'★':tile.num;
   el.dataset.tileId=String(tile.id);
   if(draggable){
-    el.draggable=true;
-    el.style.cursor='grab';
-    el.addEventListener('dragstart',e=>{
-      rgDragTile=tile;
-      el.classList.add('dragging');
-      e.dataTransfer.effectAllowed='move';
-      e.dataTransfer.setData('text/plain',String(tile.id));
-    });
-    el.addEventListener('dragend',()=>{
-      el.classList.remove('dragging');
-      document.querySelectorAll('.rg-setgrp,.rg-drop-zone').forEach(z=>z.classList.remove('droptgt'));
-    });
+    el.draggable=true;el.style.cursor='grab';
+    el.addEventListener('dragstart',e=>{rgDragTile=tile;el.classList.add('dragging');e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',String(tile.id));});
+    el.addEventListener('dragend',()=>{el.classList.remove('dragging');document.querySelectorAll('.rg-setgrp,.rg-addsetbtn').forEach(z=>z.classList.remove('droptgt'));});
   }
   return el;
 }
 
-// ── 드롭 존 공통 핸들러
-function rgMakeDropZone(el, onDrop){
+function rgMakeDropZone(el,onDrop){
   el.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';el.classList.add('droptgt');});
   el.addEventListener('dragleave',e=>{if(!el.contains(e.relatedTarget))el.classList.remove('droptgt');});
-  el.addEventListener('drop',e=>{
-    e.preventDefault();e.stopPropagation();
-    el.classList.remove('droptgt');
-    if(!rgDragTile)return;
-    onDrop(rgDragTile);
-    rgDragTile=null;
-  });
+  el.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();el.classList.remove('droptgt');if(!rgDragTile)return;onDrop(rgDragTile);rgDragTile=null;});
 }
 
-// ── 손패에서 타일 제거
-function rgRemoveFromHand(tile){
-  const i=rgLocalHand.findIndex(t=>t.id===tile.id);
-  if(i!==-1)rgLocalHand.splice(i,1);
-}
-
-// ── 보드에서 타일 제거 (세트가 비면 세트도 제거)
+function rgRemoveFromHand(tile){const i=rgLocalHand.findIndex(t=>t.id===tile.id);if(i!==-1)rgLocalHand.splice(i,1);}
 function rgRemoveFromBoard(tile){
   for(let si=rgLocalBoard.length-1;si>=0;si--){
     const ti=rgLocalBoard[si].findIndex(t=>t.id===tile.id);
-    if(ti!==-1){
-      rgLocalBoard[si].splice(ti,1);
-      if(rgLocalBoard[si].length===0)rgLocalBoard.splice(si,1);
-      return true;
-    }
+    if(ti!==-1){rgLocalBoard[si].splice(ti,1);if(rgLocalBoard[si].length===0)rgLocalBoard.splice(si,1);return true;}
   }
   return false;
 }
-
-// ── 타일이 손패에 있는지 확인
-function rgIsInHand(tile){
-  return rgLocalHand.some(t=>t.id===tile.id);
-}
+function rgIsInHand(tile){return rgLocalHand.some(t=>t.id===tile.id);}
 
 function rgAfterMove(){
-  rgHasPlayed=true;
-  rgUpdateButtons();
-  rgRenderHand();
-  rgRenderBoard();
+  rgHasPlayed=true;rgUpdateButtons();rgRenderHand();rgRenderBoard();
 }
 
 function rgUpdateButtons(){
-  const me=RL_USER();
-  const isMe=rgG.turn===me;
+  const me=RL_USER();const isMe=rgG.turn===me;
   const _bp=document.getElementById('rg-btn-place');
   const _bu=document.getElementById('rg-btn-undo');
   const _bd=document.getElementById('rg-btn-draw');
@@ -3018,226 +2918,168 @@ function rgUpdateButtons(){
   if(_bd)_bd.disabled=!isMe||rgHasPlayed;
 }
 
+// 클릭 배치
+function rgClickHandTile(tile){
+  if(rgG.turn!==RL_USER())return;
+  rgHasPlayed=true;
+  const idx=rgLocalHand.findIndex(t=>t.id===tile.id);
+  if(idx===-1)return;
+  rgLocalHand.splice(idx,1);
+  rgLocalBoard.push([tile]);
+  rgUpdateButtons();rgRenderHand();rgRenderBoard();
+}
+function rgClickBoardTile(tile,si){
+  if(rgG.turn!==RL_USER())return;
+  rgHasPlayed=true;
+  const set=rgLocalBoard[si];if(!set)return;
+  const ti=set.findIndex(t=>t.id===tile.id);if(ti===-1)return;
+  set.splice(ti,1);if(set.length===0)rgLocalBoard.splice(si,1);
+  rgLocalHand.push(tile);
+  rgUpdateButtons();rgRenderHand();rgRenderBoard();
+}
+
 function rgRender(data){
   if(!document.getElementById('rg-turnlabel'))return;
-  const me=RL_USER(), isMe=data.turn===me;
+  const me=RL_USER(),isMe=data.turn===me;
   const _tl=document.getElementById('rg-turnlabel');
   const _dc=document.getElementById('rg-deckcount');
   const _bp=document.getElementById('rg-btn-place');
   const _bd=document.getElementById('rg-btn-draw');
   const _bu=document.getElementById('rg-btn-undo');
   if(_tl)_tl.textContent=isMe?'✨ 내 차례!':data.turn+'의 차례';
-  if(_dc)_dc.textContent='더미 '+(data.deck||[]).length+'장';
+  if(_dc)_dc.textContent='🂠 '+(data.deck||[]).length+'장';
   if(_bp)_bp.disabled=!isMe||!rgHasPlayed||!rgAllValid();
-  if(_bd)_bd.disabled=!isMe||rgHasPlayed; // 내 차례이고 아직 타일 안 내렸을 때만 활성화
+  if(_bd)_bd.disabled=!isMe||rgHasPlayed;
   if(_bu)_bu.disabled=!isMe||!rgHasPlayed;
   rgRenderHand();rgRenderBoard();rgRenderPlayers(data);rgRenderLog(data.log||[]);
   if(data.timerEnabled&&isMe)rgStartTimer();else rgStopTimer();
   if(isMe&&!rgHasPlayed){
-    rgBoardSnap=JSON.parse(JSON.stringify(data.board||[]));
+    rgBoardSnap=JSON.parse(JSON.stringify(rgBoardFromFS(data.board||[])));
     rgHandSnap=[...(data.hands[me]||[])];
-    rgLocalBoard=JSON.parse(JSON.stringify(data.board||[]));
+    rgLocalBoard=rgBoardFromFS(data.board||[]);
     rgLocalHand=[...rgHandSnap];
   }
 }
 
 function rgRenderHand(){
-  const me=RL_USER();
-  const ct=document.getElementById('rg-handtiles');
-  const hc=document.getElementById('rg-handcount');
+  const me=RL_USER();const ct=document.getElementById('rg-handtiles');const hc=document.getElementById('rg-handcount');
   if(!ct)return;
-  const hand=rgHasPlayed?rgLocalHand:(rgG.hands[me]||[]);
-  ct.innerHTML='';
-  if(hc)hc.textContent=hand.length+'장';
   const isMyTurn=rgG.turn===me;
-  hand.forEach((tile)=>{
+  const hand=rgHasPlayed?rgLocalHand:(rgG.hands[me]||[]);
+  ct.innerHTML='';if(hc)hc.textContent=hand.length+'장';
+  hand.forEach(tile=>{
     const el=rgMakeTile(tile,isMyTurn);
+    if(isMyTurn){
+      el.title='클릭: 새 세트 / 드래그: 원하는 세트';
+      el.addEventListener('click',()=>rgClickHandTile(tile));
+    }
     ct.appendChild(el);
   });
-  // 손패 영역 자체를 드롭존으로 (보드→손패 회수)
+  // 손패 영역을 드롭존으로
   if(isMyTurn){
-    ct.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';});
-    ct.addEventListener('drop',e=>{
-      e.preventDefault();
-      if(!rgDragTile)return;
-      const tile=rgDragTile;rgDragTile=null;
-      // 보드에 있으면 제거 후 손패로
-      if(!rgIsInHand(tile)){
-        rgRemoveFromBoard(tile);
-        rgLocalHand.push(tile);
-        rgAfterMove();
-      }
-    });
+    ct.addEventListener('dragover',e=>{e.preventDefault();});
+    ct.addEventListener('drop',e=>{e.preventDefault();if(!rgDragTile)return;const tile=rgDragTile;rgDragTile=null;if(!rgIsInHand(tile)){rgRemoveFromBoard(tile);rgLocalHand.push(tile);rgAfterMove();}});
   }
 }
 
 function rgRenderBoard(){
-  const inner=document.getElementById('rg-boardinner');
-  const bempty=document.getElementById('rg-bempty');
+  const inner=document.getElementById('rg-boardinner');const bempty=document.getElementById('rg-bempty');
   if(!inner)return;
-  const board=rgHasPlayed?rgLocalBoard:(rgG.board||[]);
+  const me=RL_USER();const isMyTurn=rgG.turn===me;
+  const board=rgHasPlayed?rgLocalBoard:(rgBoardFromFS(rgG.board||[]));
   inner.innerHTML='';
-  if(bempty)bempty.style.display=board.length===0&&!rgHasPlayed?'flex':'none';
-  const me=RL_USER();
-  const isMyTurn=rgG.turn===me;
-
+  if(bempty)bempty.style.display=board.length===0?'flex':'none';
   board.forEach((set,si)=>{
-    const grp=document.createElement('div');
-    grp.className='rg-setgrp';
-    if(rgHasPlayed){
-      const valid=rgIsValid(set);
-      grp.classList.add(valid?'valid':'invalid');
-    }
-
-    set.forEach((tile)=>{
+    const grp=document.createElement('div');grp.className='rg-setgrp';
+    if(rgHasPlayed)grp.classList.add(rgIsValid(set)?'valid':'invalid');
+    set.forEach(tile=>{
       const el=rgMakeTile(tile,isMyTurn);
-      // 보드 타일도 드래그 가능 (재배치용)
+      if(isMyTurn){
+        el.title='클릭: 손패로 / 드래그: 다른 세트로';
+        el.addEventListener('click',e=>{e.stopPropagation();rgClickBoardTile(tile,si);});
+      }
       grp.appendChild(el);
     });
-
-    // 세트에 드롭 → 타일 이 세트에 추가
     if(isMyTurn){
-      rgMakeDropZone(grp,(tile)=>{
+      rgMakeDropZone(grp,tile=>{
         const wasInHand=rgIsInHand(tile);
-        if(wasInHand)rgRemoveFromHand(tile);
-        else rgRemoveFromBoard(tile);
-        // 해당 세트가 아직 존재하는지 확인 (제거로 인해 인덱스 변경 가능)
-        const board2=rgLocalBoard;
-        // 세트를 찾아서 추가
-        const targetSet=board2[si]||(board2[si-1]);
-        if(targetSet){
-          // 세트가 바뀌었을 수 있으니 grp과 매칭
-          // grp의 첫 타일 id로 세트 찾기
-          const firstId=grp.querySelector('[data-tile-id]')?.dataset.tileId;
-          const realSi=firstId?board2.findIndex(s=>s.some(t=>String(t.id)===firstId)):si;
-          const actualSi=realSi!==-1?realSi:Math.min(si,board2.length-1);
-          if(board2[actualSi])board2[actualSi].push(tile);
-          else board2.push([tile]);
-        } else {
-          board2.push([tile]);
-        }
+        if(wasInHand)rgRemoveFromHand(tile);else rgRemoveFromBoard(tile);
+        // 세트 인덱스 재확인
+        const firstId=grp.querySelector('[data-tile-id]')?.dataset.tileId;
+        const realSi=firstId?rgLocalBoard.findIndex(s=>s.some(t=>String(t.id)===firstId)):si;
+        const actualSi=realSi!==-1?realSi:Math.min(si,rgLocalBoard.length-1);
+        if(rgLocalBoard[actualSi])rgLocalBoard[actualSi].push(tile);else rgLocalBoard.push([tile]);
         rgAfterMove();
       });
     }
     inner.appendChild(grp);
   });
-
-  // 새 세트 드롭존
   if(isMyTurn){
-    const newZone=document.createElement('div');
-    newZone.className='rg-addsetbtn rg-drop-zone';
-    newZone.innerHTML='<span style="font-size:13px;line-height:1.4;text-align:center">새<br>세트</span>';
-    rgMakeDropZone(newZone,(tile)=>{
-      if(rgIsInHand(tile))rgRemoveFromHand(tile);
-      else rgRemoveFromBoard(tile);
-      rgLocalBoard.push([tile]);
-      rgAfterMove();
+    const ab=document.createElement('div');ab.className='rg-addsetbtn';ab.textContent='+';
+    ab.title='드래그하여 새 세트 만들기';
+    rgMakeDropZone(ab,tile=>{
+      if(rgIsInHand(tile))rgRemoveFromHand(tile);else rgRemoveFromBoard(tile);
+      rgLocalBoard.push([tile]);rgAfterMove();
     });
-    inner.appendChild(newZone);
+    inner.appendChild(ab);
   }
 }
 
-// 플레이어 아이콘 (나=보름달, 순서대로 배정)
+// 플레이어 원형 배치
 const RG_SEAT_ICONS=['🌕','⭐','☀️','🌙','🌍'];
-const RG_SEAT_NAMES=['보름달','별','태양','초승달','지구'];
 
 function rgRenderPlayers(data){
-  const section=document.getElementById('rg-table-section');
-  if(!section)return;
-  section.innerHTML='';
-  const players=data.players||[];
-  const me=RL_USER();
-  const total=players.length;
-  if(total===0)return;
-
-  const W=200, H=180;
-  const cx=W/2, cy=H/2;
-
-  // 섹션 크기 보정
-  section.style.width=W+'px';
-  section.style.height=H+'px';
-
-  // 원형 테이블 (중앙)
-  const tableR=42;
-  const table=document.createElement('div');
-  table.className='rg-round-table';
-  table.style.cssText=`width:${tableR*2}px;height:${tableR*2}px;left:${cx}px;top:${cy}px`;
-  table.innerHTML='<span style="font-size:18px;opacity:.5">🀱</span>';
-  section.appendChild(table);
-
-  // 내 인덱스 찾기
+  const ring=document.getElementById('rg-players-ring');
+  const boardEl=document.getElementById('rg-boardwrap');
+  if(!ring||!boardEl)return;
+  ring.innerHTML='';
+  const players=data.players||[];const me=RL_USER();const total=players.length;if(total===0)return;
   const myIdx=players.findIndex(p=>p.name===me);
-
-  // 좌석 반지름 - 인원수에 따라 조정
-  const seatR=total<=2?68:total<=3?66:total<=4?64:62;
-
-  // 각 플레이어 각도 계산
-  // 나는 항상 하단(270도=π*1.5), 나머지를 균등 배분
+  const bw=boardEl.offsetWidth||580;const bh=boardEl.offsetHeight||320;
+  const bLeft=boardEl.offsetLeft;const bTop=boardEl.offsetTop;
+  const cx=bLeft+bw/2;const cy=bTop+bh/2;
+  const rx=bw/2+64;const ry=bh/2+56;
   players.forEach((p,i)=>{
-    const offset=i-myIdx; // 나 기준 offset
-    // 하단이 270도(π*1.5), 시계방향으로 배분
-    const angle=(Math.PI*1.5)+(offset/total)*2*Math.PI;
-    const x=cx+seatR*Math.cos(angle);
-    const y=cy+seatR*Math.sin(angle);
-
+    const offset=i-myIdx;
+    const angleDeg=90+(offset/total)*360; // 6시=90도
+    const angleRad=(angleDeg*Math.PI)/180;
+    const x=cx+rx*Math.cos(angleRad);const y=cy+ry*Math.sin(angleRad);
     const hc=(data.hands[p.name]||[]).length;
-    const isMyTurn=data.turn===p.name;
-    const isMe=p.name===me;
-
-    // 내 인덱스 기준으로 아이콘 배정 (나=보름달🌕)
-    const iconIdx=isMe?0:((i-myIdx+total)%total);
-    const icon=RG_SEAT_ICONS[iconIdx%RG_SEAT_ICONS.length];
-    const iconName=RG_SEAT_NAMES[iconIdx%RG_SEAT_NAMES.length];
-
-    // 카드 핍
+    const isMyTurn=data.turn===p.name;const isMe=p.name===me;
+    const iconOffset=(i-myIdx+total)%total;
+    const icon=RG_SEAT_ICONS[iconOffset%RG_SEAT_ICONS.length];
     const pipCount=Math.min(hc,14);
     const pipClass=hc<=4?'few':hc>=10?'many':'';
     const pips=Array(pipCount).fill(0).map(()=>`<div class="rg-seat-card-pip ${pipClass}"></div>`).join('');
-
     const seat=document.createElement('div');
     seat.className='rg-player-seat'+(isMyTurn?' active-turn':'')+(isMe?' is-me':'');
     seat.style.cssText=`left:${x}px;top:${y}px`;
-    seat.title=`${iconName} ${p.name} — ${hc}장`;
-
-    seat.innerHTML=`
-      ${isMyTurn?'<div class="rg-seat-myturn-ring"></div>':''}
-      <div class="rg-seat-icon">${icon}</div>
-      <div class="rg-seat-name">${isMe?'나':p.name}</div>
-      <div class="rg-seat-cards">${pips}</div>
-      <div class="rg-seat-count">${hc}장</div>
-    `;
-    section.appendChild(seat);
+    seat.innerHTML=`${isMyTurn?'<div class="rg-seat-myturn-ring"></div>':''}<div class="rg-seat-icon">${icon}</div><div class="rg-seat-name">${isMe?'나 ('+p.name+')':p.name}</div><div class="rg-seat-cards">${pips}</div><div class="rg-seat-count">${hc}장</div>`;
+    ring.appendChild(seat);
   });
 }
 
 function rgRenderLog(logs){
-  const me=RL_USER();
-  const el=document.getElementById('rg-gamelog');
-  if(!el)return;
-  el.innerHTML='';
-  [...logs].reverse().slice(0,40).forEach(l=>{
-    const d=document.createElement('div');
-    d.className='rg-logentry'+(l.includes(me)?l.includes('승리')?' win':' mine':'');
-    d.textContent=l;el.appendChild(d);
+  const el=document.getElementById('rg-gamelog');if(!el)return;
+  el.innerHTML='';const me=RL_USER();
+  [...logs].reverse().slice(0,50).forEach(l=>{
+    const d=document.createElement('div');d.className='rg-logentry'+(l.includes(me)?l.includes('승리')?' win':' mine':'');d.textContent=l;el.appendChild(d);
   });
+  el.scrollTop=0;
+}
+function rgToggleLog(){
+  const corner=document.getElementById('rg-log-corner');const arrow=document.getElementById('rg-log-arrow');
+  if(corner){corner.classList.toggle('collapsed');if(arrow)arrow.textContent=corner.classList.contains('collapsed')?'▼':'▲';}
 }
 
-// ── 되돌리기
-function rgUndo(){
-  rgLocalBoard=JSON.parse(JSON.stringify(rgBoardSnap||[]));
-  rgLocalHand=[...(rgHandSnap||[])];
-  rgHasPlayed=false;rgDragTile=null;
-  const _bp=document.getElementById('rg-btn-place');
-  const _bu=document.getElementById('rg-btn-undo');
-  const _bd=document.getElementById('rg-btn-draw');
-  if(_bp)_bp.disabled=true;
-  if(_bu)_bu.disabled=true;
-  if(_bd)_bd.disabled=false;
-  rgRenderHand();rgRenderBoard();
+function rgSanitizeBoard(){
+  rgLocalBoard=rgLocalBoard.filter(set=>Array.isArray(set)&&set.length>0).map(set=>set.filter(t=>t&&typeof t.id!=='undefined'));
+  rgLocalBoard=rgLocalBoard.filter(set=>set.length>0);
 }
 
+// 유효성 검사
 function rgIsValid(set){
-  if(set.length<3)return false;
+  if(!set||set.length<3)return false;
   const nj=set.filter(t=>!t.joker);if(nj.length===0)return false;
   const nums=nj.map(t=>t.num),cols=nj.map(t=>t.col);
   if(nums.every(n=>n===nums[0]))return new Set(cols).size===cols.length&&set.length<=4;
@@ -3245,49 +3087,26 @@ function rgIsValid(set){
   return false;
 }
 function rgAllValid(){return rgLocalBoard.every(s=>rgIsValid(s));}
+
 async function rgConfirmPlay(){
-  const me=RL_USER();
-  if(!rgHasPlayed)return;
-
-  // ── 유효성 검사 + 힌트 표시
+  const me=RL_USER();if(!rgHasPlayed)return;
+  rgSanitizeBoard();
   const invalidSets=[];
-  rgLocalBoard.forEach((set,si)=>{
-    if(!rgIsValid(set))invalidSets.push(si);
-  });
+  rgLocalBoard.forEach((set,si)=>{if(!rgIsValid(set))invalidSets.push(si);});
   if(invalidSets.length>0){
-    // 잘못된 세트 흔들기
     const grps=document.querySelectorAll('.rg-setgrp');
-    invalidSets.forEach(si=>{
-      if(grps[si]){
-        grps[si].classList.remove('shaking');
-        void grps[si].offsetWidth; // reflow
-        grps[si].classList.add('shaking');
-        setTimeout(()=>grps[si].classList.remove('shaking'),600);
-      }
-    });
-    rlToast('❌ 완성되지 않은 세트가 있습니다!');
-    return;
+    invalidSets.forEach(si=>{if(grps[si]){grps[si].classList.remove('shaking');void grps[si].offsetWidth;grps[si].classList.add('shaking');setTimeout(()=>grps[si].classList.remove('shaking'),600);}});
+    rlToast('❌ 완성되지 않은 세트가 있습니다!');return;
   }
-
-  // ── 첫 플레이 30점 검사
   if(!rgG.firstPlay[me]){
     const oldIds=new Set((rgBoardSnap||[]).flat().map(t=>t.id));
     const added=rgLocalBoard.flat().filter(t=>!t.joker&&!oldIds.has(t.id));
     const addedSum=added.reduce((a,t)=>a+t.num,0);
-    if(addedSum<30){
-      rlToast('❌ 첫 플레이는 30점 이상이어야 합니다 (현재 '+addedSum+'점)');
-      return;
-    }
+    if(addedSum<30){rlToast('❌ 첫 플레이는 30점 이상이어야 합니다 (현재 '+addedSum+'점)');return;}
   }
-
-  // ── 보드에 최소 1장 이상 내려놨는지 확인
   const oldIds2=new Set((rgBoardSnap||[]).flat().map(t=>t.id));
   const newTiles=rgLocalBoard.flat().filter(t=>!oldIds2.has(t.id));
-  if(newTiles.length===0){
-    rlToast('타일을 최소 1장 이상 내려놓아야 합니다');
-    return;
-  }
-
+  if(newTiles.length===0){rlToast('타일을 최소 1장 이상 내려놓아야 합니다');return;}
   const won=rgLocalHand.length===0;
   const players=rgG.players.map(p=>p.name);
   const ni=(players.indexOf(me)+1)%players.length;
@@ -3295,64 +3114,69 @@ async function rgConfirmPlay(){
   if(won)log.push('🏆 '+me+' 승리!');
   try{
     await db.collection('rummikub_rooms').doc(rlRoomId).update({
-      board:rgLocalBoard,
-      ['hands.'+me]:rgLocalHand,
-      turn:won?me:players[ni],
-      ['firstPlay.'+me]:true,
-      status:won?'finished':'playing',
-      winner:won?me:null,
-      log,
+      board:rgBoardToFS(rgLocalBoard),['hands.'+me]:rgLocalHand,
+      turn:won?me:players[ni],['firstPlay.'+me]:true,
+      status:won?'finished':'playing',winner:won?me:null,log,
     });
-    rgHasPlayed=false;
-    rgDragTile=null;
-    rgStopTimer();
-    rgUpdateButtons();
-  }catch(e){rlToast('오류: '+e.message);}
+    rgHasPlayed=false;rgDragTile=null;rgStopTimer();rgUpdateButtons();
+  }catch(e){rlToast('저장 오류: '+e.message);}
 }
+
 async function rgDrawTile(){
-  const me=RL_USER();
-  if(rgG.turn!==me||rgHasPlayed)return;
+  const me=RL_USER();if(rgG.turn!==me||rgHasPlayed)return;
   const deck=[...rgG.deck];if(deck.length===0){rlToast('더미가 비었습니다!');return;}
-  const drawn=deck.splice(0,1)[0];
-  const newHand=[...(rgG.hands[me]||[]),drawn];
-  const players=rgG.players.map(p=>p.name);
-  const ni=(players.indexOf(me)+1)%players.length;
+  const drawn=deck.splice(0,1)[0];const newHand=[...(rgG.hands[me]||[]),drawn];
+  const players=rgG.players.map(p=>p.name);const ni=(players.indexOf(me)+1)%players.length;
   try{
-    await db.collection('rummikub_rooms').doc(rlRoomId).update({deck,['hands.'+me]:newHand,turn:players[ni],log:[...(rgG.log||[]),me+'이(가) 타일을 가져갔습니다']});
+    await db.collection('rummikub_rooms').doc(rlRoomId).update({deck,['hands.'+me]:newHand,turn:players[ni],log:[...(rgG.log||[]),me+'이(가) 카드를 받았습니다']});
     rgHasPlayed=false;rgStopTimer();
   }catch(e){rlToast('오류: '+e.message);}
 }
+
 function rgUndo(){
-  rgLocalBoard=JSON.parse(JSON.stringify(rgBoardSnap));rgLocalHand=[...rgHandSnap];rgHasPlayed=false;
-  document.getElementById('rg-btn-place').disabled=true;document.getElementById('rg-btn-undo').disabled=true;
+  rgLocalBoard=JSON.parse(JSON.stringify(rgBoardSnap||[]));
+  rgLocalHand=[...(rgHandSnap||[])];
+  rgHasPlayed=false;rgDragTile=null;
+  const _bp=document.getElementById('rg-btn-place');const _bu=document.getElementById('rg-btn-undo');const _bd=document.getElementById('rg-btn-draw');
+  const me=RL_USER();const isMe=rgG.turn===me;
+  if(_bp)_bp.disabled=true;if(_bu)_bu.disabled=true;if(_bd)_bd.disabled=!isMe;
   rgRenderHand();rgRenderBoard();
 }
+
 function rgStartTimer(){
   rgStopTimer();rgTimerSec=60;
-  const d=document.getElementById('rg-timerdisp');
-  if(!d)return;
-  d.style.display='block';
-  rgTimerInterval=setInterval(()=>{
-    rgTimerSec--;
-    if(d){d.textContent=rgTimerSec;d.className='rg-timerdisp'+(rgTimerSec<=10?' warn':'');}
-    if(rgTimerSec<=0){clearInterval(rgTimerInterval);rgDrawTile();}
-  },1000);
+  const d=document.getElementById('rg-timerdisp');if(!d)return;d.style.display='block';
+  rgTimerInterval=setInterval(()=>{rgTimerSec--;if(d){d.textContent=rgTimerSec;d.className='rg-timerdisp'+(rgTimerSec<=10?' warn':'');}if(rgTimerSec<=0){clearInterval(rgTimerInterval);rgDrawTile();}},1000);
 }
-function rgStopTimer(){
-  clearInterval(rgTimerInterval);
-  const d=document.getElementById('rg-timerdisp');
-  if(d)d.style.display='none';
-}
+function rgStopTimer(){clearInterval(rgTimerInterval);const d=document.getElementById('rg-timerdisp');if(d)d.style.display='none';}
+
 function rgShowWin(data){
-  const me=RL_USER(),won=data.winner===me;
-  const emoji=document.getElementById('rg-winemoji');
-  const title=document.getElementById('rg-wintitle');
-  const sub=document.getElementById('rg-winsub');
-  const ov=document.getElementById('rg-winov');
+  const me=RL_USER();const won=data.winner===me;
+  const emoji=document.getElementById('rg-winemoji');const title=document.getElementById('rg-wintitle');const sub=document.getElementById('rg-winsub');const ov=document.getElementById('rg-winov');
   if(emoji)emoji.textContent=won?'🏆':'😢';
-  if(title)title.textContent=won?'승리!':'패배...';
-  if(sub)sub.textContent=won?'축하합니다! 모든 타일을 내려놓았습니다!':(data.winner||'상대')+'이(가) 승리했습니다.';
+  if(title)title.textContent=won?'🎉 '+me+' 승리!':'패배...';
+  if(sub)sub.textContent=won?'모든 타일을 내려놓았습니다!':(data.winner||'상대')+'이(가) 먼저 내려놓았습니다.';
   if(ov)ov.classList.add('show');
+}
+
+// 우주 캔버스
+function rgInitSpaceCanvas(){
+  const canvas=document.getElementById('space-canvas');if(!canvas)return;
+  const parent=canvas.parentElement;
+  canvas.width=parent.offsetWidth||window.innerWidth;
+  canvas.height=parent.offsetHeight||window.innerHeight;
+  const ctx=canvas.getContext('2d');
+  const stars=Array.from({length:200},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.4+.3,alpha:Math.random(),spd:Math.random()*.018+.004,dir:Math.random()>.5?1:-1}));
+  let meteors=[];
+  function spawnMeteor(){if(Math.random()>.02)return;meteors.push({x:Math.random()*canvas.width,y:0,len:Math.random()*90+50,spd:Math.random()*7+5,alpha:1});}
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    stars.forEach(s=>{s.alpha+=s.spd*s.dir;if(s.alpha>1||s.alpha<.08)s.dir*=-1;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(220,210,255,${s.alpha.toFixed(2)})`;ctx.fill();});
+    spawnMeteor();
+    meteors=meteors.filter(m=>{m.x+=m.spd*.6;m.y+=m.spd;m.alpha-=.018;if(m.alpha<=0)return false;const g=ctx.createLinearGradient(m.x,m.y,m.x-m.len*.6,m.y-m.len);g.addColorStop(0,`rgba(255,255,255,${m.alpha})`);g.addColorStop(1,'rgba(255,255,255,0)');ctx.beginPath();ctx.moveTo(m.x,m.y);ctx.lineTo(m.x-m.len*.6,m.y-m.len);ctx.strokeStyle=g;ctx.lineWidth=1.5;ctx.stroke();return true;});
+    if(document.getElementById('rscr-game')&&document.getElementById('rscr-game').classList.contains('active'))requestAnimationFrame(draw);
+  }
+  draw();
 }
 </script>
 
