@@ -1191,36 +1191,72 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 @keyframes rgIconBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 50%{opacity:.25}}
 
-/* ── 로그 코너 */
-.rg-log-corner{
+/* ── 채팅 패널 */
+.rg-chat-panel{
   position:absolute;bottom:8px;right:8px;
-  width:180px;z-index:10;
-  background:rgba(8,12,40,.88);
-  border:1px solid rgba(80,100,200,.25);
-  border-radius:10px;
-  backdrop-filter:blur(8px);
+  width:190px;z-index:10;
+  background:rgba(6,10,35,.9);
+  border:1px solid rgba(80,100,200,.28);
+  border-radius:12px;
+  backdrop-filter:blur(10px);
   overflow:hidden;
-  transition:height .25s ease;
+  display:flex;flex-direction:column;
+  max-height:220px;
+  box-shadow:0 4px 20px rgba(0,0,0,.4);
 }
-.rg-log-header{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:6px 10px;cursor:pointer;
-  font-size:10px;font-weight:600;color:rgba(160,150,220,.7);
-  letter-spacing:.5px;text-transform:uppercase;
-  border-bottom:1px solid rgba(80,100,200,.15);
-  user-select:none;
+.rg-chat-header{
+  padding:7px 12px;
+  font-size:11px;font-weight:700;
+  color:rgba(180,170,255,.8);
+  border-bottom:1px solid rgba(80,100,200,.2);
+  letter-spacing:.3px;flex-shrink:0;
 }
-.rg-log-header:hover{color:rgba(200,190,255,.9)}
-.rg-log-body{
-  max-height:140px;overflow-y:auto;padding:6px 8px;
-  display:flex;flex-direction:column;gap:2px;
+.rg-chat-messages{
+  flex:1;overflow-y:auto;
+  padding:6px 8px;
+  display:flex;flex-direction:column;gap:5px;
+  min-height:0;
 }
-.rg-log-body::-webkit-scrollbar{width:2px}
-.rg-log-body::-webkit-scrollbar-thumb{background:rgba(100,120,255,.25);border-radius:1px}
-.rg-log-corner.collapsed .rg-log-body{display:none}
-.rg-logentry{font-size:10px;color:rgba(150,145,195,.7);line-height:1.5}
-.rg-logentry.mine{color:rgba(220,200,80,.8);font-weight:500}
-.rg-logentry.win{color:#50FF80;font-weight:700}
+.rg-chat-messages::-webkit-scrollbar{width:2px}
+.rg-chat-messages::-webkit-scrollbar-thumb{background:rgba(100,120,255,.3);border-radius:1px}
+.rg-chat-msg{display:flex;flex-direction:column;gap:1px}
+.rg-chat-msg-name{font-size:9px;font-weight:700;color:rgba(160,150,255,.7)}
+.rg-chat-msg-name.me{color:rgba(220,200,80,.8)}
+.rg-chat-msg-text{
+  font-size:12px;color:#E0D8FF;
+  line-height:1.4;word-break:break-all;
+  background:rgba(255,255,255,.05);
+  border-radius:6px;padding:4px 8px;
+}
+.rg-chat-msg.is-me .rg-chat-msg-text{
+  background:rgba(100,80,200,.25);
+  color:#E8E0FF;
+}
+.rg-chat-msg.is-system .rg-chat-msg-text{
+  background:none;padding:0 4px;
+  font-size:10px;color:rgba(150,140,200,.55);
+  font-style:italic;
+}
+.rg-chat-input-row{
+  display:flex;gap:0;padding:6px 8px;
+  border-top:1px solid rgba(80,100,200,.2);flex-shrink:0;
+}
+.rg-chat-input{
+  flex:1;background:rgba(255,255,255,.07);
+  border:1px solid rgba(80,100,200,.25);border-right:none;
+  border-radius:8px 0 0 8px;padding:6px 9px;
+  color:#E0D8FF;font-size:12px;
+  font-family:'Noto Sans KR',sans-serif;outline:none;
+}
+.rg-chat-input::placeholder{color:rgba(140,130,200,.4)}
+.rg-chat-input:focus{border-color:rgba(120,100,220,.5)}
+.rg-chat-send{
+  background:linear-gradient(135deg,#5040A0,#7060C0);
+  border:none;border-radius:0 8px 8px 0;
+  padding:6px 11px;color:#fff;cursor:pointer;
+  font-size:14px;transition:all .15s;
+}
+.rg-chat-send:hover{background:linear-gradient(135deg,#6050B8,#8070D8);}
 
 /* ── 세트 그룹 */
 .rg-setgrp{
@@ -2587,12 +2623,18 @@ init();
             </div>
           </div>
         </div>
-        <!-- 로그 (우측 하단 코너) -->
-        <div class="rg-log-corner" id="rg-log-corner">
-          <div class="rg-log-header" onclick="rgToggleLog()">
-            <span>📡 로그</span><span id="rg-log-arrow">▲</span>
+        <!-- 채팅 패널 -->
+        <div class="rg-chat-panel" id="rg-chat-panel">
+          <div class="rg-chat-header">
+            <span>💬 채팅</span>
           </div>
-          <div class="rg-log-body" id="rg-gamelog"></div>
+          <div class="rg-chat-messages" id="rg-chat-messages"></div>
+          <div class="rg-chat-input-row">
+            <input class="rg-chat-input" id="rg-chat-input"
+              type="text" placeholder="메시지 입력..." maxlength="80"
+              onkeydown="if(event.key==='Enter')rgSendChat()"/>
+            <button class="rg-chat-send" onclick="rgSendChat()">↑</button>
+          </div>
         </div>
       </div>
       <!-- 내 패 -->
@@ -2693,6 +2735,7 @@ function rumiClose(){
   if(rlRoomsUnsub){rlRoomsUnsub();rlRoomsUnsub=null;}
   if(rgGameUnsub){rgGameUnsub();rgGameUnsub=null;}
   if(rrUnsub){rrUnsub();rrUnsub=null;}
+  if(rgChatUnsub){rgChatUnsub();rgChatUnsub=null;}
   clearInterval(rgTimerInterval);
   rlRoomId=null;rlIsHost=false;rgHasPlayed=false;rgGameStarted=false;
 }
@@ -2985,6 +3028,7 @@ function rgStartFromData(data){
   rgGameStarted=true;
   const ls=document.getElementById('rs-loading');if(ls){ls.classList.add('hide');ls.style.display='none';}
   setTimeout(rgInitSpaceCanvas,100);
+  setTimeout(rgInitChat,200);
   rgRender(data);
 }
 
@@ -3308,18 +3352,81 @@ function rgRenderPlayers(data){
   });
 }
 
-function rgRenderLog(logs){
-  const el=document.getElementById('rg-gamelog');if(!el)return;
-  el.innerHTML='';const me=RL_USER();
-  [...logs].reverse().slice(0,50).forEach(l=>{
-    const d=document.createElement('div');d.className='rg-logentry'+(l.includes(me)?l.includes('승리')?' win':' mine':'');d.textContent=l;el.appendChild(d);
+// ── 실시간 채팅
+let rgChatUnsub=null;
+
+function rgInitChat(){
+  if(!rlRoomId)return;
+  if(rgChatUnsub){rgChatUnsub();rgChatUnsub=null;}
+  // 최근 30개만 실시간 구독
+  rgChatUnsub=db.collection('rummikub_rooms').doc(rlRoomId)
+    .collection('chat')
+    .orderBy('ts','desc').limit(30)
+    .onSnapshot(snap=>{
+      const msgs=[];
+      snap.forEach(d=>msgs.unshift(d.data()));
+      rgRenderChat(msgs);
+    },()=>{});
+}
+
+function rgRenderChat(msgs){
+  const el=document.getElementById('rg-chat-messages');
+  if(!el)return;
+  const me=RL_USER();
+  const wasAtBottom=el.scrollHeight-el.scrollTop-el.clientHeight<40;
+  el.innerHTML='';
+  msgs.forEach(m=>{
+    const isMe=m.name===me;
+    const isSystem=m.system===true;
+    const wrap=document.createElement('div');
+    wrap.className='rg-chat-msg'+(isMe?' is-me':isSystem?' is-system':'');
+    if(isSystem){
+      wrap.innerHTML=`<div class="rg-chat-msg-text">${m.text}</div>`;
+    } else {
+      wrap.innerHTML=`
+        <div class="rg-chat-msg-name${isMe?' me':''}">${m.name}</div>
+        <div class="rg-chat-msg-text">${rgEscape(m.text)}</div>`;
+    }
+    el.appendChild(wrap);
   });
-  el.scrollTop=0;
+  if(wasAtBottom)el.scrollTop=el.scrollHeight;
 }
-function rgToggleLog(){
-  const corner=document.getElementById('rg-log-corner');const arrow=document.getElementById('rg-log-arrow');
-  if(corner){corner.classList.toggle('collapsed');if(arrow)arrow.textContent=corner.classList.contains('collapsed')?'▼':'▲';}
+
+function rgEscape(str){
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
+
+async function rgSendChat(){
+  const input=document.getElementById('rg-chat-input');
+  if(!input||!rlRoomId)return;
+  const text=input.value.trim();
+  if(!text)return;
+  input.value='';
+  try{
+    await db.collection('rummikub_rooms').doc(rlRoomId)
+      .collection('chat').add({
+        name:RL_USER(),
+        text,
+        ts:firebase.firestore.FieldValue.serverTimestamp(),
+      });
+  }catch(e){rlToast('채팅 오류: '+e.message);}
+}
+
+// 게임 이벤트를 채팅으로 전송 (시스템 메시지)
+async function rgChatSystem(text){
+  if(!rlRoomId)return;
+  try{
+    await db.collection('rummikub_rooms').doc(rlRoomId)
+      .collection('chat').add({
+        name:'SYSTEM',text,system:true,
+        ts:firebase.firestore.FieldValue.serverTimestamp(),
+      });
+  }catch(e){}
+}
+
+// 기존 로그 렌더 (더미 - 채팅으로 대체)
+function rgRenderLog(logs){}
+function rgToggleLog(){}
 
 function rgSanitizeBoard(){
   rgLocalBoard=rgLocalBoard.filter(set=>Array.isArray(set)&&set.length>0).map(set=>set.filter(t=>t&&typeof t.id!=='undefined'));
@@ -3411,7 +3518,7 @@ async function rgConfirmPlay(){
   const players=rgG.players.map(p=>p.name);
   const ni=(players.indexOf(me)+1)%players.length;
   const log=[...(rgG.log||[]),me+'이(가) 타일 '+newTiles.length+'장을 내려놓았습니다'];
-  if(won)log.push('🏆 '+me+' 승리!');
+  if(won){log.push('🏆 '+me+' 승리!');rgChatSystem('🏆 '+me+' 승리!');}
   try{
     await db.collection('rummikub_rooms').doc(rlRoomId).update({
       board:rgBoardToFS(rgLocalBoard),['hands.'+me]:rgLocalHand,
