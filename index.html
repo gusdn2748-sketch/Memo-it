@@ -2996,6 +2996,7 @@ async function rlStartGameScreen(){
 }
 
 // 게임 엔진
+const RG_SEAT_ICONS=['🌕','⭐','☀️','🌙','🌍'];
 const RG_COLORS=['r','b','g','o'];
 const RG_CMAP={r:'rg-tile-r',b:'rg-tile-b',g:'rg-tile-g',o:'rg-tile-o'};
 
@@ -3204,49 +3205,45 @@ function rgRenderHand(){
   hand.forEach((tile,i)=>{
     const el=rgMakeTile(tile,isMyTurn);
 
+    // 클릭/드래그: 내 턴일 때만 보드 조작
     if(isMyTurn){
       el.title='클릭: 새 세트 / 드래그: 원하는 세트';
-      // 클릭: 보드로
       el.addEventListener('click',()=>rgClickHandTile(tile));
-
-      // 손패 내 드래그 순서 변경
-      el.addEventListener('dragstart',e=>{
-        // 보드 드롭용 tile도 설정 (기존 로직)
-        rgDragTile=tile;
-        el.classList.add('dragging');
-        e.dataTransfer.effectAllowed='move';
-        e.dataTransfer.setData('text/plain',String(tile.id));
-        rgHandDragIdx=i;
-      });
-      el.addEventListener('dragend',()=>{
-        el.classList.remove('dragging');
-        rgHandDragIdx=null;
-        document.querySelectorAll('.rg-setgrp,.rg-addsetbtn').forEach(z=>z.classList.remove('droptgt'));
-      });
-
-      // 손패 타일 위로 드롭 → 순서 변경
-      el.addEventListener('dragover',e=>{
-        e.preventDefault();
-        if(rgHandDragIdx!==null&&rgHandDragIdx!==i){
-          // 드래그 중인 타일과 현재 타일 사이 위치 표시
-          el.style.outline='2px dashed rgba(200,180,255,.6)';
-        }
-      });
-      el.addEventListener('dragleave',()=>{el.style.outline='';});
-      el.addEventListener('drop',e=>{
-        e.preventDefault();e.stopPropagation();
-        el.style.outline='';
-        if(rgHandDragIdx===null||rgHandDragIdx===i)return;
-        // 손패 내 순서 변경
-        const draggedTile=hand[rgHandDragIdx];
-        const targetIdx=i;
-        rgLocalHand.splice(rgHandDragIdx,1);
-        rgLocalHand.splice(targetIdx,0,draggedTile);
-        rgHandDragIdx=null;
-        rgDragTile=null;
-        rgRenderHand();
-      });
     }
+
+    // 손패 내 드래그 순서 변경: 항상 허용 (내 턴 무관)
+    el.draggable=true;
+    el.addEventListener('dragstart',e=>{
+      if(isMyTurn)rgDragTile=tile; // 보드 드롭은 내 턴만
+      el.classList.add('dragging');
+      e.dataTransfer.effectAllowed='move';
+      e.dataTransfer.setData('text/plain',String(tile.id));
+      rgHandDragIdx=i;
+    });
+    el.addEventListener('dragend',()=>{
+      el.classList.remove('dragging');
+      rgHandDragIdx=null;
+      if(isMyTurn)document.querySelectorAll('.rg-setgrp,.rg-addsetbtn').forEach(z=>z.classList.remove('droptgt'));
+    });
+    el.addEventListener('dragover',e=>{
+      e.preventDefault();
+      if(rgHandDragIdx!==null&&rgHandDragIdx!==i)
+        el.style.outline='2px dashed rgba(200,180,255,.6)';
+    });
+    el.addEventListener('dragleave',()=>{el.style.outline='';});
+    el.addEventListener('drop',e=>{
+      e.preventDefault();e.stopPropagation();
+      el.style.outline='';
+      if(rgHandDragIdx===null||rgHandDragIdx===i)return;
+      // 손패 내 순서 변경 (항상 허용)
+      const draggedTile=rgLocalHand[rgHandDragIdx];
+      rgLocalHand.splice(rgHandDragIdx,1);
+      rgLocalHand.splice(i,0,draggedTile);
+      rgHandDragIdx=null;
+      if(!isMyTurn)rgDragTile=null;
+      rgRenderHand();
+    });
+
     ct.appendChild(el);
   });
 
@@ -3536,6 +3533,12 @@ function rgSetScore(set){
 // ── 손패 정렬
 const COL_ORDER={r:0,b:1,g:2,o:3,j:4};
 function rgSortHand(by){
+  const me=RL_USER();
+  // 내 턴이 아니어도 로컬 패 정렬 가능
+  // 내 턴이 아닐 때는 G.hands에서 가져와서 정렬
+  if(!rgHasPlayed&&rgG.turn!==me){
+    rgLocalHand=[...(rgG.hands[me]||[])];
+  }
   if(by==='num'){
     rgLocalHand.sort((a,b)=>a.num-b.num||COL_ORDER[a.col]-COL_ORDER[b.col]);
   } else {
