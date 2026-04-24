@@ -1512,7 +1512,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v04.24.3</div>
+  <div class="splash-ver">v04.24.5</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -3045,7 +3045,10 @@ function rgSubscribeGame(){
       if(!rgGameStarted){rgStartFromData(data);return;}
       if(!rgHasPlayed){
         const me=RL_USER();
-        rgSyncHand(data.hands[me]||[]);
+        // 내 턴이 아닌 상태에서만 손패 동기화 (카드받기 직후 덮어쓰기 방지)
+        if(data.turn!==me){
+          rgSyncHand(data.hands[me]||[]);
+        }
         rgLocalBoard=rgBoardFromFS(data.board||[]);
       }
       rgRender(data);
@@ -3097,7 +3100,11 @@ function rgMakeDropZone(el,onDrop){
   el.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();el.classList.remove('droptgt');if(!rgDragTile)return;onDrop(rgDragTile);rgDragTile=null;});
 }
 
-function rgRemoveFromHand(tile){const i=rgLocalHand.findIndex(t=>t.id===tile.id);if(i!==-1)rgLocalHand.splice(i,1);}
+function rgRemoveFromHand(tile){
+  if(!tile)return;
+  const i=rgLocalHand.findIndex(t=>t.id===tile.id);
+  if(i!==-1)rgLocalHand.splice(i,1);
+}
 function rgRemoveFromBoard(tile){
   for(let si=rgLocalBoard.length-1;si>=0;si--){
     const ti=rgLocalBoard[si].findIndex(t=>t.id===tile.id);
@@ -3110,9 +3117,9 @@ function rgIsInHand(tile){return rgLocalHand.some(t=>t.id===tile.id);}
 function rgAfterMove(){
   rgHasPlayed=true;
   rgLocalBoard=rgLocalBoard.map(set=>rgSortSet(set));
+  rgDeduplicateHand(); // 손패↔보드 중복 타일 제거
   rgUpdateButtons();rgRenderHand();rgRenderBoard();
   requestAnimationFrame(()=>requestAnimationFrame(rgAutoScale));
-  // 실시간으로 상대에게 내 보드 공유
   rgPushPreview();
 }
 
@@ -3161,12 +3168,12 @@ function rgClickHandTile(tile){
 }
 function rgClickBoardTile(tile,si){
   if(rgG.turn!==RL_USER())return;
-  rgHasPlayed=true;
   const set=rgLocalBoard[si];if(!set)return;
   const ti=set.findIndex(t=>t.id===tile.id);if(ti===-1)return;
   set.splice(ti,1);if(set.length===0)rgLocalBoard.splice(si,1);
-  rgLocalHand.push(tile);
-  rgUpdateButtons();rgRenderHand();rgRenderBoard();
+  // 보드에서 제거 후 손패에 추가 (중복 방지: 이미 없는 경우만)
+  if(!rgLocalHand.some(t=>t.id===tile.id))rgLocalHand.push(tile);
+  rgAfterMove();
 }
 
 function rgRender(data){
@@ -3199,17 +3206,29 @@ function rgRender(data){
 // 패 동기화 - 정렬 상태 보존
 // rgHandOrdered=true 면 기존 순서 유지 + 새 타일 뒤에 추가
 function rgSyncHand(newHand){
+  // 절대 원칙: 게임 플레이 중(rgHasPlayed=true)엔 손패 덮어쓰기 금지
+  if(rgHasPlayed)return;
+  if(!Array.isArray(newHand))return;
+
   if(!rgHandOrdered){
     rgLocalHand=[...newHand];
     return;
   }
-  // 기존 순서 유지: 현재 rgLocalHand에서 newHand에 있는 것만 남김
+
+  // 정렬 상태 보존
+  // 핵심: 손패 + 보드 위 타일 전부 "내가 이미 추적 중"인 타일로 간주
+  // → Firebase에서 "새 타일"로 오인해서 손패에 재추가하는 버그 방지
+  const alreadyTrackedIds=new Set([
+    ...rgLocalHand.map(t=>t.id),
+    ...(rgLocalBoard||[]).flat().map(t=>t.id),
+  ]);
+
   const newIds=new Set(newHand.map(t=>t.id));
+  // 기존 손패 중 Firebase 손패에 여전히 있는 것만 유지
   const kept=rgLocalHand.filter(t=>newIds.has(t.id));
-  // newHand에 새로 추가된 타일(카드받기로 온 것)은 뒤에 추가
-  const keptIds=new Set(kept.map(t=>t.id));
-  const added=newHand.filter(t=>!keptIds.has(t.id));
-  rgLocalHand=[...kept,...added];
+  // 완전히 새로 추가된 타일만 뒤에 추가 (카드받기 등)
+  const genuinelyNew=newHand.filter(t=>!alreadyTrackedIds.has(t.id));
+  rgLocalHand=[...kept,...genuinelyNew];
 }
 
 let rgHandDragIdx=null; // 손패 내 드래그 중인 인덱스
@@ -3272,7 +3291,7 @@ function rgRenderHand(){
       const adjustedIdx=targetIdx>(rgHandDragIdx)?targetIdx-1:targetIdx;
       rgLocalHand.splice(adjustedIdx,0,draggedTile);
       rgHandDragIdx=null;
-      if(!isMyTurn)rgDragTile=null;
+      rgDragTile=null; // 손패 내 reorder 후 항상 초기화 (보드 중복 방지)
       rgHandOrdered=true;
       rgRenderHand();
     });
@@ -3658,6 +3677,13 @@ function rgRenderBoardData(board, playerName){
   requestAnimationFrame(rgAutoScale);
 }
 
+
+// 손패와 보드 중복 타일 제거 (동일 id가 양쪽에 있으면 보드 우선)
+function rgDeduplicateHand(){
+  const boardIds=new Set((rgLocalBoard||[]).flat().map(t=>t.id));
+  rgLocalHand=rgLocalHand.filter(t=>!boardIds.has(t.id));
+}
+
 // 유효성 검사
 function rgIsValid(set){
   if(!set||set.length<3)return false;
@@ -3712,12 +3738,23 @@ async function rgConfirmPlay(){
 async function rgDrawTile(){
   const me=RL_USER();if(rgG.turn!==me||rgHasPlayed)return;
   const deck=[...rgG.deck];if(deck.length===0){rlToast('더미가 비었습니다!');return;}
-  const drawn=deck.splice(0,1)[0];const newHand=[...(rgG.hands[me]||[]),drawn];
+  const drawn=deck.splice(0,1)[0];
+  const newHand=[...(rgG.hands[me]||[]),drawn];
   const players=rgG.players.map(p=>p.name);const ni=(players.indexOf(me)+1)%players.length;
   try{
-    await db.collection('rummikub_rooms').doc(rlRoomId).update({deck,['hands.'+me]:newHand,turn:players[ni],log:[...(rgG.log||[]),me+'이(가) 카드를 받았습니다']});
+    // 로컬 손패에 즉시 추가 (정렬 순서 맨 뒤에)
+    rgLocalHand=[...rgLocalHand,drawn];
+    await db.collection('rummikub_rooms').doc(rlRoomId).update({
+      deck,['hands.'+me]:newHand,turn:players[ni],
+      log:[...(rgG.log||[]),me+'이(가) 카드를 받았습니다']
+    });
     rgHasPlayed=false;rgStopTimer();
-  }catch(e){rlToast('오류: '+e.message);}
+    rgRenderHand(); // 즉시 반영
+  }catch(e){
+    // 실패 시 롤백
+    rgLocalHand=rgLocalHand.filter(t=>t.id!==drawn.id);
+    rlToast('오류: '+e.message);
+  }
 }
 
 function rgUndo(){
