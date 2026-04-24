@@ -739,6 +739,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
   align-content:flex-start;align-items:flex-start;
   justify-content:flex-start;
   box-sizing:border-box;
+  flex-shrink:0;
   transition:zoom .2s ease;
   width:100%;
 }
@@ -1406,6 +1407,35 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
   pointer-events:none;
 }
 
+
+/* ── 손패 정렬 버튼 */
+.rg-sort-btns{display:flex;gap:4px;margin-left:auto;}
+.rg-sort-btn{
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(100,120,255,.25);
+  border-radius:6px;padding:3px 7px;
+  color:rgba(180,170,255,.8);font-size:10px;
+  font-weight:600;cursor:pointer;
+  font-family:'Noto Sans KR',sans-serif;
+  transition:all .15s;
+}
+.rg-sort-btn:hover{background:rgba(100,120,255,.2);color:#C8B8FF;}
+
+/* ── 실시간 보드 프리뷰 */
+.rg-setgrp.preview{
+  border-color:rgba(255,200,60,.35)!important;
+  background:rgba(255,200,60,.06)!important;
+  opacity:0.75;
+}
+.rg-preview-badge{
+  position:absolute;top:-7px;left:6px;
+  font-size:8px;color:rgba(255,200,60,.8);
+  background:rgba(20,15,50,.9);
+  border:1px solid rgba(255,200,60,.3);
+  border-radius:4px;padding:1px 5px;
+  pointer-events:none;white-space:nowrap;
+}
+
 </style>
 </head>
 <body>
@@ -1481,7 +1511,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v04.22.2</div>
+  <div class="splash-ver">v04.24.1</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -2644,6 +2674,10 @@ init();
             <div class="rg-handtop">
               <span class="rg-handlabel">✋ 내 패</span>
               <span class="rg-handcount" id="rg-handcount">0장</span>
+              <div class="rg-sort-btns">
+                <button class="rg-sort-btn" onclick="rgSortHand('num')" title="숫자순">1→9</button>
+                <button class="rg-sort-btn" onclick="rgSortHand('col')" title="색상순">🎨</button>
+              </div>
             </div>
             <div class="rg-handactions">
               <button class="rg-abtn rg-adraw"  id="rg-btn-draw"  onclick="rgDrawTile()"    disabled>🂠 카드받기</button>
@@ -3074,8 +3108,9 @@ function rgAfterMove(){
   rgHasPlayed=true;
   rgLocalBoard=rgLocalBoard.map(set=>rgSortSet(set));
   rgUpdateButtons();rgRenderHand();rgRenderBoard();
-  // 렌더 후 축소 (DOM 업데이트 기다림)
   requestAnimationFrame(()=>requestAnimationFrame(rgAutoScale));
+  // 실시간으로 상대에게 내 보드 공유
+  rgPushPreview();
 }
 
 function rgUpdateButtons(){
@@ -3144,7 +3179,9 @@ function rgRender(data){
   if(_bp)_bp.disabled=!isMe||!rgHasPlayed||!rgAllValid();
   if(_bd)_bd.disabled=!isMe||rgHasPlayed;
   if(_bu)_bu.disabled=!isMe||!rgHasPlayed;
-  rgRenderHand();rgRenderBoard();rgRenderPlayers(data);rgRenderLog(data.log||[]);
+  rgRenderHand();rgRenderPlayers(data);rgRenderLog(data.log||[]);
+  // 항상 preview 포함 렌더 (내 턴이면 내 로컬, 아니면 상대 preview)
+  rgRenderBoardWithPreview(data);
   if(data.timerEnabled&&isMe)rgStartTimer();else rgStopTimer();
   requestAnimationFrame(()=>requestAnimationFrame(rgAutoScale));
   if(isMe&&!rgHasPlayed){
@@ -3155,24 +3192,75 @@ function rgRender(data){
   }
 }
 
+let rgHandDragIdx=null; // 손패 내 드래그 중인 인덱스
+
 function rgRenderHand(){
   const me=RL_USER();const ct=document.getElementById('rg-handtiles');const hc=document.getElementById('rg-handcount');
   if(!ct)return;
   const isMyTurn=rgG.turn===me;
   const hand=rgHasPlayed?rgLocalHand:(rgG.hands[me]||[]);
   ct.innerHTML='';if(hc)hc.textContent=hand.length+'장';
-  hand.forEach(tile=>{
+
+  hand.forEach((tile,i)=>{
     const el=rgMakeTile(tile,isMyTurn);
+
     if(isMyTurn){
       el.title='클릭: 새 세트 / 드래그: 원하는 세트';
+      // 클릭: 보드로
       el.addEventListener('click',()=>rgClickHandTile(tile));
+
+      // 손패 내 드래그 순서 변경
+      el.addEventListener('dragstart',e=>{
+        // 보드 드롭용 tile도 설정 (기존 로직)
+        rgDragTile=tile;
+        el.classList.add('dragging');
+        e.dataTransfer.effectAllowed='move';
+        e.dataTransfer.setData('text/plain',String(tile.id));
+        rgHandDragIdx=i;
+      });
+      el.addEventListener('dragend',()=>{
+        el.classList.remove('dragging');
+        rgHandDragIdx=null;
+        document.querySelectorAll('.rg-setgrp,.rg-addsetbtn').forEach(z=>z.classList.remove('droptgt'));
+      });
+
+      // 손패 타일 위로 드롭 → 순서 변경
+      el.addEventListener('dragover',e=>{
+        e.preventDefault();
+        if(rgHandDragIdx!==null&&rgHandDragIdx!==i){
+          // 드래그 중인 타일과 현재 타일 사이 위치 표시
+          el.style.outline='2px dashed rgba(200,180,255,.6)';
+        }
+      });
+      el.addEventListener('dragleave',()=>{el.style.outline='';});
+      el.addEventListener('drop',e=>{
+        e.preventDefault();e.stopPropagation();
+        el.style.outline='';
+        if(rgHandDragIdx===null||rgHandDragIdx===i)return;
+        // 손패 내 순서 변경
+        const draggedTile=hand[rgHandDragIdx];
+        const targetIdx=i;
+        rgLocalHand.splice(rgHandDragIdx,1);
+        rgLocalHand.splice(targetIdx,0,draggedTile);
+        rgHandDragIdx=null;
+        rgDragTile=null;
+        rgRenderHand();
+      });
     }
     ct.appendChild(el);
   });
-  // 손패 영역을 드롭존으로
+
+  // 손패 영역 자체: 보드 타일 → 손패로 회수
   if(isMyTurn){
-    ct.addEventListener('dragover',e=>{e.preventDefault();});
-    ct.addEventListener('drop',e=>{e.preventDefault();if(!rgDragTile)return;const tile=rgDragTile;rgDragTile=null;if(!rgIsInHand(tile)){rgRemoveFromBoard(tile);rgLocalHand.push(tile);rgAfterMove();}});
+    ct.addEventListener('dragover',e=>{
+      if(rgHandDragIdx===null)e.preventDefault(); // 보드에서 드래그 시만
+    });
+    ct.addEventListener('drop',e=>{
+      e.preventDefault();
+      if(!rgDragTile||rgHandDragIdx!==null)return;
+      const tile=rgDragTile;rgDragTile=null;
+      if(!rgIsInHand(tile)){rgRemoveFromBoard(tile);rgLocalHand.push(tile);rgAfterMove();}
+    });
   }
 }
 
@@ -3231,78 +3319,42 @@ function rgAutoScale(){
 
   // ── 초기화
   inner.style.zoom='';
-  inner.style.transform='';
   inner.style.width='';
+  inner.style.transform='none';
+  inner.style.marginLeft='';
   inner.querySelectorAll('.rg-row-break').forEach(el=>el.remove());
+  inner.querySelectorAll('.rg-setgrp').forEach(g=>{g.style.flexWrap='nowrap';g.style.maxWidth='';});
 
-  const availW=scroll.clientWidth-28;
-  inner.style.width=availW+'px';
-
-  // ── 총 타일 수 계산
-  const allTiles=inner.querySelectorAll('.rg-tile');
-  const totalTiles=allTiles.length;
-  if(totalTiles===0)return;
-
+  const scrollW=scroll.clientWidth;
   const sh=scroll.clientHeight;
 
-  // ── zoom으로 타일 축소 → flex-wrap이 레이아웃 자동 재계산
-  // 타일 기준 적정 zoom: 총 타일이 많을수록 작게
-  // TILE_W=47px 기준으로 한 줄 최대 타일 수와 행 수 예측
-  function tryLayout(zoom){
-    const tileW=Math.round((44+3)*zoom);
-    const setG=inner.querySelectorAll('.rg-setgrp');
-    const maxPerRow=Math.floor(availW/tileW);
-    let rows=1,rowTiles=0;
-    setG.forEach(grp=>{
-      const tc=Math.max(grp.querySelectorAll('.rg-tile').length,1);
-      if(rowTiles>0&&rowTiles+tc>maxPerRow){rows++;rowTiles=tc;}
-      else rowTiles+=tc;
-    });
-    const ROW_H=Math.round((60+18)*zoom); // 타일높이+패딩
-    return rows*ROW_H;
+  // ── zoom 방식: 레이아웃 자체가 줄어서 overflow 문제 없음
+  // zoom=z 일 때: 요소의 레이아웃 크기 = CSS크기 * z
+  // 원하는 동작: 시각폭=scrollW, 시각높=≤sh
+  // → CSS width = scrollW/z (→ 레이아웃폭 = scrollW/z * z = scrollW ✅)
+  // → CSS height: 자동(flex-wrap) → 레이아웃높 = 자연높 * z ≤ sh ✅
+
+  let bestZoom=1.0;
+  const MIN_ZOOM=0.38;
+
+  for(let z=1.0; z>=MIN_ZOOM; z=Math.round((z-0.04)*100)/100){
+    // zoom 적용 전에 폭을 z로 나눠 설정
+    inner.style.zoom=z;
+    inner.style.width=Math.round(scrollW/z)+'px';
+
+    // zoom 적용 후 실제 레이아웃 높이 (이미 zoom 반영됨)
+    const layoutH=inner.offsetHeight;
+
+    if(layoutH<=sh){bestZoom=z;break;}
   }
 
-  // zoom 1.0부터 시작해서 높이가 맞을 때까지 줄임
-  let zoom=1.0;
-  const MIN_ZOOM=0.42;
-  while(zoom>MIN_ZOOM&&tryLayout(zoom)>sh-20){
-    zoom=Math.round((zoom-0.04)*100)/100;
-  }
-
-  // zoom 적용 (레이아웃 재계산됨)
-  if(zoom<1.0){
-    inner.style.zoom=zoom.toFixed(2);
-  }
-
-  // 타일 수 기준 줄바꿈 마커 삽입
-  const tileW2=Math.round((44+3)*zoom);
-  const maxPerRow2=Math.floor(availW/tileW2);
-  const setGroups=inner.querySelectorAll('.rg-setgrp');
-  let rowTiles=0;
-  setGroups.forEach(grp=>{
-    const tc=Math.max(grp.querySelectorAll('.rg-tile').length,1);
-    if(rowTiles>0&&rowTiles+tc>maxPerRow2){
-      const br=document.createElement('div');
-      br.className='rg-row-break';
-      br.style.cssText='width:100%;height:0;flex-basis:100%;';
-      inner.insertBefore(br,grp);
-      rowTiles=tc;
-    } else {
-      rowTiles+=tc;
-    }
-    // 세트 내부도 줄바꿈 허용 (13장 런 등)
-    if(tc>maxPerRow2){
-      grp.style.flexWrap='wrap';
-      grp.style.maxWidth=availW+'px';
-    } else {
-      grp.style.flexWrap='nowrap';
-      grp.style.maxWidth='';
-    }
-  });
+  // 최종 적용
+  inner.style.zoom=bestZoom;
+  inner.style.width=Math.round(scrollW/bestZoom)+'px';
+  inner.style.transform='none';
+  inner.style.marginLeft='';
 }
 
-// 플레이어 원형 배치
-const RG_SEAT_ICONS=['🌕','⭐','☀️','🌙','🌍'];
 
 function rgRenderPlayers(data){
   const ring=document.getElementById('rg-players-ring');
@@ -3480,6 +3532,95 @@ function rgSetScore(set){
   return nonJokerSum+rgJokerValue(set);
 }
 
+
+// ── 손패 정렬
+const COL_ORDER={r:0,b:1,g:2,o:3,j:4};
+function rgSortHand(by){
+  if(by==='num'){
+    rgLocalHand.sort((a,b)=>a.num-b.num||COL_ORDER[a.col]-COL_ORDER[b.col]);
+  } else {
+    rgLocalHand.sort((a,b)=>COL_ORDER[a.col]-COL_ORDER[b.col]||a.num-b.num);
+  }
+  rgRenderHand();
+}
+
+// ── 실시간 보드 공유 (preview)
+// rgAfterMove마다 Firebase에 임시 preview 저장
+async function rgPushPreview(){
+  if(!rlRoomId)return;
+  try{
+    await db.collection('rummikub_rooms').doc(rlRoomId).update({
+      [`preview.${RL_USER()}`]:{
+        board:rgBoardToFS(rgLocalBoard),
+        ts:Date.now(),
+      }
+    });
+  }catch(e){}
+}
+
+// 보드 렌더 시 다른 플레이어 preview도 표시
+function rgRenderBoardWithPreview(data){
+  const me=RL_USER();
+  const currentTurn=data.turn;
+  const preview=data.preview||{};
+
+  // 내 턴: 로컬 보드 그대로 렌더
+  if(currentTurn===me){
+    rgRenderBoard();
+    return;
+  }
+
+  // 상대 턴: preview가 있으면 preview 보드 전체를 렌더
+  const p=preview[currentTurn];
+  const isRecent=p&&p.ts&&Date.now()-p.ts<90000;
+
+  if(isRecent){
+    // preview 보드 전체를 공식 보드 대신 렌더 (실시간)
+    const previewBoard=rgBoardFromFS(p.board||[]);
+    rgRenderBoardData(previewBoard, currentTurn);
+  } else {
+    // preview 없으면 공식 보드
+    rgRenderBoard();
+  }
+}
+
+// 특정 보드 데이터를 렌더 (preview용)
+function rgRenderBoardData(board, playerName){
+  const inner=document.getElementById('rg-boardinner');
+  const bempty=document.getElementById('rg-bempty');
+  if(!inner)return;
+  inner.innerHTML='';
+  if(bempty)bempty.style.display=board.length===0?'flex':'none';
+
+  board.forEach(set=>{
+    const grp=document.createElement('div');
+    grp.className='rg-setgrp';
+    // 유효성 표시
+    if(rgIsValid(set))grp.classList.add('valid');
+    else grp.classList.add('invalid');
+
+    set.forEach(tile=>{
+      const el=rgMakeTile(tile,false);
+      grp.appendChild(el);
+    });
+    inner.appendChild(grp);
+  });
+
+  // 상단에 "배치 중" 인디케이터
+  if(board.length>0&&playerName){
+    const indicator=document.createElement('div');
+    indicator.style.cssText=`
+      width:100%;flex-basis:100%;
+      font-size:10px;color:rgba(255,200,60,.7);
+      padding:2px 6px;text-align:center;
+      letter-spacing:.3px;order:-1;
+    `;
+    indicator.textContent='👁 '+playerName+' 배치 중... (실시간)';
+    inner.prepend(indicator);
+  }
+  requestAnimationFrame(rgAutoScale);
+}
+
 // 유효성 검사
 function rgIsValid(set){
   if(!set||set.length<3)return false;
@@ -3526,6 +3667,8 @@ async function rgConfirmPlay(){
       status:won?'finished':'playing',winner:won?me:null,log,
     });
     rgHasPlayed=false;rgDragTile=null;rgStopTimer();rgUpdateButtons();
+    // preview 초기화
+    try{await db.collection('rummikub_rooms').doc(rlRoomId).update({[`preview.${RL_USER()}`]:firebase.firestore.FieldValue.delete()});}catch(e){}
   }catch(e){rlToast('저장 오류: '+e.message);}
 }
 
