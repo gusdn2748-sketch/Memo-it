@@ -1137,7 +1137,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 .rg-board-scroll{
   position:relative;z-index:1;
   width:94%;height:90%;
-  overflow:hidden;
+  overflow:hidden!important;
   display:flex;
   align-items:flex-start;
   justify-content:center;
@@ -1511,7 +1511,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v04.24.1</div>
+  <div class="splash-ver">v04.24.2</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -3190,16 +3190,23 @@ function rgRender(data){
     rgHandSnap=[...(data.hands[me]||[])];
     rgLocalBoard=rgBoardFromFS(data.board||[]);
     rgLocalHand=[...rgHandSnap];
+    rgHandOrdered=false; // 새 턴: 순서 초기화
   }
 }
 
 let rgHandDragIdx=null; // 손패 내 드래그 중인 인덱스
+let rgHandOrdered=false; // 사용자가 수동 정렬했으면 Firebase 덮어쓰기 방지
 
 function rgRenderHand(){
   const me=RL_USER();const ct=document.getElementById('rg-handtiles');const hc=document.getElementById('rg-handcount');
   if(!ct)return;
   const isMyTurn=rgG.turn===me;
-  const hand=rgHasPlayed?rgLocalHand:(rgG.hands[me]||[]);
+  // rgLocalHand를 항상 렌더 소스로 사용
+  if(!rgHandOrdered){
+    // 정렬/순서변경 없으면 항상 최신 Firebase 데이터로 동기화
+    rgLocalHand=[...(rgG.hands[me]||[])];
+  }
+  const hand=rgLocalHand;
   ct.innerHTML='';if(hc)hc.textContent=hand.length+'장';
 
   hand.forEach((tile,i)=>{
@@ -3227,20 +3234,31 @@ function rgRenderHand(){
     });
     el.addEventListener('dragover',e=>{
       e.preventDefault();
-      if(rgHandDragIdx!==null&&rgHandDragIdx!==i)
-        el.style.outline='2px dashed rgba(200,180,255,.6)';
+      if(rgHandDragIdx!==null&&rgHandDragIdx!==i){
+        // 마우스 위치로 앞/뒤 구분
+        const rect=el.getBoundingClientRect();
+        const mid=rect.left+rect.width/2;
+        el.style.borderLeft=e.clientX<mid?'3px solid #C8B8FF':'';
+        el.style.borderRight=e.clientX>=mid?'3px solid #C8B8FF':'';
+      }
     });
-    el.addEventListener('dragleave',()=>{el.style.outline='';});
+    el.addEventListener('dragleave',()=>{el.style.borderLeft='';el.style.borderRight='';});
     el.addEventListener('drop',e=>{
       e.preventDefault();e.stopPropagation();
-      el.style.outline='';
+      el.style.borderLeft='';el.style.borderRight='';
       if(rgHandDragIdx===null||rgHandDragIdx===i)return;
-      // 손패 내 순서 변경 (항상 허용)
+      // 마우스 위치로 삽입 위치 결정
+      const rect=el.getBoundingClientRect();
+      const insertBefore=e.clientX<rect.left+rect.width/2;
+      const targetIdx=insertBefore?i:i+1;
       const draggedTile=rgLocalHand[rgHandDragIdx];
       rgLocalHand.splice(rgHandDragIdx,1);
-      rgLocalHand.splice(i,0,draggedTile);
+      // splice 후 인덱스 보정
+      const adjustedIdx=targetIdx>(rgHandDragIdx)?targetIdx-1:targetIdx;
+      rgLocalHand.splice(adjustedIdx,0,draggedTile);
       rgHandDragIdx=null;
       if(!isMyTurn)rgDragTile=null;
+      rgHandOrdered=true;
       rgRenderHand();
     });
 
@@ -3339,10 +3357,10 @@ function rgAutoScale(){
     inner.style.zoom=z;
     inner.style.width=Math.round(scrollW/z)+'px';
 
-    // zoom 적용 후 실제 레이아웃 높이 (이미 zoom 반영됨)
-    const layoutH=inner.offsetHeight;
-
-    if(layoutH<=sh){bestZoom=z;break;}
+    // zoom 적용 후 실제 레이아웃 높이
+    // offsetHeight: zoom 반영된 실제 높이
+    const layoutH=inner.offsetHeight||inner.scrollHeight;
+    if(layoutH<=sh-4){bestZoom=z;break;}
   }
 
   // 최종 적용
@@ -3531,7 +3549,7 @@ function rgSetScore(set){
 
 
 // ── 손패 정렬
-const COL_ORDER={r:0,b:1,g:2,o:3,j:4};
+const COL_ORDER={r:0,o:1,g:2,b:3,j:4}; // 빨→주황→초록→파랑
 function rgSortHand(by){
   const me=RL_USER();
   // 내 턴이 아니어도 로컬 패 정렬 가능
@@ -3544,6 +3562,7 @@ function rgSortHand(by){
   } else {
     rgLocalHand.sort((a,b)=>COL_ORDER[a.col]-COL_ORDER[b.col]||a.num-b.num);
   }
+  rgHandOrdered=true; // 수동 정렬 유지
   rgRenderHand();
 }
 
@@ -3689,6 +3708,7 @@ async function rgDrawTile(){
 function rgUndo(){
   rgLocalBoard=JSON.parse(JSON.stringify(rgBoardSnap||[]));
   rgLocalHand=[...(rgHandSnap||[])];
+  rgHandOrdered=false;
   rgHasPlayed=false;rgDragTile=null;
   const _bp=document.getElementById('rg-btn-place');const _bu=document.getElementById('rg-btn-undo');const _bd=document.getElementById('rg-btn-draw');
   const me=RL_USER();const isMe=rgG.turn===me;
