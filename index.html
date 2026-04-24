@@ -734,7 +734,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
   /* 한 줄 최대 폭을 제한해서 자연스러운 줄바꿈 유도 */
   max-width:100%;
   min-height:60px;
-  padding:14px 16px;
+  padding:10px 12px;
   display:flex;flex-wrap:wrap;gap:9px;
   align-content:flex-start;align-items:flex-start;
   justify-content:flex-start;
@@ -1115,8 +1115,8 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 }
 /* 원형/타원 테이블 */
 .rg-oval-board{
-  width:min(700px,82vw);
-  height:min(360px,52vh);
+  width:min(720px,84vw);
+  height:min(380px,54vh);
   position:relative;
   display:flex;align-items:center;justify-content:center;
 }
@@ -1136,11 +1136,12 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 /* 실제 스크롤 콘텐츠 영역 - 클리핑 없음 */
 .rg-board-scroll{
   position:relative;z-index:1;
-  width:94%;height:90%;
+  width:82%;height:76%;
   overflow:hidden!important;
   display:flex;
   align-items:flex-start;
   justify-content:center;
+  margin-top:2%;
 }
 .rg-boardinner{
   min-width:460px;min-height:200px;
@@ -1383,7 +1384,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 /* ── 내 플레이어 뱃지 (보드 아래 고정) */
 .rg-my-badge{
   position:absolute;
-  bottom:6px;left:50%;
+  bottom:10px;left:50%;
   transform:translateX(-50%);
   display:flex;align-items:center;gap:7px;
   background:rgba(8,12,40,.82);
@@ -1511,7 +1512,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v04.24.2</div>
+  <div class="splash-ver">v04.24.3</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -3044,7 +3045,7 @@ function rgSubscribeGame(){
       if(!rgGameStarted){rgStartFromData(data);return;}
       if(!rgHasPlayed){
         const me=RL_USER();
-        rgLocalHand=[...(data.hands[me]||[])];
+        rgSyncHand(data.hands[me]||[]);
         rgLocalBoard=rgBoardFromFS(data.board||[]);
       }
       rgRender(data);
@@ -3056,7 +3057,8 @@ function rgSubscribeGame(){
 function rgStartFromData(data){
   if(window._rgTimeoutId)clearTimeout(window._rgTimeoutId);
   rgG=data;const me=RL_USER();
-  rgLocalHand=[...(data.hands[me]||[])];
+  rgHandOrdered=false; // 게임 최초 시작 시에만 정렬 초기화
+  rgSyncHand(data.hands[me]||[]);
   rgLocalBoard=rgBoardFromFS(data.board||[]);
   rgBoardSnap=JSON.parse(JSON.stringify(rgLocalBoard));
   rgHandSnap=[...rgLocalHand];
@@ -3189,9 +3191,25 @@ function rgRender(data){
     rgBoardSnap=JSON.parse(JSON.stringify(rgBoardFromFS(data.board||[])));
     rgHandSnap=[...(data.hands[me]||[])];
     rgLocalBoard=rgBoardFromFS(data.board||[]);
-    rgLocalHand=[...rgHandSnap];
-    rgHandOrdered=false; // 새 턴: 순서 초기화
+    // 새 턴 시작: 패는 rgSyncHand로 동기화 (정렬 상태 유지)
+    rgSyncHand(rgHandSnap);
   }
+}
+
+// 패 동기화 - 정렬 상태 보존
+// rgHandOrdered=true 면 기존 순서 유지 + 새 타일 뒤에 추가
+function rgSyncHand(newHand){
+  if(!rgHandOrdered){
+    rgLocalHand=[...newHand];
+    return;
+  }
+  // 기존 순서 유지: 현재 rgLocalHand에서 newHand에 있는 것만 남김
+  const newIds=new Set(newHand.map(t=>t.id));
+  const kept=rgLocalHand.filter(t=>newIds.has(t.id));
+  // newHand에 새로 추가된 타일(카드받기로 온 것)은 뒤에 추가
+  const keptIds=new Set(kept.map(t=>t.id));
+  const added=newHand.filter(t=>!keptIds.has(t.id));
+  rgLocalHand=[...kept,...added];
 }
 
 let rgHandDragIdx=null; // 손패 내 드래그 중인 인덱스
@@ -3202,10 +3220,7 @@ function rgRenderHand(){
   if(!ct)return;
   const isMyTurn=rgG.turn===me;
   // rgLocalHand를 항상 렌더 소스로 사용
-  if(!rgHandOrdered){
-    // 정렬/순서변경 없으면 항상 최신 Firebase 데이터로 동기화
-    rgLocalHand=[...(rgG.hands[me]||[])];
-  }
+  // rgLocalHand는 rgSyncHand로만 업데이트 - 여기선 그냥 사용
   const hand=rgLocalHand;
   ct.innerHTML='';if(hc)hc.textContent=hand.length+'장';
 
@@ -3554,8 +3569,8 @@ function rgSortHand(by){
   const me=RL_USER();
   // 내 턴이 아니어도 로컬 패 정렬 가능
   // 내 턴이 아닐 때는 G.hands에서 가져와서 정렬
-  if(!rgHasPlayed&&rgG.turn!==me){
-    rgLocalHand=[...(rgG.hands[me]||[])];
+  if(!rgHasPlayed&&!rgHandOrdered){
+    rgSyncHand(rgG.hands[me]||[]);
   }
   if(by==='num'){
     rgLocalHand.sort((a,b)=>a.num-b.num||COL_ORDER[a.col]-COL_ORDER[b.col]);
@@ -3707,8 +3722,8 @@ async function rgDrawTile(){
 
 function rgUndo(){
   rgLocalBoard=JSON.parse(JSON.stringify(rgBoardSnap||[]));
-  rgLocalHand=[...(rgHandSnap||[])];
-  rgHandOrdered=false;
+  // 되돌리기: 보드만 복원, 패 순서는 유지
+  rgSyncHand(rgHandSnap||[]);
   rgHasPlayed=false;rgDragTile=null;
   const _bp=document.getElementById('rg-btn-place');const _bu=document.getElementById('rg-btn-undo');const _bd=document.getElementById('rg-btn-draw');
   const me=RL_USER();const isMe=rgG.turn===me;
