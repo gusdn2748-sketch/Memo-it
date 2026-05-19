@@ -1566,6 +1566,51 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 .bv-bld-building{color:#1976d2}
 .bv-bld-hotel{color:#c62828}
 
+
+/* ══ 브라보 로비 CSS ══ */
+.bvlb-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;max-width:480px;padding:20px}
+.bvlb-title{font-size:22px;font-weight:700;color:white;text-align:center}
+.bvlb-sub{font-size:13px;color:rgba(255,255,255,0.55);text-align:center}
+.bvlb-actions{display:flex;gap:10px;width:100%;justify-content:center}
+.bvlb-btn-create{background:linear-gradient(135deg,#43a047,#1b5e20);color:white;border:none;border-radius:20px;padding:10px 24px;font-size:14px;font-weight:600;cursor:pointer;flex:1;max-width:180px}
+.bvlb-btn-create:hover{opacity:0.85}
+.bvlb-btn-refresh{background:rgba(255,255,255,0.1);color:white;border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:10px 20px;font-size:14px;cursor:pointer}
+.bvlb-btn-refresh:hover{background:rgba(255,255,255,0.18)}
+.bvlb-room-list{width:100%;display:flex;flex-direction:column;gap:6px;max-height:300px;overflow-y:auto}
+.bvlb-room-item{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;color:white;cursor:pointer;font-size:13px;transition:background 0.15s}
+.bvlb-room-item:hover{background:rgba(255,255,255,0.15)}
+.bvlb-room-cnt{font-size:12px;color:rgba(255,255,255,0.55)}
+.bvlb-room-empty{color:rgba(255,255,255,0.45);text-align:center;padding:20px;font-size:13px}
+.bv-create-modal{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:flex;align-items:center;justify-content:center}
+.bv-create-box{background:#1a1a2e;border:1px solid rgba(255,255,255,0.15);border-radius:16px;padding:24px;width:300px;display:flex;flex-direction:column;gap:14px}
+.bv-create-title{font-size:18px;font-weight:700;color:white;text-align:center}
+.bv-create-inp{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:10px 14px;color:white;font-size:14px;outline:none;width:100%;box-sizing:border-box}
+.bv-create-inp::placeholder{color:rgba(255,255,255,0.35)}
+.bv-create-btns{display:flex;gap:8px;justify-content:flex-end}
+.bv-create-cancel{background:rgba(255,255,255,0.1);color:white;border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:8px 20px;cursor:pointer;font-size:13px}
+.bv-create-ok{background:linear-gradient(135deg,#43a047,#1b5e20);color:white;border:none;border-radius:20px;padding:8px 20px;cursor:pointer;font-size:13px;font-weight:600}
+
+/* ══ 브라보 대기실 CSS ══ */
+.bvwt-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;max-width:420px;padding:20px}
+.bvwt-header{text-align:center}
+.bvwt-roomname{font-size:20px;font-weight:700;color:white;margin-bottom:6px}
+.bvwt-meta{display:flex;gap:12px;align-items:center;justify-content:center;font-size:13px}
+.bvwt-code-label{color:rgba(255,255,255,0.5)}
+.bvwt-code{color:#ffd54f;font-weight:700;font-size:16px;letter-spacing:2px;background:rgba(255,213,79,0.1);padding:2px 10px;border-radius:6px}
+.bvwt-cnt{color:rgba(255,255,255,0.6);font-size:13px}
+.bvwt-players{width:100%;display:flex;flex-direction:column;gap:6px}
+.bvwt-player-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.07);border-radius:10px;padding:10px 14px}
+.bvwt-player-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.bvwt-player-name{flex:1;color:white;font-size:14px;font-weight:600}
+.bvwt-player-status{font-size:12px;color:rgba(255,255,255,0.5)}
+.bvwt-player-status.ready{color:#81c784}
+.bvwt-hint{font-size:12px;color:rgba(255,255,255,0.4);text-align:center}
+.bvwt-btns{display:flex;gap:10px}
+.bvwt-ready-btn{background:rgba(255,255,255,0.1);color:white;border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:10px 28px;font-size:14px;cursor:pointer;font-weight:600}
+.bvwt-ready-btn:hover{background:rgba(255,255,255,0.18)}
+.bvwt-start-btn{background:linear-gradient(135deg,#43a047,#1b5e20);color:white;border:none;border-radius:20px;padding:10px 28px;font-size:14px;cursor:pointer;font-weight:700}
+.bvwt-start-btn:hover{opacity:0.85}
+
 </style>
 </head>
 <body>
@@ -1641,7 +1686,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v04.24.5</div>
+  <div class="splash-ver">v05.19.0</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -2858,43 +2903,47 @@ init();
     </div>
   </div>
   <!-- ══ 부루마블 로비 ══ -->
-  <div class="rumi-screen" id="rbscr-lobby" style="background:transparent;position:relative">
-    <div class="rl-lobby-wrap">
-      <div class="rl-section-title">🌍 부루마블 방 목록</div>
-      <div id="rb-room-list" class="rl-room-list"></div>
-      <div class="rl-actions">
-        <button class="rl-btn-refresh" onclick="bvLoadRooms()">🔄 새로고침</button>
-        <button class="rl-btn-create" onclick="bvOpenCreateModal()">+ 방 만들기</button>
+  <div class="rumi-screen" id="rbscr-lobby" style="background:transparent">
+    <div class="bvlb-wrap">
+      <div class="bvlb-title">🌍 부루마블 WORLD EDITION</div>
+      <div class="bvlb-sub">방을 만들거나 참가하세요</div>
+      <div class="bvlb-actions">
+        <button class="bvlb-btn-create" onclick="bvOpenCreateModal()">+ 방 만들기</button>
+        <button class="bvlb-btn-refresh" onclick="bvLoadRooms()">🔄 새로고침</button>
+      </div>
+      <div id="rb-room-list" class="bvlb-room-list">
+        <div class="bvlb-room-empty">방 목록을 불러오는 중...</div>
       </div>
     </div>
-    <div id="rb-create-modal" class="rl-create-modal" style="display:none">
-      <div class="rl-modal-box">
-        <div class="rl-modal-title">🌍 부루마블 방 만들기</div>
-        <input id="rb-rname-inp" class="rl-modal-inp" placeholder="방 이름 입력" maxlength="16">
-        <div class="rl-modal-btns">
-          <button class="rl-modal-cancel" onclick="bvCloseCreateModal()">취소</button>
-          <button class="rl-modal-ok" onclick="bvCreateRoom()">만들기</button>
+    <div id="rb-create-modal" class="bv-create-modal" style="display:none">
+      <div class="bv-create-box">
+        <div class="bv-create-title">🌍 방 만들기</div>
+        <input id="rb-rname-inp" class="bv-create-inp" placeholder="방 이름 입력" maxlength="16"
+          onkeydown="if(event.key==='Enter')bvCreateRoom()">
+        <div class="bv-create-btns">
+          <button onclick="bvCloseCreateModal()" class="bv-create-cancel">취소</button>
+          <button onclick="bvCreateRoom()" class="bv-create-ok">만들기</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- ══ 부루마블 대기실 ══ -->
-  <div class="rumi-screen" id="rbscr-waiting">
-    <div class="rw-wrap">
-      <div class="rw-header">
-        <div class="rw-info">
-          <span id="rbw-rname" class="rw-rname"></span>
-          <span class="rw-code-label">코드: </span>
-          <span id="rbw-code" class="rw-code"></span>
-          <span id="rbw-cnt" class="rw-cnt"></span>
+  <div class="rumi-screen" id="rbscr-waiting" style="background:transparent">
+    <div class="bvwt-wrap">
+      <div class="bvwt-header">
+        <div class="bvwt-roomname" id="rbw-rname">방 이름</div>
+        <div class="bvwt-meta">
+          <span class="bvwt-code-label">코드</span>
+          <span class="bvwt-code" id="rbw-code">----</span>
+          <span class="bvwt-cnt" id="rbw-cnt">0/4명</span>
         </div>
       </div>
-      <div id="rbw-pgrid" class="rw-pgrid"></div>
-      <div class="rw-hint">모든 플레이어가 준비하면 방장이 게임을 시작할 수 있습니다</div>
-      <div class="rw-btns">
-        <button id="rbw-ready-btn" class="rr-ready-btn" onclick="bvToggleReady()">✅ 준비완료</button>
-        <button id="rbw-start-btn" class="rr-start-btn" onclick="bvStartGame()" style="display:none">🌍 게임 시작</button>
+      <div class="bvwt-players" id="rbw-pgrid"></div>
+      <div class="bvwt-hint">모든 플레이어가 준비 완료되면 방장이 게임을 시작할 수 있습니다</div>
+      <div class="bvwt-btns">
+        <button id="rbw-ready-btn" class="bvwt-ready-btn" onclick="bvToggleReady()">✅ 준비완료</button>
+        <button id="rbw-start-btn" class="bvwt-start-btn" onclick="bvStartGame()" style="display:none">🌍 게임 시작!</button>
       </div>
     </div>
   </div>
@@ -2903,13 +2952,15 @@ init();
   <div class="rumi-screen" id="rbscr-game" style="padding:0;background:#060818;overflow:hidden">
     <canvas id="bv-space-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0"></canvas>
     <div class="bv-game-wrap">
-      <div class="bv-left-panel" id="bv-left-panel">
+      <!-- 좌측 패널 -->
+      <div class="bv-left-panel">
         <div id="bv-players" class="bv-players"></div>
         <div class="bv-welfare-panel">
           <div class="bv-welfare-label">💰 복지기금</div>
-          <div id="bv-welfare-disp">0원</div>
+          <div id="bv-welfare-disp" style="font-size:13px;color:#a5d6a7;font-weight:600">0원</div>
         </div>
       </div>
+      <!-- 보드 -->
       <div class="bv-board-wrap">
         <div class="bv-board" id="bv-board">
           <div class="bv-row bv-row-top" id="bv-row-top"></div>
@@ -2932,8 +2983,9 @@ init();
           <div class="bv-row bv-row-bot" id="bv-row-bot"></div>
         </div>
       </div>
+      <!-- 우측 패널 -->
       <div class="bv-right-panel">
-        <div id="bv-event-panel" class="bv-event-panel">
+        <div class="bv-event-panel">
           <div class="bv-event-title">📋 이벤트</div>
           <div id="bv-event-body" class="bv-event-body">대기 중...</div>
         </div>
@@ -2947,6 +2999,7 @@ init();
         </div>
       </div>
     </div>
+
     <!-- 모달들 -->
     <div id="bv-purchase-modal" class="bv-modal"><div class="bv-modal-box">
       <div class="bv-modal-title" id="bv-pm-title">🏡 토지 구매</div>
@@ -2971,7 +3024,7 @@ init();
       <div class="bv-modal-title" id="bv-card-title">황금열쇠</div>
       <div class="bv-card-subtitle" id="bv-card-subtitle"></div>
       <div class="bv-card-effect" id="bv-card-effect"></div>
-      <button class="bv-btn-ok" id="bv-card-ok-btn" onclick="bvConfirmCard()">확인</button>
+      <button class="bv-btn-ok" onclick="bvConfirmCard()">확인</button>
     </div></div>
     <div id="bv-synergy-modal" class="bv-modal"><div class="bv-modal-box bv-synergy-box">
       <div class="bv-synergy-header-icon">⭐</div>
@@ -2982,8 +3035,8 @@ init();
     </div></div>
     <div id="bv-space-modal" class="bv-modal"><div class="bv-modal-box">
       <div class="bv-modal-title">🚀 우주여행</div>
-      <div class="bv-modal-body">다음 턴에 이동할 칸을 선택하세요</div>
-      <div id="bv-space-hint" class="bv-space-hint">보드의 원하는 칸을 클릭하세요<br><small>1~3구역: 월급 지급 / 4구역: 월급 없음</small></div>
+      <div class="bv-modal-body">이동할 칸을 보드에서 클릭하세요</div>
+      <div id="bv-space-hint" class="bv-space-hint">1~3구역: 월급 O / 4구역: 월급 X</div>
     </div></div>
     <div id="bv-acquire-modal" class="bv-modal"><div class="bv-modal-box">
       <div class="bv-modal-title">🤝 인수합병</div>
@@ -3005,7 +3058,9 @@ init();
       <button class="bv-btn-ok" onclick="bvLeaveGame()">나가기</button>
     </div></div>
     <div id="bv-toast" class="bv-toast"></div>
+    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.19.0</div>
   </div>
+
 
 </div>
 
@@ -4213,7 +4268,7 @@ document.addEventListener('keydown', e => {
 </script>
 <script>
 // ════════════════════════════════════════════════════════
-// 부루마블 WORLD EDITION  v1.0.0
+// 부루마블 WORLD EDITION  v05.19.0
 // prefix: bv (bravo)
 // ════════════════════════════════════════════════════════
 
@@ -4396,18 +4451,18 @@ function bvStartStarCanvas(){
 function bvLoadRooms(){
   const list=document.getElementById("rb-room-list");
   if(!list)return;
-  list.innerHTML='<div class="rl-room-item">불러오는 중...</div>';
+  list.innerHTML='<div class="bvlb-room-empty">🔄 불러오는 중...</div>';
   db.collection("bravo_rooms").where("status","==","waiting")
     .limit(20).get()
     .then(snap=>{
-      if(snap.empty){list.innerHTML='<div class="rl-room-item">현재 방이 없습니다. 방을 만들어보세요!</div>';return;}
+      if(snap.empty){list.innerHTML='<div class="bvlb-room-empty">현재 방이 없습니다. 방을 만들어보세요! 🌍</div>';return;}
       const sortedDocs=[...snap.docs].sort((a,b)=>(b.data().createdAt?.seconds||0)-(a.data().createdAt?.seconds||0));
       list.innerHTML=sortedDocs.map(d=>{
         const r=d.data();const cnt=(r.players||[]).length;
-        return `<div class="rl-room-item" onclick="bvJoinRoom('${d.id}')">
-          <span>${r.name}</span><span>${cnt}/${r.maxPlayers||4}명</span></div>`;
+        return `<div class="bvlb-room-item" onclick="bvJoinRoom('${d.id}')">
+          <span>${r.name}</span><span class="bvlb-room-cnt">${cnt}/${r.maxPlayers||4}명</span></div>`;
       }).join("");
-    }).catch(()=>{list.innerHTML='<div class="rl-room-item">오류 발생</div>';});
+    }).catch(()=>{list.innerHTML='<div class="bvlb-room-empty">오류가 발생했습니다. 새로고침 해주세요.</div>';});
 }
 
 function bvOpenCreateModal(){
@@ -4482,10 +4537,10 @@ function bvRenderWaiting(data){
   if(el("rbw-code"))el("rbw-code").textContent=(bvRoomId||"").slice(-4).toUpperCase();
   if(el("rbw-cnt"))el("rbw-cnt").textContent=`${data.players.length}/${data.maxPlayers}명`;
   if(el("rbw-pgrid"))el("rbw-pgrid").innerHTML=data.players.map(p=>`
-    <div class="rw-player-row">
-      <div class="rw-player-dot" style="background:${BV_COLOR_HEX[p.color]||'#888'}"></div>
-      <div class="rw-player-name">${p.name}${p.name===data.host?" 👑":""}</div>
-      <div class="rw-player-status ${p.isReady?"ready":""}">${p.isReady?"✅ 준비완료":"⏳ 준비중"}</div>
+    <div class="bvwt-player-row">
+      <div class="bvwt-player-dot" style="background:${BV_COLOR_HEX[p.color]||'#888'}"></div>
+      <div class="bvwt-player-name">${p.name}${p.name===data.host?" 👑":""}</div>
+      <div class="bvwt-player-status ${p.isReady?"ready":""}">${p.isReady?"✅ 준비완료":"⏳ 준비중"}</div>
     </div>`).join("");
   const mp=data.players.find(p=>p.name===me);
   const rb=el("rbw-ready-btn");
