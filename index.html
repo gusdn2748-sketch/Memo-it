@@ -1714,7 +1714,15 @@ function startApp(){
     db.collection('settings').doc('noteOrder').onSnapshot(snap=>{
       noteOrder=snap.exists?(snap.data().ids||[]):[];applyOrder();renderNotes();
     });
-  }catch(e){console.error(e)}
+  }catch(e){
+    console.error('Firebase 초기화 오류:',e);
+    // 화면에 경고 표시
+    const warn=document.createElement('div');
+    warn.style.cssText='position:fixed;top:8px;left:50%;transform:translateX(-50%);background:#D94040;color:#fff;padding:10px 20px;border-radius:8px;z-index:9999;font-size:13px;font-weight:600;';
+    warn.textContent='⚠️ 서버 연결 오류: '+e.message;
+    document.body.appendChild(warn);
+    setTimeout(()=>warn.remove(),6000);
+  }
   dismissedAlarms=JSON.parse(localStorage.getItem('tm-dismissed-alarms')||'[]');
   renderCal();renderSelEvents();renderNotes();
   setInterval(checkAlarms,60000);
