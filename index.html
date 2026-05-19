@@ -2857,8 +2857,6 @@ init();
       </div>
     </div>
   </div>
-</div>
-
   <!-- ══ 부루마블 로비 ══ -->
   <div class="rumi-screen" id="rbscr-lobby" style="background:transparent;position:relative">
     <div class="rl-lobby-wrap">
@@ -3008,6 +3006,8 @@ init();
     </div></div>
     <div id="bv-toast" class="bv-toast"></div>
   </div>
+
+</div>
 
 <!-- 방 만들기 모달 -->
 <div class="rl-mbg" id="rl-create-modal">
@@ -4398,10 +4398,11 @@ function bvLoadRooms(){
   if(!list)return;
   list.innerHTML='<div class="rl-room-item">불러오는 중...</div>';
   db.collection("bravo_rooms").where("status","==","waiting")
-    .orderBy("createdAt","desc").limit(10).get()
+    .limit(20).get()
     .then(snap=>{
       if(snap.empty){list.innerHTML='<div class="rl-room-item">현재 방이 없습니다. 방을 만들어보세요!</div>';return;}
-      list.innerHTML=snap.docs.map(d=>{
+      const sortedDocs=[...snap.docs].sort((a,b)=>(b.data().createdAt?.seconds||0)-(a.data().createdAt?.seconds||0));
+      list.innerHTML=sortedDocs.map(d=>{
         const r=d.data();const cnt=(r.players||[]).length;
         return `<div class="rl-room-item" onclick="bvJoinRoom('${d.id}')">
           <span>${r.name}</span><span>${cnt}/${r.maxPlayers||4}명</span></div>`;
