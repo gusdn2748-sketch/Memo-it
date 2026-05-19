@@ -1455,14 +1455,14 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 .bv-game-wrap{position:relative;z-index:1;display:flex;width:100%;height:100%;gap:8px;padding:6px;box-sizing:border-box}
 .bv-left-panel{width:160px;flex-shrink:0;display:flex;flex-direction:column;gap:6px;overflow-y:auto}
 .bv-right-panel{width:170px;flex-shrink:0;display:flex;flex-direction:column;gap:6px}
-.bv-board-wrap{flex:1;display:flex;align-items:center;justify-content:center;min-width:0;overflow:hidden}
+.bv-board-wrap{flex:1;display:flex;align-items:stretch;justify-content:center;min-width:0;overflow:auto;position:relative}
 
 /* ══ 보드 ══ */
-.bv-board{display:flex;flex-direction:column;width:100%;max-width:700px;aspect-ratio:1/1;border:2px solid rgba(255,255,255,0.15);border-radius:4px;overflow:hidden;background:#2e7d2e;box-shadow:0 0 30px rgba(0,0,0,0.6)}
+.bv-board{display:flex;flex-direction:column;width:100%;height:100%;border:2px solid rgba(255,255,255,0.15);border-radius:4px;overflow:hidden;background:#2e7d2e;box-shadow:0 0 30px rgba(0,0,0,0.6);transform-origin:center center;transition:transform 0.2s}
 .bv-row{display:flex;flex-shrink:0}
-.bv-row-top,.bv-row-bot{height:10%}
+.bv-row-top,.bv-row-bot{height:72px;flex-shrink:0}
 .bv-row-mid{flex:1;min-height:0}
-.bv-col{display:flex;flex-direction:column;width:10%}
+.bv-col{display:flex;flex-direction:column;width:72px;flex-shrink:0}
 .bv-col-left .bv-sq,.bv-col-right .bv-sq{flex:1;min-height:0}
 .bv-center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:space-around;padding:4px;min-width:0;overflow:hidden}
 .bv-center-logo{font-size:clamp(12px,2.5vw,22px);font-weight:700;color:white;letter-spacing:1px;text-shadow:0 0 10px rgba(255,255,255,0.4)}
@@ -1475,7 +1475,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 /* ══ 칸 기본 ══ */
 .bv-sq{position:relative;background:white;border:0.5px solid rgba(0,0,0,0.15);display:flex;flex-direction:column;cursor:default;overflow:hidden;box-sizing:border-box}
 .bv-row-top .bv-sq:not(.corner),.bv-row-bot .bv-sq:not(.corner){flex:1;min-width:0}
-.bv-sq.corner{width:10%;height:100%;flex-shrink:0;background:#fffde7}
+.bv-sq.corner{width:72px;height:100%;flex-shrink:0;background:#fffde7}
 .bv-sq.corner.tl,.bv-sq.corner.bl{background:#c8e6c9}
 .bv-sq.corner.tr{background:#e8eaf6}
 .bv-sq-bar{height:22%;width:100%;flex-shrink:0}
@@ -1483,21 +1483,20 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 .bv-col-left .bv-sq{flex-direction:row}
 .bv-col-right .bv-sq{flex-direction:row-reverse}
 .bv-sq-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1px;overflow:hidden;min-width:0}
-.bv-sq-name{font-size:clamp(5px,0.8vw,8px);font-weight:600;text-align:center;line-height:1.1;word-break:keep-all;color:#111}
-.bv-sq-price{font-size:clamp(4px,0.7vw,7px);color:#444;text-align:center}
-.bv-sq-bld{font-size:clamp(5px,0.8vw,9px);text-align:center;line-height:1}
+.bv-sq-name{font-size:clamp(7px,0.9vw,10px);font-weight:600;text-align:center;line-height:1.2;word-break:keep-all;color:#111}
+.bv-sq-price{font-size:clamp(6px,0.75vw,9px);color:#444;text-align:center}
+.bv-sq-bld{font-size:clamp(8px,1vw,12px);text-align:center;line-height:1}
 .bv-sq-toll{font-size:clamp(4px,0.6vw,6.5px);color:#888;text-align:center}
 .bv-sq.tourist{background:#fff3e0!important}
 .bv-sq.tourist .bv-sq-bar{background:#f57c00!important}
 .bv-sq.golden{background:#fff9c4!important}
 .bv-sq.corner-sq{background:#fffde7}
-.bv-sq-special{font-size:clamp(6px,1vw,10px);font-weight:700;text-align:center;color:#333}
+.bv-sq-special{font-size:clamp(8px,1.1vw,12px);font-weight:700;text-align:center;color:#333}
 
 /* 칸 위 말들 */
 .bv-sq-pieces{display:flex;flex-wrap:wrap;gap:1px;justify-content:center;align-items:center;padding:1px}
-.bv-piece{width:clamp(6px,1vw,10px);height:clamp(6px,1vw,10px);border-radius:50%;border:1px solid rgba(255,255,255,0.8);flex-shrink:0}
-.bv-piece.mine{border:1.5px solid white;box-shadow:0 0 3px rgba(255,255,255,0.8)}
-.bv-piece.other{opacity:0.45}
+/* 말은 SVG로 처리 (CSS는 여기선 불필요하지만 fallback) */
+.bv-sq-pieces{display:flex;flex-wrap:wrap;gap:2px;justify-content:center;align-items:center;padding:2px}
 
 /* 클릭 가능 칸 (우주여행 목적지 선택 시) */
 .bv-sq.space-target{cursor:pointer!important;animation:bvPulse 0.8s infinite}
@@ -1505,10 +1504,19 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 
 /* ══ 주사위 ══ */
 .bv-dice-wrap{display:flex;gap:8px;align-items:center;justify-content:center}
-.bv-die{font-size:clamp(18px,3vw,32px);transition:transform 0.1s;display:inline-block}
-.bv-die.rolling{animation:bvDiceRoll 0.6s ease-out}
-@keyframes bvDiceRoll{0%{transform:rotate(0) scale(1)}25%{transform:rotate(180deg) scale(1.2)}50%{transform:rotate(360deg) scale(0.8)}75%{transform:rotate(540deg) scale(1.1)}100%{transform:rotate(720deg) scale(1)}}
-.bv-roll-btn{background:linear-gradient(135deg,#43a047,#1b5e20);color:white;border:none;border-radius:20px;padding:6px 16px;font-size:12px;cursor:pointer;font-weight:600;transition:all 0.2s}
+.bv-die{font-size:clamp(28px,3.5vw,44px);transition:transform 0.1s;display:inline-block;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5))}
+.bv-die.rolling{animation:bvDiceRoll 1.2s cubic-bezier(.4,0,.2,1)}
+@keyframes bvDiceRoll{
+  0%{transform:rotate(0) scale(1) translateY(0)}
+  15%{transform:rotate(-25deg) scale(1.4) translateY(-12px)}
+  30%{transform:rotate(70deg) scale(1.2) translateY(-18px)}
+  45%{transform:rotate(-15deg) scale(1.35) translateY(-10px)}
+  60%{transform:rotate(50deg) scale(1.15) translateY(-14px)}
+  75%{transform:rotate(-8deg) scale(1.08) translateY(-5px)}
+  90%{transform:rotate(5deg) scale(1.02) translateY(-2px)}
+  100%{transform:rotate(0) scale(1) translateY(0)}
+}
+.bv-roll-btn{background:linear-gradient(135deg,#43a047,#1b5e20);color:white;border:none;border-radius:24px;padding:10px 24px;font-size:14px;cursor:pointer;font-weight:700;transition:all 0.2s;letter-spacing:0.5px;box-shadow:0 3px 10px rgba(0,0,0,0.4)}
 .bv-roll-btn:hover{transform:scale(1.05);box-shadow:0 2px 8px rgba(0,0,0,0.4)}
 .bv-double-hint{font-size:11px;color:#ffd54f;font-weight:600;text-align:center}
 
@@ -1611,6 +1619,23 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 .bvwt-start-btn{background:linear-gradient(135deg,#43a047,#1b5e20);color:white;border:none;border-radius:20px;padding:10px 28px;font-size:14px;cursor:pointer;font-weight:700}
 .bvwt-start-btn:hover{opacity:0.85}
 
+
+/* ══ 줌 컨트롤 ══ */
+.bv-zoom-controls{display:flex;gap:4px;align-items:center;justify-content:center}
+.bv-zoom-btn{background:rgba(255,255,255,0.12);color:white;border:1px solid rgba(255,255,255,0.2);border-radius:6px;width:26px;height:26px;cursor:pointer;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:background 0.15s}
+.bv-zoom-btn:hover{background:rgba(255,255,255,0.25)}
+.bv-zoom-reset{font-size:12px}
+
+
+/* ══ 말 이동 bounce ══ */
+@keyframes bvPieceLand{
+  0%{transform:scale(0.6) translateY(-8px);opacity:0.6}
+  60%{transform:scale(1.25) translateY(-3px)}
+  80%{transform:scale(0.95)}
+  100%{transform:scale(1) translateY(0);opacity:1}
+}
+.bv-sq-pieces svg{animation:bvPieceLand 0.35s ease-out}
+
 </style>
 </head>
 <body>
@@ -1686,7 +1711,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v05.19.0</div>
+  <div class="splash-ver">v05.19.1</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -2969,6 +2994,11 @@ init();
             <div class="bv-center" id="bv-center">
               <div class="bv-center-logo">부루마블</div>
               <div class="bv-center-sub">WORLD EDITION</div>
+              <div class="bv-zoom-controls">
+                <button onclick="bvZoom(-0.15)" class="bv-zoom-btn" title="축소">−</button>
+                <button onclick="bvZoom(0)" class="bv-zoom-btn bv-zoom-reset" title="초기화">⌂</button>
+                <button onclick="bvZoom(0.15)" class="bv-zoom-btn" title="확대">+</button>
+              </div>
               <div id="bv-turn-label" class="bv-turn-label"></div>
               <div class="bv-dice-wrap">
                 <div class="bv-die" id="bv-die1">🎲</div>
@@ -3058,7 +3088,7 @@ init();
       <button class="bv-btn-ok" onclick="bvLeaveGame()">나가기</button>
     </div></div>
     <div id="bv-toast" class="bv-toast"></div>
-    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.19.0</div>
+    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.19.1</div>
   </div>
 
 
@@ -4268,7 +4298,7 @@ document.addEventListener('keydown', e => {
 </script>
 <script>
 // ════════════════════════════════════════════════════════
-// 부루마블 WORLD EDITION  v05.19.0
+// 부루마블 WORLD EDITION  v05.19.1
 // prefix: bv (bravo)
 // ════════════════════════════════════════════════════════
 
@@ -4388,7 +4418,7 @@ const BV_DICE_EMOJI=["","⚀","⚁","⚂","⚃","⚄","⚅"];
 let bvG=null,bvRoomId=null,bvUnsub=null,bvIsHost=false;
 let bvAnimating=false,bvSpaceSelecting=false,bvFreeLandSelecting=false;
 let bvPendingCard=null,bvPendingSquare=null,bvAcquireTarget=null;
-let bvSynergyQueue=[],bvFreeBuildSelecting=false,bvLastLog="",bvStarsStarted=false;
+let bvSynergyQueue=[],bvFreeBuildSelecting=false,bvLastLog="",bvStarsStarted=false,bvZoomLevel=1.0;
 
 // ── 유틸 ──
 const bvFmt=n=>{if(!n&&n!==0)return"0원";const a=Math.abs(n);if(a>=10000){const w=Math.round(a/10000*10)/10;return(n<0?"-":"")+w+"만원";}return(n<0?"-":"")+a.toLocaleString()+"원";};
@@ -4684,9 +4714,14 @@ function bvSqInner(sq,land,data){
   // 말 (플레이어 위치)
   const pieces=(data.players||[]).filter(p=>p.isAlive&&p.position===sq.index);
   const piecesHtml=pieces.length?`<div class="bv-sq-pieces">${pieces.map(p=>{
-    const isMine=p.name===me;const myTurn=data.turn===p.name;
-    const cls="bv-piece"+(isMine?" mine":myTurn?"":" other");
-    return`<div class="${cls}" style="background:${BV_COLOR_HEX[p.color]||"#888"}" title="${p.name}"></div>`;
+    const isMine=p.name===me;const isActive=data.turn===p.name;
+    const hex=BV_COLOR_HEX[p.color]||"#888";
+    const sz=isMine?20:16;
+    const glow=isActive?`filter:drop-shadow(0 0 5px ${hex}) drop-shadow(0 0 2px white)`:(isMine?`filter:drop-shadow(0 0 3px ${hex})`:"opacity:0.75");
+    return`<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" style="${glow};flex-shrink:0;cursor:default" title="${p.name}">
+      <path d="M21,16L21,14L13,9L13,3.5C13,2.67 12.33,2 11.5,2C10.67,2 10,2.67 10,3.5L10,9L2,14L2,16L10,13.5L10,19L8,20.5L8,22L11.5,21L15,22L15,20.5L13,19L13,13.5Z"
+        fill="${hex}" stroke="white" stroke-width="${isMine?1.5:1}" stroke-linejoin="round"/>
+    </svg>`;
   }).join("")}</div>`:""
 
   if(sq.type==="corner"){
@@ -4759,11 +4794,17 @@ async function bvRollDice(){
   const d2=Math.ceil(Math.random()*6);
   const isDouble=d1===d2;
 
-  // 주사위 애니메이션
+  // 주사위 애니메이션 + 숫자 사이클링
   const die1=document.getElementById("bv-die1");
   const die2=document.getElementById("bv-die2");
   die1.classList.add("rolling");die2.classList.add("rolling");
-  await bvDelay(700);
+  const faces=["⚀","⚁","⚂","⚃","⚄","⚅"];
+  const cycleInterval=setInterval(()=>{
+    die1.textContent=faces[Math.floor(Math.random()*6)];
+    die2.textContent=faces[Math.floor(Math.random()*6)];
+  },90);
+  await bvDelay(1200);
+  clearInterval(cycleInterval);
   die1.classList.remove("rolling");die2.classList.remove("rolling");
   die1.textContent=BV_DICE_EMOJI[d1];die2.textContent=BV_DICE_EMOJI[d2];
 
@@ -4773,20 +4814,13 @@ async function bvRollDice(){
 
   if(isDouble){
     const dh=document.getElementById("bv-double-hint");
-    if(dh){dh.style.display="block";dh.textContent="🎯 더블! 한 번 더 굴립니다";}
+    if(dh){dh.style.display="block";dh.textContent="🎯 더블! 한 번 더 굴립니다!";}
+    // 이동 전에 더블 상태를 Firebase에 기록
+    await bvRef().update({doubleRolledBy:me});
   }
 
   await bvMovePiece(myIdx,total);
-
-  // 더블이면 한 번 더 (턴 유지)
-  if(isDouble&&bvG&&bvG.players[myIdx]?.isAlive){
-    await bvDelay(600);
-    const dh=document.getElementById("bv-double-hint");if(dh)dh.style.display="none";
-    die1.textContent="🎲";die2.textContent="🎲";
-    await bvRef().update({phase:"rolling"});
-    bvAnimating=false;
-    return;
-  }
+  // bvEndTurn이 doubleRolledBy를 보고 자동으로 같은 플레이어 턴 유지
   bvAnimating=false;
 }
 
@@ -4806,7 +4840,7 @@ async function bvMovePiece(playerIdx,steps){
       bvG={...bvG,players:localPlayers};
       bvRenderBoard(bvG);
     }
-    await bvDelay(200);
+    await bvDelay(420);
   }
   // 최종 위치만 Firebase 업데이트
   const players=[...data.players];
@@ -5103,17 +5137,17 @@ async function bvShowBuildOptions(playerIdx,sqIdx,myRound){
   const btns=[];
 
   // 별장 (1바퀴 이상)
-  if(myRound>=1&&bld.villa<2&&bld.building===0&&bld.hotel===0){
+  if(bld.villa<2&&bld.building===0&&bld.hotel===0){  // 별장: 바퀴 제한 없음
     const cost=sq.buildCost?.villa||0;
     btns.push(`<button class="bv-btn-yes" onclick="bvBuild(${playerIdx},${sqIdx},'villa',${cost})">${bld.villa===0?"🏠 별장 건설":"🏠🏠 별장 2채"} (${bvFmt(cost)})</button>`);
   }
   // 빌딩 (2바퀴 이상)
-  if(myRound>=2&&bld.villa>=1&&bld.building===0&&bld.hotel===0){
+  if(myRound>=1&&bld.villa>=1&&bld.building===0&&bld.hotel===0){
     const cost=sq.buildCost?.building||0;
     btns.push(`<button class="bv-btn-yes" onclick="bvBuild(${playerIdx},${sqIdx},'building',${cost})">🏢 빌딩 건설 (${bvFmt(cost)})</button>`);
   }
   // 호텔 (3바퀴 이상)
-  if(myRound>=3&&bld.building>=1&&bld.hotel===0){
+  if(myRound>=2&&bld.building>=1&&bld.hotel===0){
     const cost=sq.buildCost?.hotel||0;
     btns.push(`<button class="bv-btn-yes" onclick="bvBuild(${playerIdx},${sqIdx},'hotel',${cost})">🏨 호텔 건설 (${bvFmt(cost)})</button>`);
   }
@@ -5298,10 +5332,9 @@ async function bvEnterSpaceTravel(playerIdx){
 
 function bvStartSpaceTravel(playerIdx){
   bvSpaceSelecting=true;bvAnimating=false;
-  bvOpenModal("bv-space-modal");
-  const snap_p=bvG?.players?.[playerIdx];
-  bvSetEvent("🚀 이동할 칸을 보드에서 클릭하세요");
-  const snap2=bvRef().get().then(snap=>{bvRender(snap.data());});
+  // 모달 열지 않음 (클릭 막힘 방지) - 이벤트 패널에만 표시
+  bvSetEvent("🚀 <b>우주여행!</b><br>이동할 칸을 보드에서 직접 클릭하세요<br><small style=\"color:rgba(255,255,255,0.6)\">1~3구역: 월급 지급 &nbsp; 4구역: 월급 없음</small>");
+  if(bvG)bvRender(bvG); // space-target 클래스 붙이도록 재렌더
 }
 
 async function bvSelectSpaceTarget(sqIdx){
@@ -5568,12 +5601,22 @@ async function bvAfterSynergy(){
 
 // ── 턴 종료 ──
 async function bvEndTurn(){
-  bvFreeBuildSelecting=false;bvFreeLandSelecting=false;
+  bvFreeBuildSelecting=false;bvFreeLandSelecting=false;bvSpaceSelecting=false;
   const snap=await bvRef().get();const data=snap.data();
   const alive=data.players.filter(p=>p.isAlive);
   if(alive.length<=1){
     if(alive.length===1){bvShowEndScreen(alive[0].name);}
     return;
+  }
+  // 더블 체크 - 같은 플레이어가 다시 굴려야 함
+  if(data.doubleRolledBy&&data.doubleRolledBy===data.turn){
+    const die1=document.getElementById("bv-die1");const die2=document.getElementById("bv-die2");
+    if(die1)die1.textContent="🎲";if(die2)die2.textContent="🎲";
+    const dh=document.getElementById("bv-double-hint");
+    if(dh){dh.style.display="block";dh.textContent="🎯 더블! 한 번 더 굴리세요!";}
+    const logArr=[...(data.log||[]),"🎯 더블! "+data.turn+"이 한 번 더!"].slice(-50);
+    await bvRef().update({phase:"rolling",doubleRolledBy:"",log:logArr});
+    bvAnimating=false;return;
   }
   // 다음 플레이어
   const curIdx=data.players.findIndex(p=>p.name===data.turn);
@@ -5606,6 +5649,12 @@ function bvLeaveGame(){
 
 // ── 채팅 ──
 
+function bvZoom(delta){
+  if(delta===0){bvZoomLevel=1.0;}
+  else{bvZoomLevel=Math.max(0.5,Math.min(2.5,bvZoomLevel+delta));}
+  const b=document.getElementById("bv-board");
+  if(b)b.style.transform=`scale(${bvZoomLevel})`;
+}
 function bvSkipFreeBuild(){bvFreeBuildSelecting=false;bvRender(bvG);bvEndTurn();}
 function bvSkipFreeLand(){bvFreeLandSelecting=false;bvRender(bvG);bvEndTurn();}
 async function bvSendChat(){
