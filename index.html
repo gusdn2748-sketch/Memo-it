@@ -2242,6 +2242,68 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
   width:34%!important;height:100%!important;flex-shrink:0!important;
 }
 
+
+/* ════ 원본 기반 핵심 칸 스타일 (필수) ════ */
+.bv-sq{
+  position:relative;background:white;
+  border:0.5px solid rgba(0,0,0,0.15);
+  display:flex;flex-direction:column;
+  overflow:hidden;box-sizing:border-box;
+  flex:1;min-width:0;min-height:0;
+}
+.bv-row-top .bv-sq,.bv-row-bot .bv-sq{flex-direction:column}
+.bv-col-left .bv-sq{flex-direction:row}
+.bv-col-right .bv-sq{flex-direction:row-reverse}
+.bv-sq.corner{background:#fffde7;flex:none;width:110px;height:100%}
+.bv-row-top .bv-sq.corner,.bv-row-bot .bv-sq.corner{width:110px}
+.bv-sq.golden{background:#fff9c4}
+.bv-sq.tourist{background:white}
+.bv-sq-bar{
+  width:100%;height:42%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+.bv-col-left .bv-sq-bar,.bv-col-right .bv-sq-bar{
+  width:32%;height:100%;
+}
+.bv-sq-body{
+  flex:1;min-width:0;min-height:0;
+  background:white;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  overflow:hidden;padding:2px;
+}
+.bv-sq-name{
+  font-size:clamp(8px,0.85vw,12px);
+  font-weight:700;color:#111;
+  text-align:center;line-height:1.15;
+  word-break:keep-all;
+  max-width:100%;
+}
+.bv-sq-price{
+  font-size:clamp(7px,0.75vw,10px);
+  color:#444;text-align:center;font-weight:500;
+  margin-top:1px;
+}
+.bv-sq-special{
+  font-size:clamp(8px,1vw,13px);
+  font-weight:700;text-align:center;
+}
+.bv-sq-pieces{
+  position:absolute;bottom:2px;right:2px;
+  display:flex;gap:1px;z-index:2;
+}
+.bv-piece{
+  width:9px;height:9px;border-radius:50%;
+  border:1.5px solid white;
+  box-shadow:0 0 3px rgba(0,0,0,0.6);
+}
+.bv-piece.mine{
+  width:11px;height:11px;
+  box-shadow:0 0 6px currentColor,0 0 2px white;
+}
+.bv-piece.other{opacity:0.7}
+
 </style>
 </head>
 <body>
@@ -2317,7 +2379,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v05.21.3</div>
+  <div class="splash-ver">v05.21.4</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -3831,7 +3893,7 @@ init();
       </div>
     </div>
 
-    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.21.3</div>
+    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.21.4</div>
   </div>
 
 
@@ -5041,7 +5103,7 @@ document.addEventListener('keydown', e => {
 </script>
 <script>
 // ════════════════════════════════════════════════════════
-// 부루마블 WORLD EDITION  v05.21.3
+// 부루마블 WORLD EDITION  v05.21.4
 // prefix: bv (bravo)
 // ════════════════════════════════════════════════════════
 
@@ -5532,22 +5594,12 @@ function bvRenderBoard(data){
   // 좌측 col: 19(위)→11(아래)
   const left=document.getElementById("bv-col-left");
   if(left){left.innerHTML="";
-    [19,18,17,16,15,14,13,12,11].forEach(i=>{
-    const sq_el=bvMakeSqEl(i,data);
-    sq_el.style.flexDirection="row";
-    sq_el.style.flex="1";sq_el.style.minHeight="0";
-    left.appendChild(sq_el);
-  });
+    [19,18,17,16,15,14,13,12,11].forEach(i=>left.appendChild(bvMakeSqEl(i,data)));
   }
   // 우측 col: 31(위)→39(아래)
   const right=document.getElementById("bv-col-right");
   if(right){right.innerHTML="";
-    [31,32,33,34,35,36,37,38,39].forEach(i=>{
-    const sq_el=bvMakeSqEl(i,data);
-    sq_el.style.flexDirection="row-reverse";
-    sq_el.style.flex="1";sq_el.style.minHeight="0";
-    right.appendChild(sq_el);
-  });
+    [31,32,33,34,35,36,37,38,39].forEach(i=>right.appendChild(bvMakeSqEl(i,data)));
   }
   // 하단 row: 10,9,8,...,1,0
   const bot=document.getElementById("bv-row-bot");
@@ -5568,11 +5620,6 @@ function bvMakeSqEl(idx,data){
   if(sq.type==="golden")cls+=" golden";
   if(sq.type==="tourist")cls+=" tourist";
   el.className=cls;
-  // ── 인라인 스타일 직접 적용 (CSS 우선순위 문제 완전 회피) ──
-  el.style.cssText="position:relative;background:white;border:0.5px solid rgba(0,0,0,0.15);display:flex;flex-direction:column;overflow:hidden;box-sizing:border-box;flex:1;min-height:0;min-width:0;cursor:default";
-  if(isCorner)el.style.background="#fffde7";
-  if(sq.type==="golden")el.style.background="#fff9c4";
-  if(sq.type==="tourist")el.style.background="white";
 
   // 우주여행 선택 모드
   if(!bvAnimating&&bvSpaceSelecting&&sq.type!=="corner"&&sq.type!=="tax"){
@@ -5617,91 +5664,61 @@ function bvCalcToll(sq,land){
   return t>0?t:(sq.toll.land||0);
 }
 
+// 원본 작동 버전 기반 - 사진 추가 + 한 줄 표기
 function bvSqInner(sq,land,data){
   const me=bvMe();
-  const players=data&&data.players?data.players:[];
+  // 말 (플레이어 위치)
+  const pieces=(data.players||[]).filter(p=>p.isAlive&&p.position===sq.index);
+  const piecesHtml=pieces.length?`<div class="bv-sq-pieces">${pieces.map(p=>{
+    const isMine=p.name===me;const myTurn=data.turn===p.name;
+    const cls="bv-piece"+(isMine?" mine":myTurn?"":" other");
+    return`<div class="${cls}" style="background:${BV_COLOR_HEX[p.color]||"#888"}" title="${p.name}"></div>`;
+  }).join("")}</div>`:""
 
-  // 말 렌더링
-  const pieces=players.filter(function(p){return p.isAlive&&p.position===sq.index;});
-  let piecesHtml="";
-  if(pieces.length>0){
-    let svgs="";
-    for(var pi=0;pi<pieces.length;pi++){
-      var p=pieces[pi];
-      var isMine=(p.name===me);
-      var hex=BV_COLOR_HEX[p.color]||"#888";
-      var sz=isMine?26:20;
-      var glow=(data.turn===p.name)?"drop-shadow(0 0 5px "+hex+")":"";
-      svgs+='<svg width="'+sz+'" height="'+sz+'" viewBox="0 0 24 24" style="filter:'+glow+';flex-shrink:0">'
-           +'<path d="M21,16L21,14L13,9L13,3.5C13,2.67 12.33,2 11.5,2C10.67,2 10,2.67 10,3.5L10,9L2,14L2,16L10,13.5L10,19L8,20.5L8,22L11.5,21L15,22L15,20.5L13,19L13,13.5Z" fill="'+hex+'" stroke="white" stroke-width="1"/></svg>';
-    }
-    piecesHtml='<div class="bv-sq-pieces">'+svgs+'</div>';
-  }
-
-  // 코너
   if(sq.type==="corner"){
-    var cicons={BR:"🟢",BL:"🏝",TL:"💰",TR:"🚀"};
-    var clabels={BR:"출발",BL:"무인도",TL:"복지기금\n수령",TR:"우주여행"};
-    return'<div class="bv-sq-body" style="background:#fffde7;width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;font-size:11px;white-space:pre-wrap">'
-      +(cicons[sq.pos]||"")+"<br>"+(clabels[sq.pos]||sq.name)+'</div>'+piecesHtml;
+    const icons={BR:"🟢",BL:"🏝",TL:"💰",TR:"🚀"};
+    const labels={BR:"출발",BL:"무인도",TL:"복지기금\n수령",TR:"우주여행"};
+    return`<div class="bv-sq-body"><div class="bv-sq-special" style="font-size:clamp(8px,1vw,12px);white-space:pre-wrap;text-align:center">${icons[sq.pos]||""}<br>${labels[sq.pos]||sq.name}</div></div>${piecesHtml}`;
   }
-  // 황금열쇠
   if(sq.type==="golden"){
-    return'<div class="bv-sq-body" style="background:#fff9c4;width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center">'
-      +'<div style="font-size:18px">🗝</div><div style="font-size:10px;font-weight:700">황금열쇠</div></div>'+piecesHtml;
+    return`<div class="bv-sq-body"><div class="bv-sq-special">🗝<br><span style="font-size:clamp(5px,0.7vw,8px)">황금열쇠</span></div></div>${piecesHtml}`;
   }
-  // 복지기금
   if(sq.type==="tax"){
-    return'<div class="bv-sq-body" style="background:#fff3e0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center">'
-      +'<div style="font-size:14px;color:#c62828">💸</div><div style="font-size:9px;font-weight:700;color:#c62828">복지기금<br>15만압수</div></div>'+piecesHtml;
+    return`<div class="bv-sq-body"><div class="bv-sq-special" style="color:#c62828">💸<br><span style="font-size:clamp(5px,0.7vw,8px)">복지기금<br>15만압수</span></div></div>${piecesHtml}`;
   }
 
-  // 소유자
-  var ownerName=land&&land.owner?land.owner:null;
-  var ownerHex="";
-  if(ownerName){
-    var op=players.find(function(p){return p.name===ownerName;});
-    if(op)ownerHex=BV_COLOR_HEX[op.color]||"";
+  // 일반 토지 / 관광지
+  const barColor=BV_ZONE_COLOR[sq.zone]||BV_ZONE_COLOR[sq.color]||"#888";
+  const bld=land?.buildings;
+  let bldStr="";
+  if(bld){
+    if(bld.hotel>0)bldStr+="🏨";
+    if(bld.building>0)bldStr+="🏢";
+    if(bld.villa>0)bldStr+="🏠";
   }
-  var bld=land&&land.buildings?land.buildings:{villa:0,building:0,hotel:0};
-  var isNew=(sq.index===bvLastBuildSq);
+  const ownerName=land?.owner;
+  const ownerColor=ownerName?BV_COLOR_HEX[data.players?.find(p=>p.name===ownerName)?.color]||"":"";
+  const priceOrToll=ownerName?bvFmt(bvCalcToll(sq,land)):bvFmt(sq.price||0);
+  const bodyBg=ownerColor?bvHexToRgba(ownerColor,0.18):"white";
 
-  // 건물 이모지
-  var bldStr="";
-  if(bld.hotel>0)bldStr+="🏨";
-  if(bld.building>0)bldStr+="🏢";
-  if(bld.villa>0)bldStr+="🏠";
-
-  // 가격/통행료
-  var priceLabel=ownerName?bvFmt(bvCalcToll(sq,land)):bvFmt(sq.price||0);
-
-  // 구역 색
-  var barColor=BV_ZONE_COLOR[sq.zone]||BV_ZONE_COLOR[sq.color]||"#888";
-  var bodyBg=ownerHex?bvHexToRgba(ownerHex,0.18):"white";
-
-  // 관광지
+  // 관광지 (배너 없음)
   if(sq.type==="tourist"){
-    var touristBg=ownerHex?bvHexToRgba(ownerHex,0.2):"white";
-    return'<div style="width:100%;height:100%;background:'+touristBg+';display:flex;flex-direction:column;overflow:hidden">'
-      +'<div style="flex:1;min-height:0;background:'+touristBg+'"></div>'
-      +'<div style="flex-shrink:0;background:rgba(255,255,255,0.9);padding:2px 3px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(0,0,0,0.07)">'
-      +'<span style="font-size:10px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+sq.name+'</span>'
-      +'<span style="font-size:9px;color:#555;white-space:nowrap">'+priceLabel+'</span></div>'
-      +(ownerHex?'<div class="bv-sq-owner-glow" style="--og-color:'+ownerHex+'"></div>':'')
-      +'</div>'+piecesHtml;
+    const tBg=ownerColor?bvHexToRgba(ownerColor,0.22):"white";
+    return`<div class="bv-sq-body" style="background:${tBg};display:flex;flex-direction:column">
+      <div style="flex:1"></div>
+      <div class="bv-sq-name" style="font-weight:800">${sq.name}</div>
+      <div class="bv-sq-price">${priceOrToll}</div>
+    </div>${piecesHtml}`;
   }
 
   // 일반 토지
-  return'<div style="background:'+barColor+';height:42%;width:100%;flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden">'
-    +(bldStr?'<span style="font-size:clamp(10px,1.3vw,18px);line-height:1">'+bldStr+'</span>':"")
-    +'</div>'
-    +'<div style="flex:1;background:'+bodyBg+';display:flex;flex-direction:column;overflow:hidden;min-height:0">'
-    +'<div style="flex-shrink:0;padding:2px 3px;display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.93);border-top:1px solid rgba(0,0,0,0.07)">'
-    +'<span style="font-size:clamp(8px,0.8vw,11px);font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;color:#111">'+sq.name+'</span>'
-    +'<span style="font-size:clamp(7px,0.7vw,9px);color:#333;white-space:nowrap;flex-shrink:0;margin-left:2px">'+priceLabel+'</span>'
-    +'</div>'
-    +(ownerHex?'<div class="bv-sq-owner-glow" style="--og-color:'+ownerHex+'"></div>':'')
-    +'</div>'+piecesHtml;
+  return`<div class="bv-sq-bar" style="background:${barColor}">
+    ${bldStr?`<span style="font-size:clamp(8px,1vw,14px);line-height:1">${bldStr}</span>`:""}
+  </div>
+  <div class="bv-sq-body" style="background:${bodyBg}">
+    <div class="bv-sq-name">${sq.name}</div>
+    <div class="bv-sq-price">${priceOrToll}</div>
+  </div>${piecesHtml}`;
 }
 
 
