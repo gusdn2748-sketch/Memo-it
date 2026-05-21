@@ -1458,11 +1458,11 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 .bv-board-wrap{flex:1;display:flex;align-items:flex-start;justify-content:flex-start;min-width:0;overflow:hidden;position:relative}
 
 /* ══ 보드 ══ */
-.bv-board{display:flex;flex-direction:column;width:1100px;height:850px;flex-shrink:0;border:2px solid rgba(255,255,255,0.15);border-radius:4px;overflow:hidden;background:#2e7d2e;box-shadow:0 0 30px rgba(0,0,0,0.6);transform-origin:0 0;transition:transform 0.15s cubic-bezier(.2,.8,.4,1)}
+.bv-board{display:flex;flex-direction:column;width:1650px;height:1275px;flex-shrink:0;border:2px solid rgba(255,255,255,0.15);border-radius:4px;overflow:hidden;background:#2e7d2e;box-shadow:0 0 30px rgba(0,0,0,0.6);transform-origin:0 0;transition:transform 0.15s cubic-bezier(.2,.8,.4,1)}
 .bv-row{display:flex;flex-shrink:0}
-.bv-row-top,.bv-row-bot{height:110px;flex-shrink:0}
+.bv-row-top,.bv-row-bot{height:165px;flex-shrink:0}
 .bv-row-mid{flex:1;min-height:0}
-.bv-col{display:flex;flex-direction:column;width:110px;flex-shrink:0}
+.bv-col{display:flex;flex-direction:column;width:165px;flex-shrink:0}
 .bv-col-left .bv-sq,.bv-col-right .bv-sq{flex:1;min-height:0}
 .bv-center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:space-around;padding:4px;min-width:0;overflow:hidden}
 .bv-center-logo{font-size:clamp(18px,2vw,32px);font-weight:700;color:white;letter-spacing:1px;text-shadow:0 0 10px rgba(255,255,255,0.4)}
@@ -1752,8 +1752,18 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 
 /* ══ 돈 떨어지는 애니메이션 ══ */
 .bv-money-drop{
-  position:fixed;z-index:999;font-size:22px;pointer-events:none;
-  animation:bvMoneyFall 1.1s cubic-bezier(.3,0,.8,1) forwards;
+  position:fixed;z-index:9999;font-size:45px;pointer-events:none;
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,0.6))
+         drop-shadow(0 0 12px rgba(255,213,79,0.5));
+  animation:bvMoneyFall 1.6s cubic-bezier(.3,0,.5,1) forwards;
+  will-change:transform,opacity;
+}
+@keyframes bvMoneyFall{
+  0%{transform:translate(0,-60px) rotate(0deg) scale(0.4);opacity:0;}
+  12%{transform:translate(calc(var(--bv-rain-x,0px)*0.2),-30px) rotate(calc(var(--bv-rain-rot,0deg)*0.2)) scale(1.15);opacity:1;}
+  40%{transform:translate(calc(var(--bv-rain-x,0px)*0.5),120px) rotate(calc(var(--bv-rain-rot,0deg)*0.5)) scale(1.05);opacity:1;}
+  75%{transform:translate(calc(var(--bv-rain-x,0px)*0.8),260px) rotate(calc(var(--bv-rain-rot,0deg)*0.8)) scale(0.95);opacity:0.85;}
+  100%{transform:translate(var(--bv-rain-x,0),380px) rotate(var(--bv-rain-rot,0deg)) scale(0.6);opacity:0;}
 }
 @keyframes bvMoneyFall{
   0%{transform:translateY(-30px) rotate(-10deg) scale(1.2);opacity:1}
@@ -2254,8 +2264,8 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 .bv-row-top .bv-sq,.bv-row-bot .bv-sq{flex-direction:column}
 .bv-col-left .bv-sq{flex-direction:row}
 .bv-col-right .bv-sq{flex-direction:row-reverse}
-.bv-sq.corner{background:#fffde7;flex:none;width:110px;height:100%}
-.bv-row-top .bv-sq.corner,.bv-row-bot .bv-sq.corner{width:110px}
+.bv-sq.corner{background:#fffde7;flex:none;width:165px;height:100%}
+.bv-row-top .bv-sq.corner,.bv-row-bot .bv-sq.corner{width:165px}
 .bv-sq.golden{background:#fff9c4}
 .bv-sq.tourist{background:white}
 .bv-sq-bar{
@@ -2431,7 +2441,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 
 /* ════ Stage 2: 비주얼 강화 ════ */
 .bv-sq-name{
-  font-size:clamp(10px,0.95vw,13px);
+  font-size:clamp(13px,1.2vw,17px);
   font-weight:800;color:#0c0c0c;
   text-align:center;line-height:1.15;
   word-break:keep-all;
@@ -2439,12 +2449,12 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
   max-width:100%;padding:0 1px;
 }
 .bv-sq-price{
-  font-size:clamp(9px,0.85vw,12px);
+  font-size:clamp(11px,1.05vw,15px);
   color:#222;text-align:center;font-weight:600;
   margin-top:1px;
 }
 .bv-sq-special{
-  font-size:clamp(11px,1vw,15px);
+  font-size:clamp(13px,1.3vw,18px);
   font-weight:800;text-align:center;line-height:1.1;
 }
 /* 건물 이모지: 크게! */
@@ -2454,13 +2464,13 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
   pointer-events:none;
 }
 .bv-bld-icon{
-  font-size:clamp(14px,1.7vw,22px);
-  filter:drop-shadow(0 1px 1px rgba(0,0,0,0.4));
+  font-size:clamp(21px,2.5vw,34px);
+  filter:drop-shadow(0 2px 2px rgba(0,0,0,0.5));
   line-height:1;
 }
-.bv-bld-hotel{font-size:clamp(16px,2vw,26px);}
-.bv-bld-building{font-size:clamp(14px,1.7vw,22px);}
-.bv-bld-villa{font-size:clamp(12px,1.5vw,20px);}
+.bv-bld-hotel{font-size:clamp(24px,3vw,40px);}
+.bv-bld-building{font-size:clamp(21px,2.55vw,34px);}
+.bv-bld-villa{font-size:clamp(18px,2.25vw,30px);}
 
 /* 비행기 말 */
 .bv-sq-pieces{
@@ -2707,6 +2717,94 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
   margin-top:6px;
 }
 .bv-sale-total-row span{font-size:13px;font-weight:700;color:white;}
+
+
+/* ════ 사이드 칸 건물 세로 배치 (2/4구역 좁은 배너 대응) ════ */
+.bv-col-left .bv-bld-row,
+.bv-col-right .bv-bld-row{
+  flex-direction:column!important;
+  gap:1px!important;
+  align-items:center;
+  justify-content:center;
+  height:100%;
+}
+.bv-col-left .bv-bld-icon,
+.bv-col-right .bv-bld-icon{
+  line-height:0.9;
+}
+/* 사이드 칸 배너 폭 조정 - 건물이 더 잘 보이도록 */
+.bv-col-left .bv-sq-bar,.bv-col-right .bv-sq-bar{
+  width:36%!important;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+
+/* ════ 3D 토지 효과 (평면 → 두께감) ════ */
+.bv-sq{
+  /* 기본 3D 두께감 */
+  box-shadow:
+    0 3px 0 rgba(0,0,0,0.22),                    /* 아랫변 (두께) */
+    0 5px 8px -2px rgba(0,0,0,0.35),             /* 아래 그림자 */
+    inset 0 1px 0 rgba(255,255,255,0.55),        /* 윗변 하이라이트 */
+    inset 0 -1px 0 rgba(0,0,0,0.08);             /* 안쪽 음영 */
+  transition:box-shadow 0.2s ease, transform 0.15s ease;
+}
+.bv-sq.corner{
+  box-shadow:
+    0 3px 0 rgba(0,0,0,0.25),
+    0 6px 10px -2px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.65),
+    inset 0 -1px 0 rgba(0,0,0,0.1);
+}
+/* 사이드칸은 좌우 방향 두께 */
+.bv-col-left .bv-sq{
+  box-shadow:
+    -3px 0 0 rgba(0,0,0,0.22),
+    -5px 0 8px -2px rgba(0,0,0,0.35),
+    inset 1px 0 0 rgba(255,255,255,0.55),
+    inset -1px 0 0 rgba(0,0,0,0.08);
+}
+.bv-col-right .bv-sq{
+  box-shadow:
+    3px 0 0 rgba(0,0,0,0.22),
+    5px 0 8px -2px rgba(0,0,0,0.35),
+    inset -1px 0 0 rgba(255,255,255,0.55),
+    inset 1px 0 0 rgba(0,0,0,0.08);
+}
+
+/* ════ 토지 밟기 애니메이션 (말 이동 시) ════ */
+.bv-sq.bv-pressed{
+  animation:bvSqPress 0.5s cubic-bezier(.34,1.56,.64,1) forwards;
+  z-index:8;
+}
+@keyframes bvSqPress{
+  0%   {transform:translateY(0) scale(1);
+        box-shadow:0 3px 0 rgba(0,0,0,0.22),0 5px 8px -2px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,0.55),inset 0 -1px 0 rgba(0,0,0,0.08);}
+  20%  {transform:translateY(2px) scale(0.97);
+        box-shadow:0 1px 0 rgba(0,0,0,0.3),0 2px 3px -1px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.3),inset 0 -1px 0 rgba(0,0,0,0.15);
+        filter:brightness(0.85);}
+  45%  {transform:translateY(-4px) scale(1.04);
+        box-shadow:0 6px 0 rgba(0,0,0,0.25),0 10px 14px -2px rgba(0,0,0,0.45),inset 0 2px 0 rgba(255,255,255,0.7),inset 0 -1px 0 rgba(0,0,0,0.08);
+        filter:brightness(1.1);}
+  70%  {transform:translateY(-1px) scale(1.01);
+        box-shadow:0 4px 0 rgba(0,0,0,0.22),0 6px 9px -2px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,0.6),inset 0 -1px 0 rgba(0,0,0,0.08);}
+  100% {transform:translateY(0) scale(1);
+        box-shadow:0 3px 0 rgba(0,0,0,0.22),0 5px 8px -2px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,0.55),inset 0 -1px 0 rgba(0,0,0,0.08);
+        filter:brightness(1);}
+}
+/* 사이드칸 압축 효과 */
+.bv-col-left .bv-sq.bv-pressed,
+.bv-col-right .bv-sq.bv-pressed{
+  animation:bvSqPressSide 0.5s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+@keyframes bvSqPressSide{
+  0%   {transform:scale(1);filter:brightness(1);}
+  25%  {transform:scale(0.95);filter:brightness(0.85);}
+  55%  {transform:scale(1.05);filter:brightness(1.12);}
+  100% {transform:scale(1);filter:brightness(1);}
+}
 
 </style>
 </head>
@@ -5687,6 +5785,7 @@ let bvPendingCard=null,bvPendingSquare=null,bvAcquireTarget=null;
 let bvSynergyQueue=[],bvFreeBuildSelecting=false,bvLastLog="",bvStarsStarted=false,bvZoomLevel=1.0,bvLastBuildSq=-1,bvJustBoughtSq=-1;
 let bvPanX=0,bvPanY=0,bvIsDragging=false,bvDragSX=0,bvDragSY=0,bvDragSPX=0,bvDragSPY=0;
 let bvPrevPlayerCash={};
+let bvPrevPlayerPositions={}; // 플레이어 이동 감지 (밟기 애니메이션용)
 let bvPmSelectedBlds=new Set(); // 구매모달 선택 건물들 (다중 선택)
 let bvStartBuildSelecting=false; // 출발 정확도착 유료 건설 모드
 let bvSaleSelecting=false; // 자산 매각 토지 선택 모드
@@ -5937,6 +6036,12 @@ function bvRender(data){
   if(!bvStarsStarted){bvStarsStarted=true;setTimeout(bvStartStarCanvas,100);}
   setTimeout(bvInitBoardEvents,200);
 
+  // 다른 플레이어 머니레인 동기화
+  if(data.moneyRain&&data.moneyRain.ts!==bvG._shownRainTs){
+    bvG._shownRainTs=data.moneyRain.ts;
+    // 50ms 후 보드 렌더 끝난 시점에 발동
+    setTimeout(()=>bvMoneyRain(data.moneyRain.sqIdx,data.moneyRain.count),100);
+  }
   // 다른 플레이어 주사위 처리 (보드 중앙 주사위 동기 애니메이션)
   if(data.diceAnim&&data.diceAnim.roller!==bvMe()){
     const da=data.diceAnim;const age=Date.now()-(da.ts||0);
@@ -5957,6 +6062,24 @@ function bvRender(data){
   }
 
   bvRenderBoard(data);
+  // 플레이어 이동 감지 → 도착 칸 밟기 애니메이션
+  (data.players||[]).forEach(p=>{
+    if(!p.isAlive)return;
+    const prev=bvPrevPlayerPositions[p.name];
+    if(prev!==undefined&&prev!==p.position){
+      // 이동했음 → 새 위치 칸 누르기 애니메이션
+      setTimeout(()=>{
+        const sqEl=document.querySelector(`[data-sq="${p.position}"]`);
+        if(sqEl&&!sqEl.classList.contains("corner")){
+          sqEl.classList.remove("bv-pressed");
+          void sqEl.offsetWidth;
+          sqEl.classList.add("bv-pressed");
+          setTimeout(()=>sqEl.classList.remove("bv-pressed"),520);
+        }
+      },80);
+    }
+    bvPrevPlayerPositions[p.name]=p.position;
+  });
   bvRenderPlayers(data);
   bvRenderTurnUI(data);
   const welf=document.getElementById("bv-welfare-disp");
@@ -6151,7 +6274,7 @@ function bvSqInner(sq,land,data){
       const isMine=p.name===me;
       const isActive=data.turn===p.name;
       const hex=BV_COLOR_HEX[p.color]||"#888";
-      const sz=isMine?26:22;
+      const sz=isMine?48:42;
       svgs+='<div class="bv-piece-wrap" title="'+p.name+'">'+bvPlaneSvg(hex,sz,isActive||isMine)+'</div>';
     });
     piecesHtml='<div class="bv-sq-pieces">'+svgs+'</div>';
@@ -6572,7 +6695,7 @@ async function bvTollCash(){
   if(ownerIdx>=0)players[ownerIdx]={...players[ownerIdx],cash:players[ownerIdx].cash+toll};
   await bvRef().update({players,log:firebase.firestore.FieldValue.arrayUnion(`💸 ${player.name}→${ownerName} ${bvFmt(toll)}`)});
   bvSetEventHighlight(`💸 <b>${bvFmt(toll)}</b> → <b>${ownerName}</b>`);
-  bvMoneyRain(sqIdx,5);bvClearBroadcast();
+  bvTriggerMoneyRain(sqIdx,12);bvClearBroadcast();
   const afterCash=players[playerIdx].cash;
   bvTollContext=null;
   const sq=BV_BOARD[sqIdx];
@@ -6599,7 +6722,7 @@ async function bvTollLoan(){
   players[playerIdx]={...player,loan:player.loan+toll};
   if(ownerIdx>=0)players[ownerIdx]={...players[ownerIdx],cash:players[ownerIdx].cash+toll};
   await bvRef().update({players,log:firebase.firestore.FieldValue.arrayUnion(`💳 ${player.name} 대출 통행료 ${bvFmt(toll)}`)});
-  bvMoneyRain(sqIdx,3);bvClearBroadcast();
+  bvTriggerMoneyRain(sqIdx,8);bvClearBroadcast();
   bvTollContext=null;
   await bvEndTurn();
 }
@@ -7629,7 +7752,7 @@ function bvLeaveGame(){
 
 // ── 채팅 ──
 
-const BV_BOARD_W=1100, BV_BOARD_H=850; // 보드 자연 크기
+const BV_BOARD_W=1650, BV_BOARD_H=1275; // 보드 자연 크기
 
 function bvCalcFitZoom(){
   const wrap=document.getElementById("bv-board-wrap");
@@ -7757,18 +7880,32 @@ function bvMoneyRain(sqIdx, count){
   const layer=document.getElementById("bv-money-rain-layer");
   if(!layer)return;
   const rect=sq.getBoundingClientRect();
-  const emojis=["💰","💵","💸"];
-  for(let i=0;i<(count||5);i++){
+  const emojis=["💰","💵","💸","💴","💶","💷"];
+  const n=count||10;
+  for(let i=0;i<n;i++){
     setTimeout(()=>{
       const el=document.createElement("div");
       el.className="bv-money-drop";
-      el.textContent=emojis[i%emojis.length];
-      el.style.left=(rect.left+rect.width*0.1+Math.random()*rect.width*0.8)+"px";
-      el.style.top=(rect.top-5)+"px";
+      el.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+      el.style.left=(rect.left+rect.width*0.05+Math.random()*rect.width*0.9)+"px";
+      el.style.top=(rect.top-20+Math.random()*30)+"px";
+      el.style.setProperty("--bv-rain-x",(Math.random()*60-30)+"px");
+      el.style.setProperty("--bv-rain-rot",(Math.random()*720-360)+"deg");
+      el.style.fontSize=(36+Math.random()*22)+"px";
+      el.style.animationDuration=(1.4+Math.random()*0.5)+"s";
       layer.appendChild(el);
-      setTimeout(()=>el.remove(),1200);
-    },i*110);
+      setTimeout(()=>el.remove(),2000);
+    },i*90);
   }
+}
+
+// 다른 플레이어에게 머니레인 브로드캐스트
+async function bvTriggerMoneyRain(sqIdx,count){
+  bvMoneyRain(sqIdx,count);
+  // Firebase에도 신호 전송 (다른 플레이어 화면에서도 보이도록)
+  try{
+    await bvRef().update({moneyRain:{sqIdx,count,ts:Date.now()}});
+  }catch(e){}
 }
 // 현금 증감 표시
 function bvShowCashDelta(playerName,delta){
@@ -7811,9 +7948,10 @@ function bvStartBuildSkip(){
 async function bvSelectPaidBuild(sqIdx){
   bvStartBuildSelecting=false;
   const snap=await bvRef().get();const data=snap.data();
-  const playerIdx=bvMyIdx();const player=data.players[playerIdx];
+  const playerIdx=bvMyIdx();
   bvRender(data); // 반짝임 제거
-  await bvShowBuildOptions(playerIdx,sqIdx,player.round||0);
+  // ★ 출발 정확도착 보너스: 바퀴수 제한 없이 호텔까지 건설 가능
+  await bvShowBuildOptions(playerIdx,sqIdx,999);
 }
 
 function bvSkipFreeBuild(){bvFreeBuildSelecting=false;bvRender(bvG);bvEndTurn();}
