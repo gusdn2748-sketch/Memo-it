@@ -2939,7 +2939,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v05.21.21</div>
+  <div class="splash-ver">v05.21.22</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -4194,7 +4194,6 @@ init();
       </div>
       <div class="bvwt-players" id="rbw-pgrid"></div>
       <div class="bvwt-hint">모두 준비완료하면 방장이 게임을 시작할 수 있습니다</div>
-      <div id="rbw-debug" style="margin:8px 0;padding:10px;background:rgba(255,213,79,0.08);border:1px solid rgba(255,213,79,0.25);border-radius:10px;font-size:11px;color:rgba(255,255,255,0.85);line-height:1.5;font-family:monospace"></div>
       <div class="bvwt-btns">
         <button id="rbw-ready-btn" class="bvwt-ready-btn" onclick="bvToggleReady()">✅ 준비완료</button>
         <button id="rbw-start-btn" class="bvwt-start-btn" onclick="bvStartGame()" style="display:none">🌍 게임 시작!</button>
@@ -4466,7 +4465,7 @@ init();
     <!-- ══ 주사위 대형 오버레이 ══ -->
     
 
-    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.21.21</div>
+    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.21.22</div>
   </div>
 
 
@@ -5676,7 +5675,7 @@ document.addEventListener('keydown', e => {
 </script>
 <script>
 // ════════════════════════════════════════════════════════
-// 부루마블 WORLD EDITION  v05.21.21
+// 부루마블 WORLD EDITION  v05.21.22
 // prefix: bv (bravo)
 // ════════════════════════════════════════════════════════
 
@@ -6002,6 +6001,20 @@ function bvMakePlayer(name,color){
     pensionUsed:false,cards:[],nasaSynergy:false,extraTurn:false,extraTurnUsed:false};
 }
 
+// ★ 황금카드 덱 생성 (BV_CARDS의 count만큼 ID를 복제 → 셔플)
+function bvMakeDeck(){
+  const deck=[];
+  BV_CARDS.forEach(card=>{
+    for(let i=0;i<(card.count||1);i++)deck.push(card.id);
+  });
+  // Fisher-Yates 셔플
+  for(let i=deck.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [deck[i],deck[j]]=[deck[j],deck[i]];
+  }
+  return deck;
+}
+
 async function bvJoinRoom(rid){
   const me=bvMe();if(!me){bvToast("이름을 먼저 설정하세요");return;}
   const snap=await db.collection("bravo_rooms").doc(rid).get();
@@ -6065,18 +6078,8 @@ function bvRenderWaiting(data){
       ?"linear-gradient(135deg,#5a5a5a,#3a3a3a)"
       :"";
   }
-  // ★ 디버그 정보 표시 (상태 한눈에 확인)
-  const dbg=el("rbw-debug");
+  // 시작 가능 여부 계산
   const allReady=data.players.length>=2&&data.players.every(p=>!!p.isReady);
-  if(dbg){
-    dbg.innerHTML=`
-      <div>👑 방장: <b>${data.host}</b> ${bvIsHost?'<span style="color:#a5d6a7">(나)</span>':''}</div>
-      <div>👥 인원: <b>${data.players.length}/${data.maxPlayers}</b> ${data.players.length>=2?'<span style="color:#a5d6a7">✓</span>':'<span style="color:#ef9a9a">✗ 2명 이상 필요</span>'}</div>
-      <div>✅ 준비 상태: ${data.players.map(p=>`<b style="color:${p.isReady?'#a5d6a7':'#ef9a9a'}">${p.name}:${p.isReady?'OK':'❌'}</b>`).join(", ")}</div>
-      <div style="margin-top:4px;padding-top:4px;border-top:1px dashed rgba(255,255,255,0.15)">
-        <b style="color:${allReady?'#a5d6a7':'#ffd54f'}">${allReady?'🚀 시작 준비 완료!':'⏳ 모두 준비완료 필요'}</b>
-      </div>`;
-  }
   // ★ 시작 버튼: 항상 클릭 가능 (검증은 bvStartGame 내부에서)
   const sb=el("rbw-start-btn");
   if(sb){
