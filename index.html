@@ -1458,11 +1458,11 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 .bv-board-wrap{flex:1;display:flex;align-items:flex-start;justify-content:flex-start;min-width:0;overflow:hidden;position:relative}
 
 /* ══ 보드 ══ */
-.bv-board{display:flex;flex-direction:column;width:1600px;height:1300px;flex-shrink:0;border:2px solid rgba(255,255,255,0.15);border-radius:4px;overflow:hidden;background:#2e7d2e;box-shadow:0 0 30px rgba(0,0,0,0.6);transform-origin:0 0;transition:transform 0.15s cubic-bezier(.2,.8,.4,1)}
+.bv-board{display:flex;flex-direction:column;width:1100px;height:850px;flex-shrink:0;border:2px solid rgba(255,255,255,0.15);border-radius:4px;overflow:hidden;background:#2e7d2e;box-shadow:0 0 30px rgba(0,0,0,0.6);transform-origin:0 0;transition:transform 0.15s cubic-bezier(.2,.8,.4,1)}
 .bv-row{display:flex;flex-shrink:0}
-.bv-row-top,.bv-row-bot{height:130px;flex-shrink:0}
+.bv-row-top,.bv-row-bot{height:110px;flex-shrink:0}
 .bv-row-mid{flex:1;min-height:0}
-.bv-col{display:flex;flex-direction:column;width:130px;flex-shrink:0}
+.bv-col{display:flex;flex-direction:column;width:110px;flex-shrink:0}
 .bv-col-left .bv-sq,.bv-col-right .bv-sq{flex:1;min-height:0}
 .bv-center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:space-around;padding:4px;min-width:0;overflow:hidden}
 .bv-center-logo{font-size:clamp(18px,2vw,32px);font-weight:700;color:white;letter-spacing:1px;text-shadow:0 0 10px rgba(255,255,255,0.4)}
@@ -1475,11 +1475,11 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 /* ══ 칸 기본 ══ */
 .bv-sq{position:relative;background:white;border:0.5px solid rgba(0,0,0,0.15);display:flex;flex-direction:column;cursor:default;overflow:hidden;box-sizing:border-box}
 .bv-row-top .bv-sq:not(.corner),.bv-row-bot .bv-sq:not(.corner){flex:1;min-width:0}
-.bv-sq.corner{width:130px;height:100%;flex-shrink:0;background:#fffde7}
+.bv-sq.corner{width:110px;height:100%;flex-shrink:0;background:#fffde7}
 .bv-sq.corner.tl,.bv-sq.corner.bl{background:#c8e6c9}
 .bv-sq.corner.tr{background:#e8eaf6}
 .bv-sq-bar{height:42%;width:100%;flex-shrink:0}
-.bv-col-left .bv-sq-bar,.bv-col-right .bv-sq-bar{width:34%;height:100%;flex-shrink:0}
+.bv-col-left .bv-sq-bar,.bv-col-right .bv-sq-bar{width:30%;height:100%;flex-shrink:0}
 .bv-col-left .bv-sq{flex-direction:row}
 .bv-col-right .bv-sq{flex-direction:row-reverse}
 .bv-sq-body{flex:1;display:flex;flex-direction:column;align-items:stretch;overflow:hidden;min-width:0}
@@ -2199,6 +2199,49 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 }
 .bv-victory-exit:hover{background:rgba(255,255,255,0.16);color:white}
 
+
+/* ════ 강제 기본 스타일 (우선순위 확보) ════ */
+.bv-sq{
+  position:relative!important;
+  background:white!important;
+  border:0.5px solid rgba(0,0,0,0.18)!important;
+  display:flex!important;flex-direction:column!important;
+  overflow:hidden!important;box-sizing:border-box!important;
+  cursor:default!important;
+}
+.bv-row-top .bv-sq,.bv-row-bot .bv-sq{flex:1;min-width:0!important}
+.bv-col-left .bv-sq,.bv-col-right .bv-sq{flex:1;min-height:0!important}
+.bv-sq.corner{background:#fffde7!important}
+.bv-sq.golden{background:#fff9c4!important}
+.bv-sq.tourist{background:white!important}
+.bv-sq-bar{display:flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important}
+.bv-sq-body{
+  flex:1!important;display:flex!important;flex-direction:column!important;
+  align-items:stretch!important;overflow:hidden!important;min-width:0!important;min-height:0!important;
+}
+.bv-sq-info-line{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  padding:2px 4px!important;gap:2px!important;flex-shrink:0!important;
+  background:rgba(255,255,255,0.93)!important;
+  border-top:1px solid rgba(0,0,0,0.07)!important;
+}
+.bv-sq-name{
+  font-size:clamp(8px,0.75vw,11px)!important;font-weight:700!important;
+  color:#111!important;overflow:hidden!important;text-overflow:ellipsis!important;
+  white-space:nowrap!important;flex:1!important;
+}
+.bv-sq-price{
+  font-size:clamp(7px,0.65vw,9px)!important;color:#333!important;
+  white-space:nowrap!important;flex-shrink:0!important;font-weight:600!important;
+}
+.bv-sq-photo{width:100%!important;flex:1!important;min-height:0!important;object-fit:cover!important;display:block!important}
+/* 좌우 열 방향 */
+.bv-col-left .bv-sq{flex-direction:row!important}
+.bv-col-right .bv-sq{flex-direction:row-reverse!important}
+.bv-col-left .bv-sq-bar,.bv-col-right .bv-sq-bar{
+  width:34%!important;height:100%!important;flex-shrink:0!important;
+}
+
 </style>
 </head>
 <body>
@@ -2274,7 +2317,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v05.21.0</div>
+  <div class="splash-ver">v05.21.1</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -3788,7 +3831,7 @@ init();
       </div>
     </div>
 
-    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.21.0</div>
+    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.21.1</div>
   </div>
 
 
@@ -4998,7 +5041,7 @@ document.addEventListener('keydown', e => {
 </script>
 <script>
 // ════════════════════════════════════════════════════════
-// 부루마블 WORLD EDITION  v05.21.0
+// 부루마블 WORLD EDITION  v05.21.1
 // prefix: bv (bravo)
 // ════════════════════════════════════════════════════════
 
@@ -5615,7 +5658,7 @@ function bvSqInner(sq,land,data){
   }
 
   // ── 일반 토지 : 구역 배너 + 건물 + 사진 + 이름+통행료 1줄 ──
-  const barColor=BV_ZONE_COLOR[sq.zone]||"#888";
+  const barColor=BV_ZONE_COLOR[sq.zone]||BV_ZONE_COLOR[sq.color]||"#888"; // zone 또는 color 중 하나
   const bodyBg=ownerHex?bvHexToRgba(ownerHex,0.15):"white";
   const photoUrl=BV_PHOTOS[sq.index]||"";
   // 소유 토지 글로우 오버레이
@@ -6842,7 +6885,7 @@ function bvLeaveGame(){
 
 // ── 채팅 ──
 
-const BV_BOARD_W=1600, BV_BOARD_H=1300; // 보드 자연 크기
+const BV_BOARD_W=1100, BV_BOARD_H=850; // 보드 자연 크기
 
 function bvCalcFitZoom(){
   const wrap=document.getElementById("bv-board-wrap");
@@ -6860,9 +6903,12 @@ function bvApplyTransform(){
 
 function bvAutoFit(){
   const wrap=document.getElementById("bv-board-wrap");
-  if(!wrap||!wrap.clientWidth)return;
+  if(!wrap)return;
+  // wrap이 아직 렌더링 안됐으면 재시도
+  if(!wrap.clientWidth||!wrap.clientHeight){
+    setTimeout(bvAutoFit,150);return;
+  }
   bvZoomLevel=bvCalcFitZoom();
-  // 보드를 wrap 중앙에 배치
   bvPanX=(wrap.clientWidth-BV_BOARD_W*bvZoomLevel)/2;
   bvPanY=(wrap.clientHeight-BV_BOARD_H*bvZoomLevel)/2;
   bvApplyTransform();
