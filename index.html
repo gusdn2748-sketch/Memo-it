@@ -2307,9 +2307,12 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 
 /* ════ 주사위 중앙 상주 시스템 ════ */
 .bv-dice-wrap{
-  display:flex;gap:14px;align-items:center;justify-content:center;
-  margin:4px 0;
-  perspective:600px;
+  display:flex;gap:18px;align-items:center;justify-content:center;
+  margin:6px 0;
+  perspective:900px;
+  perspective-origin:50% 80%;
+  position:relative;
+  z-index:30;
 }
 .bv-die{
   width:64px;height:64px;
@@ -2329,22 +2332,56 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 .bv-die#bv-die1{color:#c62828;}
 .bv-die#bv-die2{color:#1565c0;}
 .bv-die.throwing{
-  animation:bvDiceThrow 1.6s cubic-bezier(.34,.7,.18,1) forwards;
+  animation:bvDiceThrow 1.9s cubic-bezier(.34,.65,.25,1) forwards;
   will-change:transform;
+  z-index:50;
+  position:relative;
 }
 .bv-die.throwing#bv-die1{animation-delay:0s;}
-.bv-die.throwing#bv-die2{animation-delay:0.08s;}
+.bv-die.throwing#bv-die2{animation-delay:0.1s;}
 .bv-die.landed{
-  animation:bvDiceLanded 0.4s ease-out;
+  animation:bvDiceLanded 0.45s ease-out;
 }
+/* ════ 4단계 바운스 + 2배 액션 범위 ════ */
 @keyframes bvDiceThrow{
-  0%   {transform:translateY(0) rotate(0deg) scale(1);}
-  15%  {transform:translateY(-46px) rotateX(180deg) rotateY(120deg) scale(1.05);}
-  35%  {transform:translateY(-62px) rotateX(420deg) rotateY(360deg) scale(1.1);}
-  55%  {transform:translateY(-40px) rotateX(720deg) rotateY(540deg) scale(1.08);}
-  75%  {transform:translateY(-16px) rotateX(1020deg) rotateY(740deg) scale(1.04);}
-  90%  {transform:translateY(0) rotateX(1200deg) rotateY(900deg) scale(1.02);}
-  100% {transform:translateY(0) rotate(0) scale(1);}
+  /* === 1차 대형 발사 (가장 높음) === */
+  0%   {transform:translate(0,0) rotateX(0) rotateY(0) rotateZ(0) scale(1);}
+  4%   {transform:translate(-10px,-70px) rotateX(120deg) rotateY(90deg) rotateZ(40deg) scale(1.08);}
+  9%   {transform:translate(-22px,-130px) rotateX(260deg) rotateY(200deg) rotateZ(110deg) scale(1.18);}
+  14%  {transform:translate(-30px,-155px) rotateX(380deg) rotateY(290deg) rotateZ(170deg) scale(1.22);}
+  19%  {transform:translate(-26px,-115px) rotateX(490deg) rotateY(380deg) rotateZ(230deg) scale(1.16);}
+
+  /* 1차 착지 */
+  24%  {transform:translate(-18px,0) rotateX(620deg) rotateY(470deg) rotateZ(310deg) scale(0.92) scaleY(0.85);}
+  27%  {transform:translate(-12px,0) rotateX(680deg) rotateY(510deg) rotateZ(360deg) scale(1) scaleY(1);}
+
+  /* === 2차 큰 바운스 === */
+  32%  {transform:translate(-4px,-65px) rotateX(770deg) rotateY(580deg) rotateZ(430deg) scale(1.1);}
+  38%  {transform:translate(8px,-95px) rotateX(880deg) rotateY(660deg) rotateZ(500deg) scale(1.13);}
+  44%  {transform:translate(18px,-70px) rotateX(980deg) rotateY(740deg) rotateZ(570deg) scale(1.08);}
+
+  /* 2차 착지 */
+  49%  {transform:translate(24px,0) rotateX(1080deg) rotateY(820deg) rotateZ(640deg) scale(0.95) scaleY(0.88);}
+  52%  {transform:translate(28px,0) rotateX(1130deg) rotateY(860deg) rotateZ(680deg) scale(1) scaleY(1);}
+
+  /* === 3차 중간 바운스 === */
+  57%  {transform:translate(30px,-40px) rotateX(1200deg) rotateY(910deg) rotateZ(730deg) scale(1.06);}
+  62%  {transform:translate(28px,-55px) rotateX(1270deg) rotateY(960deg) rotateZ(770deg) scale(1.07);}
+  68%  {transform:translate(22px,-30px) rotateX(1340deg) rotateY(1010deg) rotateZ(810deg) scale(1.04);}
+
+  /* 3차 착지 */
+  73%  {transform:translate(16px,0) rotateX(1390deg) rotateY(1050deg) rotateZ(840deg) scale(0.97);}
+
+  /* === 4차 작은 바운스 === */
+  78%  {transform:translate(10px,-22px) rotateX(1430deg) rotateY(1085deg) rotateZ(870deg) scale(1.03);}
+  82%  {transform:translate(6px,-30px) rotateX(1450deg) rotateY(1105deg) rotateZ(885deg) scale(1.04);}
+  87%  {transform:translate(2px,-15px) rotateX(1465deg) rotateY(1120deg) rotateZ(895deg) scale(1.02);}
+
+  /* 최종 착지 + 미세 떨림 */
+  91%  {transform:translate(0,0) rotateX(1475deg) rotateY(1128deg) rotateZ(900deg) scale(0.99);}
+  94%  {transform:translate(0,-6px) rotateX(1480deg) rotateY(1132deg) rotateZ(902deg) scale(1.01);}
+  97%  {transform:translate(0,-2px) rotateX(1485deg) rotateY(1135deg) rotateZ(903deg) scale(1);}
+  100% {transform:translate(0,0) rotate(0) scale(1);}
 }
 @keyframes bvDiceLanded{
   0%   {transform:scale(1);}
@@ -2532,6 +2569,144 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
   font-size:11px;font-weight:900;
   box-shadow:0 2px 6px rgba(0,0,0,0.4);
 }
+
+
+/* ════ 특수 이벤트 모달 ════ */
+.bv-special-box{
+  max-width:380px;text-align:center;
+  background:linear-gradient(150deg,#1a2030 0%,#0e1320 100%)!important;
+  border:1px solid rgba(255,213,79,0.3)!important;
+  box-shadow:0 14px 40px rgba(0,0,0,0.7),0 0 30px rgba(255,213,79,0.1)!important;
+}
+.bv-special-icon{
+  font-size:54px;line-height:1;margin:4px 0 6px;
+  animation:bvSpecialIconPop 0.5s ease-out;
+  filter:drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+}
+@keyframes bvSpecialIconPop{
+  0%{transform:scale(0) rotate(-180deg);opacity:0;}
+  60%{transform:scale(1.2) rotate(10deg);opacity:1;}
+  100%{transform:scale(1) rotate(0);opacity:1;}
+}
+.bv-special-desc{
+  font-size:14px;line-height:1.55;
+  color:rgba(255,255,255,0.88);
+  margin:6px 0 10px;padding:0 8px;
+  text-align:center;
+}
+.bv-special-amount{
+  font-size:24px;font-weight:900;
+  color:#ffd54f;
+  text-shadow:0 0 12px rgba(255,213,79,0.6);
+  margin:6px 0 14px;
+  letter-spacing:0.5px;
+  animation:bvAmountPulse 1.5s ease-in-out infinite;
+}
+@keyframes bvAmountPulse{
+  0%,100%{transform:scale(1);}
+  50%{transform:scale(1.06);}
+}
+.bv-special-amount.minus{color:#ef9a9a;text-shadow:0 0 12px rgba(239,154,154,0.5);}
+.bv-special-amount.zero{color:#90a4ae;text-shadow:none;animation:none;}
+.bv-special-btn{
+  padding:11px 22px;border:none;border-radius:10px;
+  font-weight:800;font-size:14px;cursor:pointer;
+  transition:all 0.15s ease;letter-spacing:0.4px;
+}
+.bv-special-btn.primary{
+  background:linear-gradient(135deg,#42a5f5,#1976d2);
+  color:white;
+  box-shadow:0 4px 12px rgba(25,118,210,0.4);
+}
+.bv-special-btn.primary:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(25,118,210,0.6);}
+.bv-special-btn.secondary{
+  background:linear-gradient(135deg,#ff9800,#e65100);
+  color:white;
+  box-shadow:0 4px 12px rgba(230,81,0,0.4);
+}
+.bv-special-btn.secondary:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(230,81,0,0.6);}
+
+
+/* ════ 자산 매각 다중 선택 UI ════ */
+.bv-sale-options{
+  display:flex;flex-direction:column;gap:7px;
+  margin-bottom:10px;
+}
+.bv-sale-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;
+  background:rgba(255,255,255,0.05);
+  border:2px solid rgba(255,255,255,0.1);
+  border-radius:10px;
+  cursor:pointer;
+  transition:all 0.18s ease;
+  position:relative;
+  text-align:left;
+  color:white;
+}
+.bv-sale-item:hover:not(.bv-sale-unavail){
+  background:rgba(255,255,255,0.1);
+  border-color:rgba(255,213,79,0.4);
+  transform:translateX(2px);
+}
+.bv-sale-item.bv-sale-on{
+  background:linear-gradient(135deg,rgba(255,213,79,0.18),rgba(255,167,38,0.08));
+  border-color:#ffd54f;
+  box-shadow:0 4px 14px rgba(255,213,79,0.3),inset 0 0 0 1px rgba(255,213,79,0.4);
+  transform:translateX(4px);
+}
+.bv-sale-item.bv-sale-included{
+  background:rgba(255,213,79,0.08);
+  border-color:rgba(255,213,79,0.3);
+  opacity:0.7;
+}
+.bv-sale-item.bv-sale-included .bv-sale-meta::after{
+  content:" (토지와 함께 매각)";color:#ffd54f;font-weight:700;
+}
+.bv-sale-item.bv-sale-unavail{
+  opacity:0.4;cursor:not-allowed;
+  background:rgba(0,0,0,0.2);
+}
+.bv-sale-icon{
+  font-size:28px;line-height:1;flex-shrink:0;
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,0.5));
+}
+.bv-sale-info{flex:1;min-width:0;}
+.bv-sale-name{
+  font-size:14px;font-weight:800;letter-spacing:-0.2px;
+}
+.bv-sale-meta{
+  font-size:11px;color:rgba(255,255,255,0.5);
+  margin-top:1px;
+}
+.bv-sale-price{
+  font-size:14px;font-weight:800;
+  color:#a5d6a7;
+  flex-shrink:0;
+}
+.bv-sale-check{
+  width:22px;height:22px;border-radius:50%;
+  border:2px solid rgba(255,255,255,0.25);
+  background:transparent;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.18s ease;
+}
+.bv-sale-item.bv-sale-on .bv-sale-check{
+  background:#ffd54f;border-color:#ffd54f;
+  box-shadow:0 0 10px rgba(255,213,79,0.6);
+}
+.bv-sale-item.bv-sale-on .bv-sale-check::before{
+  content:"✓";color:#000;font-weight:900;font-size:14px;
+}
+.bv-sale-total-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 14px;
+  background:rgba(165,214,167,0.08);
+  border:1px solid rgba(165,214,167,0.25);
+  border-radius:10px;
+  margin-top:6px;
+}
+.bv-sale-total-row span{font-size:13px;font-weight:700;color:white;}
 
 </style>
 </head>
@@ -3938,6 +4113,16 @@ init();
     </div>
 
     <!-- 모달들 -->
+
+    <!-- ══ 특수 칸 이벤트 모달 (무인도/복지기금/우주여행/세금) ══ -->
+    <div id="bv-special-modal" class="bv-modal"><div class="bv-modal-box bv-special-box">
+      <div class="bv-special-icon" id="bv-special-icon">📍</div>
+      <div class="bv-modal-title" id="bv-special-title">이벤트</div>
+      <div class="bv-modal-body bv-special-desc" id="bv-special-desc"></div>
+      <div class="bv-special-amount" id="bv-special-amount" style="display:none"></div>
+      <div class="bv-modal-btns" id="bv-special-btns"></div>
+    </div></div>
+
     <div id="bv-purchase-modal" class="bv-modal"><div class="bv-modal-box bv-pm-box">
       <!-- 헤더 -->
       <div class="bv-pm-header">
@@ -4002,11 +4187,18 @@ init();
     </div></div>
 
     <!-- ══ 자산 매각 상세 모달 ══ -->
-    <div id="bv-sale-modal" class="bv-modal"><div class="bv-modal-box">
+    <div id="bv-sale-modal" class="bv-modal"><div class="bv-modal-box" style="max-width:400px">
       <div class="bv-modal-title" id="bv-sale-title">🏚 자산 매각</div>
-      <div class="bv-modal-body" style="font-size:12px;margin-bottom:12px" id="bv-sale-desc"></div>
+      <div class="bv-modal-body" style="font-size:12px;margin-bottom:10px;color:rgba(255,255,255,0.75);line-height:1.5" id="bv-sale-desc"></div>
       <div id="bv-sale-options" class="bv-sale-options"></div>
-      <button class="bv-btn-no" style="margin-top:10px;width:100%" onclick="bvCancelSale()">← 돌아가기</button>
+      <div class="bv-sale-total-row">
+        <span>💰 판매 총액</span>
+        <b id="bv-sale-total" style="color:#a5d6a7;font-size:18px">0원</b>
+      </div>
+      <div class="bv-modal-btns" style="margin-top:8px">
+        <button class="bv-btn-no" onclick="bvCancelSale()">← 돌아가기</button>
+        <button class="bv-btn-yes" id="bv-sale-confirm-btn" onclick="bvSellSelected()" disabled style="opacity:0.4">항목을 선택하세요</button>
+      </div>
     </div></div>
     <div id="bv-build-modal" class="bv-modal"><div class="bv-modal-box">
       <div class="bv-modal-title">🏗 건물 건설</div>
@@ -5498,6 +5690,8 @@ let bvPrevPlayerCash={};
 let bvPmSelectedBlds=new Set(); // 구매모달 선택 건물들 (다중 선택)
 let bvStartBuildSelecting=false; // 출발 정확도착 유료 건설 모드
 let bvSaleSelecting=false; // 자산 매각 토지 선택 모드
+let bvSaleSelected=new Set(); // 매각할 항목들
+let bvSaleCurrentLand=-1; // 현재 매각 중인 토지
 let bvTollContext=null;  // {playerIdx,sqIdx,toll,ownerName}
 
 // ── 유틸 ──
@@ -5541,6 +5735,33 @@ function bvAddLog(msg){
 }
 
 function bvOpenModal(id){document.getElementById(id).style.display="flex";}
+
+// ── 특수 이벤트 모달 헬퍼 ──
+function bvShowSpecialEvent({icon,title,desc,amount,amountClass,buttons}){
+  document.getElementById("bv-special-icon").textContent=icon||"📍";
+  document.getElementById("bv-special-title").textContent=title||"";
+  document.getElementById("bv-special-desc").innerHTML=desc||"";
+  const amtEl=document.getElementById("bv-special-amount");
+  if(amount){
+    amtEl.style.display="block";
+    amtEl.textContent=amount;
+    amtEl.className="bv-special-amount"+(amountClass?" "+amountClass:"");
+  }else{
+    amtEl.style.display="none";
+  }
+  const btnsEl=document.getElementById("bv-special-btns");
+  btnsEl.innerHTML=(buttons||[]).map(b=>
+    `<button class="bv-special-btn ${b.kind||"primary"}" onclick="${b.onclick}">${b.label}</button>`
+  ).join("");
+  bvOpenModal("bv-special-modal");
+}
+function bvCloseSpecialEvent(){bvCloseModal("bv-special-modal");}
+async function bvSpecialContinue(){
+  bvCloseSpecialEvent();bvClearBroadcast();
+  bvAnimating=false;await bvEndTurn();
+}
+
+
 function bvCloseModal(id){document.getElementById(id).style.display="none";}
 
 // ── 화면 전환 ──
@@ -5731,7 +5952,7 @@ function bvRender(data){
           resultEl.textContent=da.isDouble?`${da.d1}+${da.d2}=${total} 🎯 더블!`:`${da.d1}+${da.d2}=${total}`;
           resultEl.classList.remove("show");void resultEl.offsetWidth;resultEl.classList.add("show");
         }
-      },1600);
+      },1900);
     }
   }
 
@@ -5881,6 +6102,24 @@ function bvHexToRgba(hex,a){
   try{const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
     return"rgba("+r+","+g+","+b+","+a+")";}
   catch{return"rgba(128,128,128,"+a+")";}
+}
+
+
+// ── 대출 한도 (기본 500만 + 보유 자산가치 50%) ──
+function bvLoanLimit(player,data){
+  let lim=5000000;
+  const board=data.board||{};
+  Object.entries(board).forEach(([idx,land])=>{
+    if(land.owner!==player.name)return;
+    const sq=BV_BOARD[idx];if(!sq)return;
+    let val=sq.price||0;
+    const bld=land.buildings||{};
+    if(bld.villa)val+=sq.buildCost?.villa||0;
+    if(bld.building)val+=sq.buildCost?.building||0;
+    if(bld.hotel)val+=sq.buildCost?.hotel||0;
+    lim+=val*0.5;
+  });
+  return Math.floor(lim);
 }
 
 function bvCalcToll(sq,land){
@@ -6049,7 +6288,7 @@ async function bvRollDice(){
 
   // 로컬 애니메이션
   bvAnimateDiceThrow(d1,d2,isDouble);
-  await bvDelay(1700);
+  await bvDelay(2000);
 
   // 결과 텍스트
   const resultEl=document.getElementById("bv-dice-result");
@@ -6103,7 +6342,7 @@ function bvAnimateDiceThrow(d1,d2,isDouble){
     die2.textContent=faces[Math.floor(Math.random()*6)];
   },90);
 
-  // 1.5초 후 결과 확정 + 잠시 강조
+  // 1.8초 후 결과 확정 + 잠시 강조 (4단계 바운스 완료 시점)
   setTimeout(()=>{
     clearInterval(iv);
     die1.textContent=BV_DICE_EMOJI[d1]||"🎲";
@@ -6112,8 +6351,8 @@ function bvAnimateDiceThrow(d1,d2,isDouble){
     die2.classList.remove("throwing");
     die1.classList.add("landed");
     die2.classList.add("landed");
-    setTimeout(()=>{die1.classList.remove("landed");die2.classList.remove("landed");},420);
-  },1500);
+    setTimeout(()=>{die1.classList.remove("landed");die2.classList.remove("landed");},450);
+  },1800);
 }
 
 // ── 말 이동 ──
@@ -6378,50 +6617,152 @@ function bvShowSaleDetail(landIdx){
   const land=bvG?.board?.[landIdx];
   const bld=land?.buildings||{villa:0,building:0,hotel:0};
   const{toll}=bvTollContext||{toll:0};
+
+  // 현재 매각 대상 저장
+  bvSaleCurrentLand=landIdx;
+  bvSaleSelected=new Set();
+
   document.getElementById("bv-sale-title").textContent=`🏚 ${sq.name} 매각`;
-  document.getElementById("bv-sale-desc").innerHTML=`구매가의 <b>80%</b>로 매각 | 통행료: <b style="color:#ef9a9a">${bvFmt(toll)}</b>`;
-  const opts=[
-    {id:"villa",icon:"🏠",name:"별장",price:Math.floor((sq.buildCost?.villa||0)*0.8),avail:bld.villa>0},
-    {id:"building",icon:"🏢",name:"빌딩",price:Math.floor((sq.buildCost?.building||0)*0.8),avail:bld.building>0},
-    {id:"hotel",icon:"🏨",name:"호텔",price:Math.floor((sq.buildCost?.hotel||0)*0.8),avail:bld.hotel>0},
-    {id:"land",icon:"🏡",name:"토지 전체",price:Math.floor((sq.price||0)*0.8),avail:true},
+  document.getElementById("bv-sale-desc").innerHTML=
+    `구매가의 <b style="color:#a5d6a7">80%</b>로 매각 · 통행료: <b style="color:#ef9a9a">${bvFmt(toll)}</b><br>
+     <span style="font-size:11px;color:rgba(255,255,255,0.5)">여러 항목을 선택하면 일괄 매각됩니다</span>`;
+
+  // 각 항목 정보
+  const items=[
+    {id:"villa",icon:"🏡",name:"별장",price:Math.floor((sq.buildCost?.villa||0)*0.8),avail:bld.villa>0,built:bld.villa>0},
+    {id:"building",icon:"🏢",name:"빌딩",price:Math.floor((sq.buildCost?.building||0)*0.8),avail:bld.building>0,built:bld.building>0},
+    {id:"hotel",icon:"🏨",name:"호텔",price:Math.floor((sq.buildCost?.hotel||0)*0.8),avail:bld.hotel>0,built:bld.hotel>0},
+    {id:"land",icon:"🌍",name:"토지 전체",price:Math.floor((sq.price||0)*0.8),avail:true,built:true,note:"매각 시 모든 건물 포함"},
   ];
+
   const c=document.getElementById("bv-sale-options");
-  if(c)c.innerHTML=opts.map(o=>`
-    <button class="bv-sale-detail-opt ${o.avail?"":"bv-sale-unavail"}"
-      ${o.avail?`onclick="bvSellComponent(${landIdx},'${o.id}')"`:""}>
-      <span style="font-size:18px">${o.icon}</span>
-      <span style="flex:1;text-align:left;padding-left:10px">
-        <b style="font-size:13px">${o.name}</b>
-        ${!o.avail?'<span style="font-size:10px;color:rgba(255,255,255,0.35);display:block">건설되지 않음</span>':""}
-      </span>
-      <span style="font-weight:700;color:#a5d6a7">+${bvFmt(o.price)}</span>
-    </button>`).join("");
+  if(c)c.innerHTML=items.map(o=>`
+    <button class="bv-sale-item ${!o.avail?"bv-sale-unavail":""}" id="bv-sale-item-${o.id}"
+      ${o.avail?`onclick="bvSaleToggle('${o.id}',${landIdx})"`:""}>
+      <div class="bv-sale-icon">${o.icon}</div>
+      <div class="bv-sale-info">
+        <div class="bv-sale-name">${o.name}</div>
+        <div class="bv-sale-meta">${o.avail?(o.note||""):"건설되지 않음"}</div>
+      </div>
+      <div class="bv-sale-price">${o.avail?"+"+bvFmt(o.price):"-"}</div>
+      <div class="bv-sale-check"></div>
+    </button>
+  `).join("");
+
+  // 합계 영역
+  bvUpdateSaleTotal(landIdx);
+
   bvSaleSelecting=false;
   bvOpenModal("bv-sale-modal");
 }
 
-async function bvSellComponent(landIdx,component){
+function bvSaleToggle(id,landIdx){
+  const item=document.getElementById(`bv-sale-item-${id}`);
+  if(!item||item.classList.contains("bv-sale-unavail"))return;
+
+  if(bvSaleSelected.has(id)){
+    bvSaleSelected.delete(id);
+    item.classList.remove("bv-sale-on");
+  }else{
+    bvSaleSelected.add(id);
+    item.classList.add("bv-sale-on");
+  }
+
+  // "토지 전체" 선택 시 건물들 자동 포함 표시
+  const landSelected=bvSaleSelected.has("land");
+  ["villa","building","hotel"].forEach(b=>{
+    const el=document.getElementById(`bv-sale-item-${b}`);
+    if(!el||el.classList.contains("bv-sale-unavail"))return;
+    if(landSelected){
+      el.classList.add("bv-sale-included");
+    }else{
+      el.classList.remove("bv-sale-included");
+    }
+  });
+
+  bvUpdateSaleTotal(landIdx);
+}
+
+function bvUpdateSaleTotal(landIdx){
+  const sq=BV_BOARD[landIdx];
+  const land=bvG?.board?.[landIdx];
+  const bld=land?.buildings||{villa:0,building:0,hotel:0};
+  let total=0;
+  const landSel=bvSaleSelected.has("land");
+
+  if(landSel){
+    total+=Math.floor((sq.price||0)*0.8);
+    // 토지 매각시 건물도 함께 (자동 포함)
+    if(bld.villa>0)total+=Math.floor((sq.buildCost?.villa||0)*0.8);
+    if(bld.building>0)total+=Math.floor((sq.buildCost?.building||0)*0.8);
+    if(bld.hotel>0)total+=Math.floor((sq.buildCost?.hotel||0)*0.8);
+  }else{
+    if(bvSaleSelected.has("villa"))total+=Math.floor((sq.buildCost?.villa||0)*0.8);
+    if(bvSaleSelected.has("building"))total+=Math.floor((sq.buildCost?.building||0)*0.8);
+    if(bvSaleSelected.has("hotel"))total+=Math.floor((sq.buildCost?.hotel||0)*0.8);
+  }
+
+  const totalEl=document.getElementById("bv-sale-total");
+  if(totalEl)totalEl.textContent=bvFmt(total);
+
+  const btn=document.getElementById("bv-sale-confirm-btn");
+  if(btn){
+    const hasAny=bvSaleSelected.size>0;
+    btn.disabled=!hasAny;
+    btn.style.opacity=hasAny?"1":"0.4";
+    btn.textContent=hasAny?`선택 항목 판매 (+${bvFmt(total)})`:"항목을 선택하세요";
+  }
+}
+
+async function bvSellSelected(){
+  if(bvSaleSelected.size===0)return;
+  const landIdx=bvSaleCurrentLand;
   bvCloseModal("bv-sale-modal");
   if(!bvTollContext)return;
   const{playerIdx,sqIdx,toll,ownerName}=bvTollContext;
   const snap=await bvRef().get();const data=snap.data();
   const player=data.players[playerIdx];const players=[...data.players];
   const sq=BV_BOARD[landIdx];const land=data.board?.[landIdx];
-  let salePrice=0;const board={...data.board};
-  if(component==="land"){
-    salePrice=Math.floor((sq.price||0)*0.8);
+  const bld={...(land?.buildings||{villa:0,building:0,hotel:0})};
+  let salePrice=0;
+  const board={...data.board};
+  const labels=[];
+
+  // 토지 전체 매각 → 건물 포함 일괄 처리
+  if(bvSaleSelected.has("land")){
+    salePrice+=Math.floor((sq.price||0)*0.8);
+    if(bld.villa>0){salePrice+=Math.floor((sq.buildCost?.villa||0)*0.8);labels.push("🏡별장");}
+    if(bld.building>0){salePrice+=Math.floor((sq.buildCost?.building||0)*0.8);labels.push("🏢빌딩");}
+    if(bld.hotel>0){salePrice+=Math.floor((sq.buildCost?.hotel||0)*0.8);labels.push("🏨호텔");}
+    labels.push("🌍토지");
     delete board[landIdx];
   }else{
-    salePrice=Math.floor((sq.buildCost?.[component]||0)*0.8);
-    const bld={...(land?.buildings||{villa:0,building:0,hotel:0})};
-    bld[component]=0;board[landIdx]={...land,buildings:bld};
+    // 건물만 부분 매각
+    if(bvSaleSelected.has("villa")&&bld.villa>0){
+      salePrice+=Math.floor((sq.buildCost?.villa||0)*0.8);
+      bld.villa=0;labels.push("🏡별장");
+    }
+    if(bvSaleSelected.has("building")&&bld.building>0){
+      salePrice+=Math.floor((sq.buildCost?.building||0)*0.8);
+      bld.building=0;labels.push("🏢빌딩");
+    }
+    if(bvSaleSelected.has("hotel")&&bld.hotel>0){
+      salePrice+=Math.floor((sq.buildCost?.hotel||0)*0.8);
+      bld.hotel=0;labels.push("🏨호텔");
+    }
+    board[landIdx]={...land,buildings:bld};
   }
+
   players[playerIdx]={...player,cash:player.cash+salePrice};
-  await bvRef().update({players,board,log:firebase.firestore.FieldValue.arrayUnion(`🏚 ${player.name} ${sq.name} 매각 +${bvFmt(salePrice)}`)});
-  bvAddLog(`🏚 ${sq.name} 매각 +${bvFmt(salePrice)}`);bvClearBroadcast();
+  const logMsg=`🏚 ${player.name} ${sq.name} 매각 [${labels.join("+")}] +${bvFmt(salePrice)}`;
+  await bvRef().update({players,board,log:firebase.firestore.FieldValue.arrayUnion(logMsg)});
+  bvAddLog(`🏚 ${sq.name} 매각 +${bvFmt(salePrice)}`);
+  bvClearBroadcast();
+
+  // 갱신된 데이터로 통행료 모달 재진입
   const snap2=await bvRef().get();const data2=snap2.data();
   bvG=data2;bvRender(data2);
+  bvSaleSelected=new Set();
   bvShowTollOptions(data2.players[playerIdx],toll,ownerName,data2);
 }
 
@@ -6785,33 +7126,88 @@ async function bvPayWelfare(playerIdx){
   }
   const welfare=(data.welfare||0)+amount;
   await bvRef().update({players,welfare,log:firebase.firestore.FieldValue.arrayUnion(`💸 ${player.name} 복지기금 납부 ${bvFmt(amount)}`)});
-  bvAddLog(`💸 복지기금 납부`);await bvEndTurn();
+  bvAddLog(`💸 복지기금 납부`);
+  bvSetEvent(`💸 복지기금 ${bvFmt(amount)} 납부`);
+
+  if(playerIdx!==bvMyIdx()){bvAnimating=false;await bvEndTurn();return;}
+
+  bvShowSpecialEvent({
+    icon:"💸",
+    title:"복지기금 압수",
+    desc:"복지기금을 기부합니다. ㅠㅠ",
+    amount:`-${bvFmt(amount)}`,
+    amountClass:"minus",
+    buttons:[{label:"확인",kind:"primary",onclick:"bvSpecialContinue()"}]
+  });
+  bvBroadcastEvent('special',`${bvMe()}이 복지기금 압수 (-${bvFmt(amount)})`,'💸 복지기금 압수');
 }
 
 async function bvClaimWelfare(playerIdx){
   const snap=await bvRef().get();const data=snap.data();
   const player=data.players[playerIdx];const players=[...data.players];
-  const w=data.welfare||0;if(w===0){bvSetEvent("💰 복지기금 0원");await bvEndTurn();return;}
-  players[playerIdx]={...player,cash:player.cash+w};
-  await bvRef().update({players,welfare:0,log:firebase.firestore.FieldValue.arrayUnion(`💰 ${player.name} 복지기금 수령 ${bvFmt(w)}`)});
-  bvAddLog(`💰 복지기금 수령 ${bvFmt(w)}`);
-  bvSetEvent(`💰 복지기금 ${bvFmt(w)} 수령!`);await bvEndTurn();
+  const w=data.welfare||0;
+
+  // 금액 지급
+  if(w>0){
+    players[playerIdx]={...player,cash:player.cash+w};
+    await bvRef().update({players,welfare:0,log:firebase.firestore.FieldValue.arrayUnion(`💰 ${player.name} 복지기금 수령 ${bvFmt(w)}`)});
+    bvAddLog(`💰 복지기금 수령 ${bvFmt(w)}`);
+    bvSetEvent(`💰 복지기금 ${bvFmt(w)} 수령!`);
+  }else{
+    bvSetEvent("💰 복지기금 0원 (수령 없음)");
+  }
+
+  if(playerIdx!==bvMyIdx()){bvAnimating=false;await bvEndTurn();return;}
+
+  bvShowSpecialEvent({
+    icon:"💰",
+    title:w>0?"복지기금 수령!":"복지기금 0원",
+    desc:w>0?"중앙 복지기금을 모두 수령합니다.":"수령할 복지기금이 없습니다.",
+    amount:w>0?`+${bvFmt(w)}`:"+0만원",
+    amountClass:w>0?"":"zero",
+    buttons:[{label:"확인",kind:"primary",onclick:"bvSpecialContinue()"}]
+  });
+  bvBroadcastEvent('special',`${bvMe()}이 복지기금 수령 (${bvFmt(w)})`,'💰 복지기금');
 }
 
 // ── 무인도 ──
 async function bvEnterDesert(playerIdx){
   const snap=await bvRef().get();const data=snap.data();
   const player=data.players[playerIdx];const players=[...data.players];
-  // 탈출권 자동 사용
-  if(player.escapeCard){
-    players[playerIdx]={...player,position:10,desertTurns:0,escapeCard:false};
-    await bvRef().update({players,log:firebase.firestore.FieldValue.arrayUnion(`🎫 ${player.name} 탈출권으로 무인도 면제`)});
-    bvAddLog("🎫 탈출권 사용");await bvEndTurn();return;
-  }
+
+  // 무인도 진입 상태로 우선 설정
   players[playerIdx]={...player,position:10,desertTurns:1};
   await bvRef().update({players,log:firebase.firestore.FieldValue.arrayUnion(`🏝 ${player.name} 무인도 입장 (3턴)`)});
   bvAddLog("🏝 무인도 입장");
-  bvSetEvent("🏝 무인도 입장! 3턴 동안 묶입니다");await bvEndTurn();
+
+  // 본인 턴이면 모달 표시, 아니면 자동
+  if(playerIdx!==bvMyIdx()){bvAnimating=false;await bvEndTurn();return;}
+
+  const hasEscape=!!player.escapeCard;
+  const buttons=[{label:"확인",kind:"primary",onclick:"bvDesertConfirm()"}];
+  if(hasEscape)buttons.push({label:"📻 무전기 사용 (즉시 탈출)",kind:"secondary",onclick:"bvDesertUseEscape()"});
+
+  bvShowSpecialEvent({
+    icon:"🏝",
+    title:"무인도에 갇혔습니다!",
+    desc:"3턴 동안 움직임이 제한됩니다.<br>더블이 나오면 즉시 탈출 가능합니다.",
+    buttons
+  });
+  bvBroadcastEvent('special',`${bvMe()}이 무인도에 갇혔습니다`,'🏝 무인도');
+}
+
+async function bvDesertConfirm(){
+  bvCloseSpecialEvent();bvClearBroadcast();
+  bvAnimating=false;await bvEndTurn();
+}
+async function bvDesertUseEscape(){
+  bvCloseSpecialEvent();bvClearBroadcast();
+  const snap=await bvRef().get();const data=snap.data();
+  const myIdx=bvMyIdx();const player=data.players[myIdx];const players=[...data.players];
+  players[myIdx]={...player,desertTurns:0,escapeCard:false};
+  await bvRef().update({players,log:firebase.firestore.FieldValue.arrayUnion(`📻 ${player.name} 무전기로 무인도 탈출!`)});
+  bvAddLog("📻 무전기 사용");bvSetEvent("📻 무전기로 무인도 즉시 탈출!");
+  bvAnimating=false;await bvEndTurn();
 }
 
 async function bvHandleDesert(playerIdx){
@@ -6846,18 +7242,48 @@ async function bvHandleDesert(playerIdx){
 async function bvEnterSpaceTravel(playerIdx){
   const snap=await bvRef().get();const data=snap.data();
   const player=data.players[playerIdx];const players=[...data.players];
-  // 컬럼비아호 이용료
-  const nasaOwner=data.nasaOwner||"";
+
+  // 컬럼비아호 이용비 계산
   const compOwner=data.board?.[32]?.owner||"";
-  if(compOwner&&compOwner!==player.name){
-    const fee=data.nasaOwner===data.board?.[32]?.owner&&data.players.find(p=>p.name===compOwner)?.nasaSynergy?400000:200000;
-    await bvPayToll(playerIdx,32,fee,compOwner);
-  }
-  // 다음 턴에 이동
+  const fee=(compOwner&&compOwner!==player.name)?
+    (data.nasaOwner===compOwner&&data.players.find(p=>p.name===compOwner)?.nasaSynergy?400000:200000)
+    :0;
+
+  // 다음 턴 우주여행 대기
   players[playerIdx]={...player,spaceWait:true};
   await bvRef().update({players,log:firebase.firestore.FieldValue.arrayUnion(`🚀 ${player.name} 우주여행 대기`)});
-  bvAddLog("🚀 우주여행 대기");bvSetEvent("🚀 다음 턴에 원하는 곳으로 이동합니다");
-  bvAnimating=false;await bvEndTurn();
+  bvAddLog("🚀 우주여행 대기");
+  bvSetEvent("🚀 다음 턴에 원하는 곳으로 이동합니다");
+
+  if(playerIdx!==bvMyIdx()){
+    // 다른 플레이어 → 이용비만 자동 처리
+    if(fee>0)await bvPayToll(playerIdx,32,fee,compOwner);
+    else{bvAnimating=false;await bvEndTurn();}
+    return;
+  }
+
+  // 내 턴 → 모달 표시
+  const descLines=["다음 턴에 원하는 곳으로 이동 가능합니다."];
+  if(fee>0)descLines.push(`<span style="color:#ef9a9a;font-size:12px">컬럼비아호 이용비 ${bvFmt(fee)}이 ${compOwner}에게 지불됩니다.</span>`);
+
+  bvShowSpecialEvent({
+    icon:"🚀",
+    title:"우주여행 출발!",
+    desc:descLines.join("<br>"),
+    amount:fee>0?`이용비 -${bvFmt(fee)}`:null,
+    amountClass:fee>0?"minus":"",
+    buttons:[{label:"확인",kind:"primary",onclick:`bvSpaceConfirm(${fee},'${compOwner}')`}]
+  });
+  bvBroadcastEvent('special',`${bvMe()}이 우주여행`,'🚀 우주여행');
+}
+
+async function bvSpaceConfirm(fee,compOwner){
+  bvCloseSpecialEvent();bvClearBroadcast();
+  if(fee>0&&compOwner){
+    await bvPayToll(bvMyIdx(),32,fee,compOwner);
+  }else{
+    bvAnimating=false;await bvEndTurn();
+  }
 }
 
 function bvStartSpaceTravel(playerIdx){
