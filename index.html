@@ -2443,7 +2443,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 
 /* ════ Stage 2: 비주얼 강화 ════ */
 .bv-sq-name{
-  font-size:clamp(13px,1.2vw,17px);
+  font-size:clamp(20px,2vw,28px);
   font-weight:800;color:#0c0c0c;
   text-align:center;line-height:1.15;
   word-break:keep-all;
@@ -2451,12 +2451,12 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
   max-width:100%;padding:0 1px;
 }
 .bv-sq-price{
-  font-size:clamp(11px,1.05vw,15px);
-  color:#222;text-align:center;font-weight:600;
+  font-size:clamp(16px,1.6vw,22px);
+  color:#222;text-align:center;font-weight:700;
   margin-top:1px;
 }
 .bv-sq-special{
-  font-size:clamp(13px,1.3vw,18px);
+  font-size:clamp(17px,1.8vw,24px);
   font-weight:800;text-align:center;line-height:1.1;
 }
 /* 건물 이모지: 크게! */
@@ -2899,7 +2899,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v05.21.16</div>
+  <div class="splash-ver">v05.21.17</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -4425,7 +4425,7 @@ init();
     <!-- ══ 주사위 대형 오버레이 ══ -->
     
 
-    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.21.16</div>
+    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.21.17</div>
   </div>
 
 
@@ -5635,7 +5635,7 @@ document.addEventListener('keydown', e => {
 </script>
 <script>
 // ════════════════════════════════════════════════════════
-// 부루마블 WORLD EDITION  v05.21.16
+// 부루마블 WORLD EDITION  v05.21.17
 // prefix: bv (bravo)
 // ════════════════════════════════════════════════════════
 
@@ -6592,6 +6592,8 @@ async function bvGiveSalary(playerIdx,multiplierOverride){
 
   await bvRef().update({players,log:firebase.firestore.FieldValue.arrayUnion(`💵 ${p.name} 월급 +${bvFmt(salary)} (${players[playerIdx].round}바퀴)`)});
   bvAddLog(`💵 ${p.name} 월급 +${bvFmt(salary)}`);
+  // ★ 월급 머니레인 (출발지에서 / 본인 위치가 0이 아니면 출발지에서)
+  bvTriggerMoneyRain(0,bvCalcMoneyCount(salary));
 }
 
 // ── 칸 이벤트 ──
@@ -6744,14 +6746,30 @@ async function bvTollCash(){
   if(ownerIdx>=0)players[ownerIdx]={...players[ownerIdx],cash:players[ownerIdx].cash+toll};
   await bvRef().update({players,log:firebase.firestore.FieldValue.arrayUnion(`💸 ${player.name}→${ownerName} ${bvFmt(toll)}`)});
   bvSetEventHighlight(`💸 <b>${bvFmt(toll)}</b> → <b>${ownerName}</b>`);
-  bvTriggerMoneyRain(sqIdx,12);bvClearBroadcast();
+  bvTriggerMoneyRain(sqIdx,bvCalcMoneyCount(toll));bvClearBroadcast();
   const afterCash=players[playerIdx].cash;
   bvTollContext=null;
   const sq=BV_BOARD[sqIdx];
   if(sq?.canBuild!==false&&sq?.canAcquire!==false){
-    if(afterCash>=(sq.price)*2){
-      bvAcquireTarget={sqIdx,cost:sq.price*2,ownerName};
-      document.getElementById("bv-acq-body").innerHTML=`<b>${sq.name}</b> 인수<br>비용: ${bvFmt(sq.price*2)}`;
+    // ★ 인수 비용: (토지가격 + 모든 건물비) × 2배
+    const oldLand=data.board?.[sqIdx];
+    const bld=oldLand?.buildings||{villa:0,building:0,hotel:0};
+    let totalVal=sq.price||0;
+    if(bld.villa>0)totalVal+=sq.buildCost?.villa||0;
+    if(bld.building>0)totalVal+=sq.buildCost?.building||0;
+    if(bld.hotel>0)totalVal+=sq.buildCost?.hotel||0;
+    const acquireCost=totalVal*2;
+    if(afterCash>=acquireCost){
+      bvAcquireTarget={sqIdx,cost:acquireCost,ownerName,buildings:bld};
+      const bldList=[];
+      if(bld.hotel>0)bldList.push("🏨호텔");
+      if(bld.building>0)bldList.push("🏢빌딩");
+      if(bld.villa>0)bldList.push("🏡별장");
+      const bldStr=bldList.length>0?`<br><span style="font-size:12px;color:rgba(255,255,255,0.7)">+ ${bldList.join(" ")}</span>`:"";
+      document.getElementById("bv-acq-body").innerHTML=
+        `<b style="font-size:16px">${sq.name}</b>${bldStr}<br>
+         <span style="color:#ffd54f;font-size:18px;font-weight:800">총 비용: ${bvFmt(acquireCost)}</span><br>
+         <small style="color:rgba(255,255,255,0.55);font-size:11px">토지가 + 건물비 합산 × 2배 = 매우 비쌈</small>`;
       bvOpenModal("bv-acquire-modal");return;
     }
   }
@@ -6771,7 +6789,7 @@ async function bvTollLoan(){
   players[playerIdx]={...player,loan:player.loan+toll};
   if(ownerIdx>=0)players[ownerIdx]={...players[ownerIdx],cash:players[ownerIdx].cash+toll};
   await bvRef().update({players,log:firebase.firestore.FieldValue.arrayUnion(`💳 ${player.name} 대출 통행료 ${bvFmt(toll)}`)});
-  bvTriggerMoneyRain(sqIdx,8);bvClearBroadcast();
+  bvTriggerMoneyRain(sqIdx,bvCalcMoneyCount(toll));bvClearBroadcast();
   bvTollContext=null;
   await bvEndTurn();
 }
@@ -6931,7 +6949,7 @@ async function bvSellSelected(){
   bvAddLog(`🏚 ${sq.name} 매각 +${bvFmt(salePrice)}`);
 
   // ★ 매각 머니레인 (모든 플레이어에게 보이도록 broadcast)
-  bvTriggerMoneyRain(landIdx,15);
+  bvTriggerMoneyRain(landIdx,bvCalcMoneyCount(salePrice));
   bvClearBroadcast();
 
   // 갱신된 데이터로 통행료 모달 재진입
@@ -7331,7 +7349,7 @@ async function bvSelectFreeLand(sqIdx){
 // ── 인수합병 ──
 async function bvConfirmAcquire(){
   bvCloseModal("bv-acquire-modal");
-  const {sqIdx,cost,ownerName}=bvAcquireTarget||{};if(!sqIdx)return;
+  const {sqIdx,cost,ownerName,buildings}=bvAcquireTarget||{};if(sqIdx==null)return;
   const snap=await bvRef().get();const data=snap.data();
   const playerIdx=bvMyIdx();const player=data.players[playerIdx];
   const players=[...data.players];const ownerIdx=data.players.findIndex(p=>p.name===ownerName);
@@ -7344,9 +7362,13 @@ async function bvConfirmAcquire(){
     if(ownerIdx>=0)players[ownerIdx]={...players[ownerIdx],cash:players[ownerIdx].cash+cost};
   }
   const sq=BV_BOARD[sqIdx];
-  const board={...data.board,[sqIdx]:{owner:player.name,buildings:{villa:0,building:0,hotel:0}}};
+  // ★ 건물 유지하여 인수 (토지+건물 모두 인수)
+  const keepBuildings=buildings||data.board?.[sqIdx]?.buildings||{villa:0,building:0,hotel:0};
+  const board={...data.board,[sqIdx]:{owner:player.name,buildings:keepBuildings}};
   await bvRef().update({players,board,log:firebase.firestore.FieldValue.arrayUnion(`🤝 ${player.name} ${sq.name} 인수 (${bvFmt(cost)})`)});
   bvAddLog(`🤝 ${sq.name} 인수`);
+  // ★ 인수 머니레인 (받는 사람 위치에서 - 큰 거래)
+  bvTriggerMoneyRain(sqIdx,bvCalcMoneyCount(cost));
   bvAcquireTarget=null;
   await bvCheckSynergy(playerIdx);
   await bvEndTurn();
@@ -7394,6 +7416,7 @@ async function bvClaimWelfare(playerIdx){
     players[playerIdx]={...player,cash:player.cash+w};
     await bvRef().update({players,welfare:0,log:firebase.firestore.FieldValue.arrayUnion(`💰 ${player.name} 복지기금 수령 ${bvFmt(w)}`)});
     bvAddLog(`💰 복지기금 수령 ${bvFmt(w)}`);
+    bvTriggerMoneyRain(20,bvCalcMoneyCount(w)); // 복지기금 칸(20)에서 머니레인
     bvSetEvent(`💰 복지기금 ${bvFmt(w)} 수령!`);
   }else{
     bvSetEvent("💰 복지기금 0원 (수령 없음)");
@@ -7616,8 +7639,9 @@ async function bvConfirmCard(){
   const {card,playerIdx}=bvPendingCard;bvPendingCard=null;
   const snap=await bvRef().get();const data=snap.data();
   await bvApplyCard(card,playerIdx,data);
-  // 보관 카드가 아닌 경우 턴 종료
-  if(card.type!=="keep"&&card.type!=="teleport"&&card.type!=="free_build"&&card.type!=="free_land")await bvEndTurn();
+  // ★ 턴 종료 안하는 카드: 보관/순간이동/특별건설/땅무상/이동(이미 bvHandleSquare가 처리)
+  const noEndTypes=["keep","teleport","free_build","free_land","move_to","move_forward","move_backward"];
+  if(!noEndTypes.includes(card.type))await bvEndTurn();
 }
 
 // 다른 플레이어가 뽑은 카드 관전용 모달
@@ -7660,7 +7684,9 @@ async function bvApplyCard(card,playerIdx,data){
     case"gain":
       players[playerIdx]={...player,cash:player.cash+card.amount};
       await bvRef().update({players,log:firebase.firestore.FieldValue.arrayUnion(`🗝 ${player.name} [${card.title}] +${bvFmt(card.amount)}`)});
-      bvAddLog(`🗝 ${card.title} +${bvFmt(card.amount)}`);break;
+      bvAddLog(`🗝 ${card.title} +${bvFmt(card.amount)}`);
+      bvTriggerMoneyRain(player.position,bvCalcMoneyCount(card.amount));
+      break;
 
     case"move_to":
       if(card.target===0&&card.salary){await bvGiveSalary(playerIdx,1);}
@@ -7726,6 +7752,7 @@ async function bvApplyCard(card,playerIdx,data){
         else{const pay=p.cash;players[i]={...p,loan:p.loan+(card.amount-pay),cash:0};totalGain+=card.amount;}
       }});
       players[playerIdx]={...player,cash:player.cash+totalGain};
+      bvTriggerMoneyRain(player.position,bvCalcMoneyCount(totalGain));
       await bvRef().update({players,log:firebase.firestore.FieldValue.arrayUnion(`🗝 ${player.name} 보너스 수령`)});
       bvAddLog(`🗝 보너스 +${bvFmt(totalGain)}`);break;}
 
@@ -8065,10 +8092,23 @@ function bvMoneyRain(sqIdx, count){
   }
 }
 
+// 금액 기반 머니레인 개수 계산 (적으면 적게, 많으면 많게)
+function bvCalcMoneyCount(amount){
+  if(amount<=0)return 0;
+  if(amount<=50000)return 2;        // ≤5만
+  if(amount<=150000)return 3;       // ≤15만
+  if(amount<=300000)return 5;       // ≤30만
+  if(amount<=500000)return 7;       // ≤50만
+  if(amount<=1000000)return 10;     // ≤100만
+  if(amount<=2000000)return 13;     // ≤200만
+  if(amount<=5000000)return 16;     // ≤500만
+  return 20;                         // >500만
+}
+
 // 다른 플레이어에게 머니레인 브로드캐스트
 async function bvTriggerMoneyRain(sqIdx,count){
+  if(!count||count<=0)return;
   bvMoneyRain(sqIdx,count);
-  // Firebase에도 신호 전송 (다른 플레이어 화면에서도 보이도록)
   try{
     await bvRef().update({moneyRain:{sqIdx,count,ts:Date.now()}});
   }catch(e){}
