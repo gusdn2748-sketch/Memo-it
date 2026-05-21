@@ -2317,7 +2317,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v05.21.1</div>
+  <div class="splash-ver">v05.21.2</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -3831,7 +3831,7 @@ init();
       </div>
     </div>
 
-    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.21.1</div>
+    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.21.2</div>
   </div>
 
 
@@ -5041,7 +5041,7 @@ document.addEventListener('keydown', e => {
 </script>
 <script>
 // ════════════════════════════════════════════════════════
-// 부루마블 WORLD EDITION  v05.21.1
+// 부루마블 WORLD EDITION  v05.21.2
 // prefix: bv (bravo)
 // ════════════════════════════════════════════════════════
 
@@ -5532,12 +5532,22 @@ function bvRenderBoard(data){
   // 좌측 col: 19(위)→11(아래)
   const left=document.getElementById("bv-col-left");
   if(left){left.innerHTML="";
-    [19,18,17,16,15,14,13,12,11].forEach(i=>left.appendChild(bvMakeSqEl(i,data)));
+    [19,18,17,16,15,14,13,12,11].forEach(i=>{
+    const sq_el=bvMakeSqEl(i,data);
+    sq_el.style.flexDirection="row";
+    sq_el.style.flex="1";sq_el.style.minHeight="0";
+    left.appendChild(sq_el);
+  });
   }
   // 우측 col: 31(위)→39(아래)
   const right=document.getElementById("bv-col-right");
   if(right){right.innerHTML="";
-    [31,32,33,34,35,36,37,38,39].forEach(i=>right.appendChild(bvMakeSqEl(i,data)));
+    [31,32,33,34,35,36,37,38,39].forEach(i=>{
+    const sq_el=bvMakeSqEl(i,data);
+    sq_el.style.flexDirection="row-reverse";
+    sq_el.style.flex="1";sq_el.style.minHeight="0";
+    right.appendChild(sq_el);
+  });
   }
   // 하단 row: 10,9,8,...,1,0
   const bot=document.getElementById("bv-row-bot");
@@ -5558,6 +5568,11 @@ function bvMakeSqEl(idx,data){
   if(sq.type==="golden")cls+=" golden";
   if(sq.type==="tourist")cls+=" tourist";
   el.className=cls;
+  // ── 인라인 스타일 직접 적용 (CSS 우선순위 문제 완전 회피) ──
+  el.style.cssText="position:relative;background:white;border:0.5px solid rgba(0,0,0,0.15);display:flex;flex-direction:column;overflow:hidden;box-sizing:border-box;flex:1;min-height:0;min-width:0;cursor:default";
+  if(isCorner)el.style.background="#fffde7";
+  if(sq.type==="golden")el.style.background="#fff9c4";
+  if(sq.type==="tourist")el.style.background="white";
 
   // 우주여행 선택 모드
   if(!bvAnimating&&bvSpaceSelecting&&sq.type!=="corner"&&sq.type!=="tax"){
