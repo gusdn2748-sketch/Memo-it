@@ -1752,11 +1752,13 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 
 /* ══ 돈 떨어지는 애니메이션 ══ */
 .bv-money-drop{
-  position:fixed;z-index:9999;font-size:45px;pointer-events:none;
-  filter:drop-shadow(0 4px 8px rgba(0,0,0,0.6))
-         drop-shadow(0 0 12px rgba(255,213,79,0.5));
-  animation:bvMoneyFall 1.6s cubic-bezier(.3,0,.5,1) forwards;
+  position:fixed;z-index:9999;pointer-events:none;
+  filter:drop-shadow(0 6px 12px rgba(0,0,0,0.7))
+         drop-shadow(0 0 18px rgba(255,213,79,0.85))
+         drop-shadow(0 0 28px rgba(255,215,0,0.6));
+  animation:bvMoneyFall 1.7s cubic-bezier(.3,0,.5,1) forwards;
   will-change:transform,opacity;
+  text-shadow:0 0 10px rgba(255,213,79,0.8);
 }
 @keyframes bvMoneyFall{
   0%{transform:translate(0,-60px) rotate(0deg) scale(0.4);opacity:0;}
@@ -2325,13 +2327,13 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
   z-index:30;
 }
 .bv-die{
-  width:64px;height:64px;
-  font-size:54px;line-height:1;
+  width:96px;height:96px;
+  font-size:80px;line-height:1;
   display:flex;align-items:center;justify-content:center;
   background:linear-gradient(145deg,#ffffff 0%,#f0f0f0 100%);
   color:#222;
-  border-radius:14px;
-  border:2px solid rgba(0,0,0,0.18);
+  border-radius:20px;
+  border:3px solid rgba(0,0,0,0.2);
   box-shadow:
     0 6px 14px rgba(0,0,0,0.45),
     inset 0 2px 0 rgba(255,255,255,0.9),
@@ -2499,17 +2501,18 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
   position:absolute;inset:0;
   pointer-events:none;
   border-radius:inherit;
-  box-shadow:inset 0 0 0 2px var(--og-color,#fff),
-             inset 0 0 16px 2px var(--og-color,#fff),
-             0 0 12px 0px var(--og-color,#fff);
-  opacity:0.65;
-  animation:bvOwnerGlowPulse 3s ease-in-out infinite;
+  box-shadow:inset 0 0 0 4px var(--og-color,#fff),
+             inset 0 0 32px 4px var(--og-color,#fff),
+             0 0 24px 2px var(--og-color,#fff),
+             0 0 40px 4px var(--og-color,#fff);
+  opacity:0.85;
+  animation:bvOwnerGlowPulse 2.8s ease-in-out infinite;
   z-index:3;
   mix-blend-mode:screen;
 }
 @keyframes bvOwnerGlowPulse{
-  0%,100%{opacity:0.45;}
-  50%    {opacity:0.85;}
+  0%,100%{opacity:0.7;}
+  50%    {opacity:1;}
 }
 /* 구매 직후 강한 플래시 (2.5초) */
 .bv-sq-just-bought{
@@ -2806,6 +2809,21 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
   100% {transform:scale(1);filter:brightness(1);}
 }
 
+
+/* ════ 재건설 모달: 이미 건설된 항목 표시 ════ */
+.bv-pm-bld-card.bv-pm-built{
+  background:linear-gradient(135deg,rgba(165,214,167,0.15),rgba(76,175,80,0.08))!important;
+  border:2px solid rgba(165,214,167,0.4)!important;
+  opacity:0.65;
+  position:relative;
+}
+.bv-pm-bld-card.bv-pm-built::before{
+  content:"✅";
+  position:absolute;top:6px;right:6px;
+  font-size:18px;
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,0.4));
+}
+
 </style>
 </head>
 <body>
@@ -2881,7 +2899,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v05.21.4</div>
+  <div class="splash-ver">v05.21.16</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -4261,7 +4279,7 @@ init();
 
       <!-- 정보 테이블 -->
       <div class="bv-pm-info-table">
-        <div class="bv-pm-info-row"><span>🏡 구매가</span><b id="bv-pm-land-price">-</b></div>
+        <div class="bv-pm-info-row" id="bv-pm-landprice-row"><span>🏡 구매가</span><b id="bv-pm-land-price">-</b></div>
         <div class="bv-pm-info-row"><span>💸 기본 통행료</span><b id="bv-pm-land-toll">-</b></div>
         <div class="bv-pm-info-row"><span>💵 보유 현금</span><b id="bv-pm-cash-disp">-</b></div>
         <div class="bv-pm-info-row" style="background:rgba(255,213,79,0.08);border-radius:6px">
@@ -4407,7 +4425,7 @@ init();
     <!-- ══ 주사위 대형 오버레이 ══ -->
     
 
-    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.21.4</div>
+    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.21.16</div>
   </div>
 
 
@@ -5617,7 +5635,7 @@ document.addEventListener('keydown', e => {
 </script>
 <script>
 // ════════════════════════════════════════════════════════
-// 부루마블 WORLD EDITION  v05.21.4
+// 부루마블 WORLD EDITION  v05.21.16
 // prefix: bv (bravo)
 // ════════════════════════════════════════════════════════
 
@@ -5782,6 +5800,11 @@ const BV_DICE_EMOJI=["","⚀","⚁","⚂","⚃","⚄","⚅"];
 let bvG=null,bvRoomId=null,bvUnsub=null,bvIsHost=false;
 let bvAnimating=false,bvSpaceSelecting=false,bvFreeLandSelecting=false;
 let bvPendingCard=null,bvPendingSquare=null,bvAcquireTarget=null;
+let bvBuildSt=null; // 건설 모달 전역 상태
+let bvIsRebuildMode=false; // 재건설 모드 (토지 비용 X)
+let bvShownDiceTs=0; // 동기화 표시한 주사위 ts (중복 방지)
+let bvShownCardTs=0; // 동기화 표시한 카드 ts
+let bvShownRainTs=0; // 머니레인 ts
 let bvSynergyQueue=[],bvFreeBuildSelecting=false,bvLastLog="",bvStarsStarted=false,bvZoomLevel=1.0,bvLastBuildSq=-1,bvJustBoughtSq=-1;
 let bvPanX=0,bvPanY=0,bvIsDragging=false,bvDragSX=0,bvDragSY=0,bvDragSPX=0,bvDragSPY=0;
 let bvPrevPlayerCash={};
@@ -5932,7 +5955,7 @@ async function bvCreateRoom(){
 
 function bvMakePlayer(name,color){
   return{name,color,cash:0,loan:0,position:0,round:0,isAlive:true,isReady:false,
-    salary:200000,salaryMultiplier:1,salaryMultiplierTurns:0,
+    salary:300000,salaryMultiplier:1,salaryMultiplierTurns:0,
     desertTurns:0,spaceWait:false,escapeCard:false,tollFreeUses:0,
     pensionUsed:false,cards:[],nasaSynergy:false,extraTurn:false,extraTurnUsed:false};
 }
@@ -6025,7 +6048,18 @@ function bvMakeDeck(){
 }
 
 function bvLeaveRoom(){
-  if(bvUnsub)bvUnsub();bvUnsub=null;bvG=null;bvRoomId=null;
+  if(bvUnsub)bvUnsub();bvUnsub=null;
+  bvG=null;bvRoomId=null;
+  // 모든 진행 중인 애니메이션/타이머 정리
+  if(window._bvDiceIv){clearInterval(window._bvDiceIv);window._bvDiceIv=null;}
+  if(window._bvDiceTo){clearTimeout(window._bvDiceTo);window._bvDiceTo=null;}
+  bvAnimating=false;
+  bvSpaceSelecting=false;bvSaleSelecting=false;bvStartBuildSelecting=false;
+  bvFreeBuildSelecting=false;bvFreeLandSelecting=false;
+  bvTollContext=null;bvPendingCard=null;bvPendingSquare=null;
+  bvBuildSt=null;bvIsRebuildMode=false;bvSaleSelected=new Set();
+  bvShownDiceTs=0;bvShownCardTs=0;bvShownRainTs=0;
+  bvPrevPlayerPositions={};
   rumiShowScreen("rbscr-lobby");bvLoadRooms();
 }
 
@@ -6036,20 +6070,17 @@ function bvRender(data){
   if(!bvStarsStarted){bvStarsStarted=true;setTimeout(bvStartStarCanvas,100);}
   setTimeout(bvInitBoardEvents,200);
 
-  // 다른 플레이어 머니레인 동기화
-  if(data.moneyRain&&data.moneyRain.ts!==bvG._shownRainTs){
-    bvG._shownRainTs=data.moneyRain.ts;
-    // 50ms 후 보드 렌더 끝난 시점에 발동
+  // 다른 플레이어 머니레인 동기화 (전역 변수)
+  if(data.moneyRain&&data.moneyRain.ts!==bvShownRainTs){
+    bvShownRainTs=data.moneyRain.ts;
     setTimeout(()=>bvMoneyRain(data.moneyRain.sqIdx,data.moneyRain.count),100);
   }
-  // 다른 플레이어 주사위 처리 (보드 중앙 주사위 동기 애니메이션)
+  // 다른 플레이어 주사위 처리 (전역 ts 변수로 안정적 동기화)
   if(data.diceAnim&&data.diceAnim.roller!==bvMe()){
     const da=data.diceAnim;const age=Date.now()-(da.ts||0);
-    // rolling 시작 시점만 캐치 → 같은 ts 두 번 처리 방지
-    if(da.rolling&&age<8000&&bvG._shownDiceTs!==da.ts){
-      bvG._shownDiceTs=da.ts;
+    if(da.rolling&&age<8000&&bvShownDiceTs!==da.ts&&da.d1){
+      bvShownDiceTs=da.ts;
       bvAnimateDiceThrow(da.d1,da.d2,da.isDouble);
-      // 결과 표시
       setTimeout(()=>{
         const resultEl=document.getElementById("bv-dice-result");
         if(resultEl){
@@ -6061,6 +6092,12 @@ function bvRender(data){
     }
   }
 
+  // 다른 플레이어 카드 동기화 (관전 모달)
+  if(data.cardEvent&&data.cardEvent.ts!==bvShownCardTs&&data.cardEvent.playerName!==bvMe()){
+    bvShownCardTs=data.cardEvent.ts;
+    const card=BV_CARDS.find(c=>c.id===data.cardEvent.cardId);
+    if(card)bvShowCardObserver(card,data.cardEvent.playerName);
+  }
   bvRenderBoard(data);
   // 플레이어 이동 감지 → 도착 칸 밟기 애니메이션
   (data.players||[]).forEach(p=>{
@@ -6147,7 +6184,11 @@ function bvRenderTurnUI(data){
   const rb=document.getElementById("bv-roll-btn");
   if(rb){
     const myP=data.players.find(p=>p.name===me);
-    rb.style.display=(isMyTurn&&data.phase==="rolling"&&myP?.isAlive&&!bvAnimating&&!bvSpaceSelecting)?"block":"none";
+    // ★ 모달이 열려있는지 확인 (열려있으면 버튼 숨김)
+    const anyModalOpen=Array.from(document.querySelectorAll(".bv-modal,.rumi-modal"))
+      .some(m=>m.style.display==="flex");
+    const shouldShow=isMyTurn&&data.phase==="rolling"&&myP?.isAlive&&!bvAnimating&&!bvSpaceSelecting&&!anyModalOpen;
+    rb.style.display=shouldShow?"block":"none";
   }
   // 로그 (중복 방지)
   if(data.log&&data.log.length>0){
@@ -6459,15 +6500,19 @@ function bvAnimateDiceThrow(d1,d2,isDouble){
   die1.classList.add("throwing");
   die2.classList.add("throwing");
 
-  // 회전 중 숫자 사이클링
+  // 회전 중 숫자 사이클링 (이전 interval 정리)
+  if(window._bvDiceIv)clearInterval(window._bvDiceIv);
   const iv=setInterval(()=>{
     die1.textContent=faces[Math.floor(Math.random()*6)];
     die2.textContent=faces[Math.floor(Math.random()*6)];
   },90);
+  window._bvDiceIv=iv;
 
   // 1.8초 후 결과 확정 + 잠시 강조 (4단계 바운스 완료 시점)
-  setTimeout(()=>{
+  if(window._bvDiceTo)clearTimeout(window._bvDiceTo);
+  window._bvDiceTo=setTimeout(()=>{
     clearInterval(iv);
+    if(window._bvDiceIv===iv)window._bvDiceIv=null;
     die1.textContent=BV_DICE_EMOJI[d1]||"🎲";
     die2.textContent=BV_DICE_EMOJI[d2]||"🎲";
     die1.classList.remove("throwing");
@@ -6482,10 +6527,14 @@ function bvAnimateDiceThrow(d1,d2,isDouble){
 // ── 말 이동 ──
 async function bvMovePiece(playerIdx,steps){
   const snap=await bvRef().get();let data=snap.data();
+  // 게임 종료된 상태면 이동 안 함
+  if(data.status==="ended")return;
   let pos=data.players[playerIdx].position;
   let passedStart=false;
 
   for(let i=0;i<steps;i++){
+    // 매 step마다 게임 종료 체크 (도중에 파산 등)
+    if(bvG?.status==="ended")return;
     pos=(pos+1)%40;
     if(pos===0)passedStart=true;
     // 매 칸마다 Firebase 업데이트 → 모든 플레이어가 이동 볼 수 있음
@@ -6880,6 +6929,9 @@ async function bvSellSelected(){
   const logMsg=`🏚 ${player.name} ${sq.name} 매각 [${labels.join("+")}] +${bvFmt(salePrice)}`;
   await bvRef().update({players,board,log:firebase.firestore.FieldValue.arrayUnion(logMsg)});
   bvAddLog(`🏚 ${sq.name} 매각 +${bvFmt(salePrice)}`);
+
+  // ★ 매각 머니레인 (모든 플레이어에게 보이도록 broadcast)
+  bvTriggerMoneyRain(landIdx,15);
   bvClearBroadcast();
 
   // 갱신된 데이터로 통행료 모달 재진입
@@ -6919,36 +6971,46 @@ async function bvDeclareBankruptcy(playerIdx){
 
 // ── 구매 ──
 async function bvConfirmPurchase(){
+  const isRebuild=bvIsRebuildMode;
+  bvIsRebuildMode=false;
   bvCloseModal("bv-purchase-modal");bvClearBroadcast();
   const sqIdx=bvPendingSquare;if(sqIdx==null)return;
   const snap=await bvRef().get();const data=snap.data();
   const playerIdx=bvMyIdx();const player=data.players[playerIdx];
   const sq=BV_BOARD[sqIdx];if(!sq)return;
 
-  // 총 비용 계산 (토지 + 선택 건물들 합산)
-  let totalCost=sq.price||0;
-  let buildings={villa:0,building:0,hotel:0};
+  // 기존 건물 (재건설 모드용)
+  const existingBld=isRebuild?(data.board?.[sqIdx]?.buildings||{villa:0,building:0,hotel:0}):{villa:0,building:0,hotel:0};
+
+  // 총 비용 계산
+  let totalCost=isRebuild?0:(sq.price||0);
+  let buildings={...existingBld};
   const bldLabels=[];
   if(sq.buildCost){
-    if(bvPmSelectedBlds.has("villa")){totalCost+=sq.buildCost.villa||0;buildings.villa=1;bldLabels.push("🏠별장");}
-    if(bvPmSelectedBlds.has("building")){totalCost+=sq.buildCost.building||0;buildings.building=1;bldLabels.push("🏢빌딩");}
-    if(bvPmSelectedBlds.has("hotel")){totalCost+=sq.buildCost.hotel||0;buildings.hotel=1;bldLabels.push("🏨호텔");}
+    if(bvPmSelectedBlds.has("villa")&&buildings.villa===0){totalCost+=sq.buildCost.villa||0;buildings.villa=1;bldLabels.push("🏡별장");}
+    if(bvPmSelectedBlds.has("building")&&buildings.building===0){totalCost+=sq.buildCost.building||0;buildings.building=1;bldLabels.push("🏢빌딩");}
+    if(bvPmSelectedBlds.has("hotel")&&buildings.hotel===0){totalCost+=sq.buildCost.hotel||0;buildings.hotel=1;bldLabels.push("🏨호텔");}
   }
   const bldLabel=bldLabels.length>0?" + "+bldLabels.join("+"):"";
 
   if(player.cash<totalCost){bvToast("현금이 부족합니다");await bvEndTurn();return;}
   const players=[...data.players];
   players[playerIdx]={...player,cash:player.cash-totalCost};
-  const board={...data.board,[sqIdx]:{owner:player.name,buildings}};
+
+  // 재건설 모드 → owner 유지, 첫 구매 → owner 설정
+  const board={...data.board,[sqIdx]:isRebuild
+    ?{...data.board[sqIdx],buildings}
+    :{owner:player.name,buildings}};
   if(bvPmSelectedBlds.size>0)bvLastBuildSq=sqIdx;
-  await bvRef().update({players,board,log:firebase.firestore.FieldValue.arrayUnion(`🏡 ${player.name} ${sq.name} 구매${bldLabel} (${bvFmt(totalCost)})`)});
-  bvAddLog(`🏡 ${sq.name} 구매${bldLabel}`);
-  bvSetEventHighlight(`🏡 <b>${sq.name}</b> 구매 완료!${bldLabel}`);
-  // 구매 즉시 강한 반짝임
+  const logVerb=isRebuild?"추가 건설":"구매";
+  await bvRef().update({players,board,log:firebase.firestore.FieldValue.arrayUnion(`🏗 ${player.name} ${sq.name} ${logVerb}${bldLabel} (${bvFmt(totalCost)})`)});
+  bvAddLog(`🏗 ${sq.name} ${logVerb}${bldLabel}`);
+  bvSetEventHighlight(`🏗 <b>${sq.name}</b> ${logVerb} 완료!${bldLabel}`);
+
   bvJustBoughtSq=sqIdx;
   setTimeout(()=>{bvJustBoughtSq=-1;if(bvG)bvRenderBoard(bvG);},2000);
   bvPendingSquare=null;bvPmSelectedBlds=new Set();
-  await bvCheckSynergy(playerIdx);
+  if(!isRebuild)await bvCheckSynergy(playerIdx);
   await bvEndTurn();
 }
 
@@ -6958,12 +7020,22 @@ function bvPopulatePurchaseModal(sq, player){
   const flag=BV_FLAGS[sq.country]||"";
   const zoneName=sq.zone?sq.zone+"구역":"";
   const zoneColor=BV_ZONE_COLOR[sq.zone]||BV_TOURIST_COLOR[sq.index]||"#888";
+  const isRebuild=bvIsRebuildMode;
+  const land=bvG?.board?.[sq.index];
+  const bld=land?.buildings||{villa:0,building:0,hotel:0};
 
   // 헤더
   document.getElementById("bv-pm-flag").textContent=flag;
-  document.getElementById("bv-pm-name").textContent=sq.name;
+  document.getElementById("bv-pm-name").textContent=isRebuild?(sq.name+" - 추가 건설"):sq.name;
   const badge=document.getElementById("bv-pm-zone-badge");
-  if(badge){badge.textContent=sq.type==="tourist"?"관광지 ★":zoneName;badge.style.background=zoneColor;}
+  if(badge){
+    badge.textContent=isRebuild?"🏗 추가 건설":(sq.type==="tourist"?"관광지 ★":zoneName);
+    badge.style.background=isRebuild?"#7e57c2":zoneColor;
+  }
+
+  // 토지비용 행 - 재건설시 숨김
+  const landRow=document.getElementById("bv-pm-landprice-row");
+  if(landRow)landRow.style.display=isRebuild?"none":"flex";
 
   // 정보 테이블
   document.getElementById("bv-pm-land-price").textContent=bvFmt(sq.price||0);
@@ -6977,31 +7049,43 @@ function bvPopulatePurchaseModal(sq, player){
   if(sq.canBuild!==false&&sq.buildCost){
     // 별장
     const vCard=document.getElementById("bv-pm-card-villa");
-    vCard.classList.remove("bv-pm-locked","bv-pm-selected");
+    vCard.classList.remove("bv-pm-locked","bv-pm-selected","bv-pm-built");
+    const villaBuilt=isRebuild&&bld.villa>0;
+    if(villaBuilt){vCard.classList.add("bv-pm-locked","bv-pm-built");}
     document.getElementById("bv-pm-cost-villa").textContent="건설비 "+bvFmt(sq.buildCost.villa||0);
     document.getElementById("bv-pm-toll-villa").textContent=bvFmt(sq.toll?.villa1||0);
-    document.getElementById("bv-pm-tag-villa").textContent="✓ 즉시 해금";
+    document.getElementById("bv-pm-tag-villa").textContent=villaBuilt?"✅ 이미 건설됨":"✓ 즉시 해금";
 
     // 빌딩
     const bCard=document.getElementById("bv-pm-card-building");
-    const bLocked=myRound<1;
-    bCard.classList.toggle("bv-pm-locked",bLocked);
-    bCard.classList.remove("bv-pm-selected");
+    bCard.classList.remove("bv-pm-selected","bv-pm-built");
+    const buildingBuilt=isRebuild&&bld.building>0;
+    const bLocked=myRound<1&&!buildingBuilt;
+    bCard.classList.toggle("bv-pm-locked",bLocked||buildingBuilt);
+    if(buildingBuilt)bCard.classList.add("bv-pm-built");
     document.getElementById("bv-pm-cost-building").textContent="건설비 "+bvFmt(sq.buildCost.building||0);
     document.getElementById("bv-pm-toll-building").textContent=bvFmt(sq.toll?.building||0);
-    document.getElementById("bv-pm-tag-building").textContent=bLocked?`🔒 1바퀴 후 해금 (현재 ${myRound}바퀴)`:"✓ 해금됨";
+    document.getElementById("bv-pm-tag-building").textContent=buildingBuilt?"✅ 이미 건설됨":(bLocked?`🔒 1바퀴 후 해금 (현재 ${myRound}바퀴)`:"✓ 해금됨");
 
     // 호텔
     const hCard=document.getElementById("bv-pm-card-hotel");
-    const hLocked=myRound<2;
-    hCard.classList.toggle("bv-pm-locked",hLocked);
-    hCard.classList.remove("bv-pm-selected");
+    hCard.classList.remove("bv-pm-selected","bv-pm-built");
+    const hotelBuilt=isRebuild&&bld.hotel>0;
+    const hLocked=myRound<2&&!hotelBuilt;
+    hCard.classList.toggle("bv-pm-locked",hLocked||hotelBuilt);
+    if(hotelBuilt)hCard.classList.add("bv-pm-built");
     document.getElementById("bv-pm-cost-hotel").textContent="건설비 "+bvFmt(sq.buildCost.hotel||0);
     document.getElementById("bv-pm-toll-hotel").textContent=bvFmt(sq.toll?.hotel||0);
-    document.getElementById("bv-pm-tag-hotel").textContent=hLocked?`🔒 2바퀴 후 해금 (현재 ${myRound}바퀴)`:"✓ 해금됨";
+    document.getElementById("bv-pm-tag-hotel").textContent=hotelBuilt?"✅ 이미 건설됨":(hLocked?`🔒 2바퀴 후 해금 (현재 ${myRound}바퀴)`:"✓ 해금됨");
   }
   bvPmSelectedBlds=new Set();
   bvUpdatePmTotal(sq,player.cash);
+
+  // 구매/건설 버튼 텍스트 갱신
+  const okBtn=document.getElementById("bv-pm-ok-btn");
+  if(okBtn)okBtn.dataset.rebuild=isRebuild?"1":"0";
+  const noBtn=document.querySelector("#bv-purchase-modal .bv-btn-no");
+  if(noBtn)noBtn.textContent=isRebuild?"건설 안함":"거절";
 }
 
 function bvPmToggle(type){
@@ -7025,8 +7109,9 @@ function bvPmToggle(type){
 
 function bvUpdatePmTotal(sq,cash){
   if(!sq)sq=BV_BOARD[bvPendingSquare];if(!sq)return;
-  let total=(sq.price||0);
-  // 선택된 건물 모두 합산
+  const isRebuild=bvIsRebuildMode;
+  // 재건설 모드는 토지비용 제외
+  let total=isRebuild?0:(sq.price||0);
   if(sq.buildCost){
     if(bvPmSelectedBlds.has("villa"))total+=sq.buildCost.villa||0;
     if(bvPmSelectedBlds.has("building"))total+=sq.buildCost.building||0;
@@ -7034,7 +7119,10 @@ function bvUpdatePmTotal(sq,cash){
   }
   const bldCnt=bvPmSelectedBlds.size;
   const totalEl=document.getElementById("bv-pm-total");
-  if(totalEl)totalEl.textContent=bvFmt(total)+(bldCnt>0?` (건물 ${bldCnt}개 포함)`:"");
+  if(totalEl){
+    const label=isRebuild?"건설비 합계":bvFmt(total);
+    totalEl.textContent=isRebuild?`${bvFmt(total)} (건물만)`:(bvFmt(total)+(bldCnt>0?` (건물 ${bldCnt}개 포함)`:""));
+  }
 
   // ── 예상 통행료 계산 (선택된 건물 기준) ──
   let projToll=0;
@@ -7058,11 +7146,13 @@ function bvUpdatePmTotal(sq,cash){
     const canAfford=(cash||0)>=total;
     btn.disabled=!canAfford;
     btn.style.opacity=canAfford?"1":"0.45";
-    btn.textContent=canAfford?"구매 완료":"현금 부족";
+    btn.textContent=canAfford?(bvIsRebuildMode?(bvPmSelectedBlds.size>0?`🏗 ${bvPmSelectedBlds.size}개 건설`:"항목을 선택하세요"):"구매 완료"):"현금 부족";
+    if(bvIsRebuildMode&&bvPmSelectedBlds.size===0){btn.disabled=true;btn.style.opacity="0.45";}
   }
 }
 
 async function bvDeclinePurchase(){
+  bvIsRebuildMode=false;
   bvCloseModal("bv-purchase-modal");bvClearBroadcast();
   bvPendingSquare=null;
   await bvEndTurn();
@@ -7075,56 +7165,83 @@ async function bvShowBuildOptions(playerIdx,sqIdx,myRound){
   const land=data.board?.[sqIdx];if(!land)return;
   const bld=land.buildings||{villa:0,building:0,hotel:0};
 
-  // 이미 건설된 건물 + 건설 가능한 건물 분리
-  const available=[];  // 건설 가능
-  const alreadyBuilt=[]; // 이미 건설됨
-  if(bld.villa===0)available.push({type:"villa",icon:"🏠",name:"별장",cost:sq.buildCost?.villa||0});
-  else alreadyBuilt.push("🏠별장");
-  if(bld.building===0&&myRound>=1)available.push({type:"building",icon:"🏢",name:"빌딩",cost:sq.buildCost?.building||0});
-  else if(bld.building>0)alreadyBuilt.push("🏢빌딩");
-  if(bld.hotel===0&&myRound>=2)available.push({type:"hotel",icon:"🏨",name:"호텔",cost:sq.buildCost?.hotel||0});
-  else if(bld.hotel>0)alreadyBuilt.push("🏨호텔");
-
-  if(available.length===0){
-    const alreadyMsg=alreadyBuilt.length>0?`이미 건설됨: ${alreadyBuilt.join(" ")}`:"";;
-    bvToast("건설 가능한 건물 없음");
-    if(alreadyMsg)bvSetEvent(`🏗 <b>${sq.name}</b><br>${alreadyMsg}`);
+  // 건설 가능한 항목이 하나라도 있는지
+  const villaAvail=bld.villa===0;
+  const buildingAvail=bld.building===0&&myRound>=1;
+  const hotelAvail=bld.hotel===0&&myRound>=2;
+  if(!villaAvail&&!buildingAvail&&!hotelAvail){
+    bvToast("이미 모든 건물이 건설됨");
     await bvEndTurn();return;
   }
 
-  // 다중선택 상태
-  const selSet=new Set();
-  function calcTotal(){return available.filter(b=>selSet.has(b.type)).reduce((s,b)=>s+b.cost,0);}
-  function renderBuildModal(){
-    const totalCost=calcTotal();
-    const canAfford=player.cash>=totalCost;
-    const body=document.getElementById("bv-build-body");
-    const alreadySection=alreadyBuilt.length>0
-      ?`<div style="margin-bottom:8px;padding:6px 8px;background:rgba(255,255,255,0.05);border-radius:6px;font-size:11px;color:rgba(255,255,255,0.45)">
-          ✓ 이미 건설됨: ${alreadyBuilt.join(" &nbsp;")}
-        </div>`:"";
-    if(body)body.innerHTML=`<b>${sq.name}</b> | 현금: <b>${bvFmt(player.cash)}</b><br><br>`+
-      alreadySection+
-      available.map(b=>`<div class="bv-build-opt${selSet.has(b.type)?" bv-build-sel":""}" onclick="(function(){${selSet.has(b.type)?`selSet.delete('${b.type}')`:`selSet.add('${b.type}')`};bvBuildRenderModal()})()">
-        ${b.icon} ${b.name} <span style="color:#ffd54f">(${bvFmt(b.cost)})</span>
-        ${selSet.has(b.type)?'<span style="color:#81c784;float:right">✓</span>':''}
-      </div>`).join("")+
-      (selSet.size>0?`<div style="margin-top:10px;color:#a5d6a7;font-weight:700">총 건설비: ${bvFmt(totalCost)}</div>`:"");
-    const bbtns=document.getElementById("bv-build-btns");
-    if(bbtns)bbtns.innerHTML=(selSet.size>0&&canAfford
-      ?`<button class="bv-btn-no" onclick="bvCloseModal('bv-build-modal');bvEndTurn()">건설 안함</button>
-         <button class="bv-btn-yes" onclick="bvBuildMultiple(${playerIdx},${sqIdx},[...window._bvBuildSel])">
-           🏗 ${selSet.size}개 건설 (${bvFmt(totalCost)})
-         </button>`
-      :`<button class="bv-btn-no" onclick="bvCloseModal('bv-build-modal');bvEndTurn()">건설 안함</button>`);
-    window._bvBuildSel=selSet;
-  }
-  window.bvBuildRenderModal=renderBuildModal;
-  renderBuildModal();
-  bvOpenModal("bv-build-modal");
-  const bvSq4=BV_BOARD[sqIdx];
-  bvBroadcastEvent('build',`${player.name}이 건물 건설을 결정 중...`,`🏗 ${bvSq4?.name||''}`);
+  // ★ 구매 모달 재활용 - 토지비용 제외 (재건설 모드)
+  bvPendingSquare=sqIdx;
+  bvIsRebuildMode=true;
+  bvPmSelectedBlds=new Set();
+  bvPopulatePurchaseModal(sq,player);
+  bvOpenModal("bv-purchase-modal");
+  bvBroadcastEvent('build',`${player.name}이 추가 건설 중...`,`🏗 ${sq.name}`);
 }
+
+function bvBuildToggle(type){
+  if(!bvBuildSt)return;
+  if(bvBuildSt.selected.has(type))bvBuildSt.selected.delete(type);
+  else bvBuildSt.selected.add(type);
+  bvRenderBuildModal();
+}
+
+function bvRenderBuildModal(){
+  if(!bvBuildSt)return;
+  const {sq,player,available,alreadyBuilt,selected}=bvBuildSt;
+  const totalCost=available.filter(b=>selected.has(b.type)).reduce((s,b)=>s+b.cost,0);
+  const canAfford=player.cash>=totalCost;
+
+  const body=document.getElementById("bv-build-body");
+  const alreadySection=alreadyBuilt.length>0
+    ?`<div style="margin-bottom:8px;padding:6px 8px;background:rgba(255,255,255,0.05);border-radius:6px;font-size:11px;color:rgba(255,255,255,0.45)">
+        ✓ 이미 건설됨: ${alreadyBuilt.join(" &nbsp;")}
+      </div>`:"";
+  if(body)body.innerHTML=`<b>${sq.name}</b> | 현금: <b>${bvFmt(player.cash)}</b><br><br>`+
+    alreadySection+
+    available.map(b=>`<div class="bv-build-opt${selected.has(b.type)?" bv-build-sel":""}" onclick="bvBuildToggle('${b.type}')">
+      ${b.icon} ${b.name} <span style="color:#ffd54f">(${bvFmt(b.cost)})</span>
+      ${selected.has(b.type)?'<span style="color:#81c784;float:right">✓</span>':''}
+    </div>`).join("")+
+    (selected.size>0?`<div style="margin-top:10px;color:#a5d6a7;font-weight:700">총 건설비: ${bvFmt(totalCost)}</div>`:"");
+
+  const bbtns=document.getElementById("bv-build-btns");
+  if(bbtns){
+    if(selected.size>0&&canAfford){
+      bbtns.innerHTML=`<button class="bv-btn-no" onclick="bvBuildCancel()">건설 안함</button>
+        <button class="bv-btn-yes" onclick="bvBuildConfirm()">
+          🏗 ${selected.size}개 건설 (${bvFmt(totalCost)})
+        </button>`;
+    }else if(selected.size>0){
+      bbtns.innerHTML=`<button class="bv-btn-no" onclick="bvBuildCancel()">건설 안함</button>
+        <button class="bv-btn-yes" disabled style="opacity:0.45">현금 부족 (${bvFmt(totalCost)})</button>`;
+    }else{
+      bbtns.innerHTML=`<button class="bv-btn-no" onclick="bvBuildCancel()">건설 안함</button>`;
+    }
+  }
+}
+
+function bvBuildCancel(){
+  bvBuildSt=null;
+  bvCloseModal("bv-build-modal");
+  bvClearBroadcast();
+  bvEndTurn();
+}
+
+async function bvBuildConfirm(){
+  if(!bvBuildSt)return;
+  const {playerIdx,sqIdx,selected}=bvBuildSt;
+  const types=[...selected];
+  bvBuildSt=null;
+  bvCloseModal("bv-build-modal");
+  bvClearBroadcast();
+  await bvBuildMultiple(playerIdx,sqIdx,types);
+}
+
 
 async function bvBuildMultiple(playerIdx,sqIdx,types){
   bvCloseModal("bv-build-modal");
@@ -7245,7 +7362,9 @@ async function bvPayWelfare(playerIdx){
   if(player.cash>=amount){
     players[playerIdx]={...player,cash:player.cash-amount};
   }else{
-    players[playerIdx]={...player,loan:player.loan+(amount-player.cash),cash:0};
+    // 현금 부족 → 대출로 충당 (한도 무시: 강제 압수 = 게임 규칙)
+    const shortage=amount-player.cash;
+    players[playerIdx]={...player,loan:player.loan+shortage,cash:0};
   }
   const welfare=(data.welfare||0)+amount;
   await bvRef().update({players,welfare,log:firebase.firestore.FieldValue.arrayUnion(`💸 ${player.name} 복지기금 납부 ${bvFmt(amount)}`)});
@@ -7345,8 +7464,9 @@ async function bvHandleDesert(playerIdx){
   const isDouble=d1===d2;const turns=player.desertTurns||0;
   if(isDouble||turns>=3){
     players[playerIdx]={...player,desertTurns:0,position:10};
+    bvAnimating=false; // ★ update 전에 reset
     await bvRef().update({players,log:firebase.firestore.FieldValue.arrayUnion(`🏝 ${player.name} 무인도 탈출! (${isDouble?"더블":turns+"턴"})`)});
-    bvAddLog("🏝 무인도 탈출!");bvAnimating=false;
+    bvAddLog("🏝 무인도 탈출!");
     if(isDouble){
       // 탈출 후 더블 거리만큼 이동
       await bvMovePiece(playerIdx,d1+d2);
@@ -7355,9 +7475,10 @@ async function bvHandleDesert(playerIdx){
     }
   }else{
     players[playerIdx]={...player,desertTurns:turns+1};
+    bvAnimating=false; // ★ update 전
     await bvRef().update({players,log:firebase.firestore.FieldValue.arrayUnion(`🏝 ${player.name} 무인도 대기 (${turns+1}/3턴)`)});
     bvAddLog(`🏝 무인도 ${turns+1}/3턴`);bvSetEvent(`🏝 무인도 ${turns+1}/3턴 대기 중`);
-    bvAnimating=false;await bvEndTurn();
+    await bvEndTurn();
   }
 }
 
@@ -7460,7 +7581,11 @@ async function bvDrawCard(playerIdx){
   // unique 카드 (관광여행 등) - 영구 제거
   if(card.unique){discard.pop();removed.push(cardId);}
 
-  await bvRef().update({deck,discard,removed});
+  // ★ 모든 플레이어가 카드를 볼 수 있도록 broadcast
+  await bvRef().update({
+    deck,discard,removed,
+    cardEvent:{cardId:card.id,playerName:data.players[playerIdx].name,ts:Date.now()}
+  });
 
   // 카드 모달 표시 (내 턴인 경우)
   if(playerIdx===bvMyIdx()){
@@ -7494,6 +7619,38 @@ async function bvConfirmCard(){
   // 보관 카드가 아닌 경우 턴 종료
   if(card.type!=="keep"&&card.type!=="teleport"&&card.type!=="free_build"&&card.type!=="free_land")await bvEndTurn();
 }
+
+// 다른 플레이어가 뽑은 카드 관전용 모달
+function bvShowCardObserver(card,playerName){
+  // 이미 본인이 모달 띄운 상태면 중복 표시 X
+  const existing=document.getElementById("bv-card-modal");
+  if(existing&&existing.style.display==="flex")return;
+
+  document.getElementById("bv-card-title").textContent=card.title;
+  document.getElementById("bv-card-subtitle").textContent=`🔭 ${playerName}이(가) 뽑음`;
+  document.getElementById("bv-card-effect").textContent=card.effect;
+  bvOpenModal("bv-card-modal");
+
+  // 관전자는 5초 카운트다운 후 자동 닫기 (버튼 비활성)
+  const okBtn=document.getElementById("bv-card-ok-btn");
+  if(okBtn){
+    okBtn.disabled=true;okBtn.classList.add("countdown");
+    let cnt=5;okBtn.textContent=`자동 닫기 (${cnt}초)`;
+    clearInterval(bvShowCardObserver._timer);
+    bvShowCardObserver._timer=setInterval(()=>{
+      cnt--;
+      if(cnt<=0){
+        clearInterval(bvShowCardObserver._timer);
+        bvCloseModal("bv-card-modal");
+        okBtn.classList.remove("countdown");okBtn.disabled=false;
+        okBtn.textContent="✅ 확인";
+      }else{
+        okBtn.textContent=`자동 닫기 (${cnt}초)`;
+      }
+    },1000);
+  }
+}
+
 
 async function bvApplyCard(card,playerIdx,data){
   const player=data.players[playerIdx];const players=[...data.players];
@@ -7711,8 +7868,10 @@ async function bvEndTurn(){
     const players=[...data.players];
     players[curIdx]={...players[curIdx],extraTurn:false}; // extraTurnUsed는 이 턴 전체 동안 유지
     const logArr=[...(data.log||[]),"🎯 "+data.turn+" 추가턴!"].slice(-50);
+    // ★ Firebase update 직전에 false (snapshot이 올바른 상태로 렌더되도록)
+    bvAnimating=false;
     await bvRef().update({players,phase:"rolling",log:logArr});
-    bvAnimating=false;return;
+    return;
   }
 
   // ── 다음 플레이어로 이동 (extraTurnUsed 초기화) ──
@@ -7726,8 +7885,9 @@ async function bvEndTurn(){
   if(die1)die1.textContent="🎲";if(die2)die2.textContent="🎲";
   const dh=document.getElementById("bv-double-hint");if(dh)dh.style.display="none";
   const logArr=[...(data.log||[]),`➡ ${nextName}의 턴`].slice(-50);
-  await bvRef().update({players,turn:nextName,phase:"rolling",log:logArr});
+  // ★ Firebase update 직전에 false
   bvAnimating=false;
+  await bvRef().update({players,turn:nextName,phase:"rolling",log:logArr});
 }
 
 // ── 게임 종료 ──
@@ -7880,22 +8040,28 @@ function bvMoneyRain(sqIdx, count){
   const layer=document.getElementById("bv-money-rain-layer");
   if(!layer)return;
   const rect=sq.getBoundingClientRect();
-  const emojis=["💰","💵","💸","💴","💶","💷"];
-  const n=count||10;
+  const emojis=["💰","💵","💸","💴","💶","💷","💲","🪙"];
+  const n=count||20;
   for(let i=0;i<n;i++){
     setTimeout(()=>{
       const el=document.createElement("div");
       el.className="bv-money-drop";
       el.textContent=emojis[Math.floor(Math.random()*emojis.length)];
-      el.style.left=(rect.left+rect.width*0.05+Math.random()*rect.width*0.9)+"px";
-      el.style.top=(rect.top-20+Math.random()*30)+"px";
-      el.style.setProperty("--bv-rain-x",(Math.random()*60-30)+"px");
-      el.style.setProperty("--bv-rain-rot",(Math.random()*720-360)+"deg");
-      el.style.fontSize=(36+Math.random()*22)+"px";
-      el.style.animationDuration=(1.4+Math.random()*0.5)+"s";
+      // 시작점: 칸 위쪽 + 더 넓은 범위
+      el.style.left=(rect.left-30+rect.width*0.1+Math.random()*(rect.width*1.0+60))+"px";
+      el.style.top=(rect.top-60+Math.random()*40)+"px";
+      // 더 큰 x 변화 & 회전 다양화
+      el.style.setProperty("--bv-rain-x",(Math.random()*120-60)+"px");
+      el.style.setProperty("--bv-rain-rot",(Math.random()*1080-540)+"deg");
+      // 더 큰 사이즈 (50-95px)
+      el.style.fontSize=(50+Math.random()*45)+"px";
+      // 속도 다양화
+      el.style.animationDuration=(1.6+Math.random()*0.7)+"s";
+      // 약간씩 다른 지연으로 더 자연스럽게
+      el.style.animationDelay=(Math.random()*0.15)+"s";
       layer.appendChild(el);
-      setTimeout(()=>el.remove(),2000);
-    },i*90);
+      setTimeout(()=>el.remove(),2400);
+    },i*65);
   }
 }
 
