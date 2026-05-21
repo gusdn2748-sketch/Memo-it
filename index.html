@@ -2939,7 +2939,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v05.21.20</div>
+  <div class="splash-ver">v05.21.21</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -4194,6 +4194,7 @@ init();
       </div>
       <div class="bvwt-players" id="rbw-pgrid"></div>
       <div class="bvwt-hint">모두 준비완료하면 방장이 게임을 시작할 수 있습니다</div>
+      <div id="rbw-debug" style="margin:8px 0;padding:10px;background:rgba(255,213,79,0.08);border:1px solid rgba(255,213,79,0.25);border-radius:10px;font-size:11px;color:rgba(255,255,255,0.85);line-height:1.5;font-family:monospace"></div>
       <div class="bvwt-btns">
         <button id="rbw-ready-btn" class="bvwt-ready-btn" onclick="bvToggleReady()">✅ 준비완료</button>
         <button id="rbw-start-btn" class="bvwt-start-btn" onclick="bvStartGame()" style="display:none">🌍 게임 시작!</button>
@@ -4465,7 +4466,7 @@ init();
     <!-- ══ 주사위 대형 오버레이 ══ -->
     
 
-    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.21.20</div>
+    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.21.21</div>
   </div>
 
 
@@ -5675,7 +5676,7 @@ document.addEventListener('keydown', e => {
 </script>
 <script>
 // ════════════════════════════════════════════════════════
-// 부루마블 WORLD EDITION  v05.21.20
+// 부루마블 WORLD EDITION  v05.21.21
 // prefix: bv (bravo)
 // ════════════════════════════════════════════════════════
 
@@ -6064,38 +6065,86 @@ function bvRenderWaiting(data){
       ?"linear-gradient(135deg,#5a5a5a,#3a3a3a)"
       :"";
   }
+  // ★ 디버그 정보 표시 (상태 한눈에 확인)
+  const dbg=el("rbw-debug");
+  const allReady=data.players.length>=2&&data.players.every(p=>!!p.isReady);
+  if(dbg){
+    dbg.innerHTML=`
+      <div>👑 방장: <b>${data.host}</b> ${bvIsHost?'<span style="color:#a5d6a7">(나)</span>':''}</div>
+      <div>👥 인원: <b>${data.players.length}/${data.maxPlayers}</b> ${data.players.length>=2?'<span style="color:#a5d6a7">✓</span>':'<span style="color:#ef9a9a">✗ 2명 이상 필요</span>'}</div>
+      <div>✅ 준비 상태: ${data.players.map(p=>`<b style="color:${p.isReady?'#a5d6a7':'#ef9a9a'}">${p.name}:${p.isReady?'OK':'❌'}</b>`).join(", ")}</div>
+      <div style="margin-top:4px;padding-top:4px;border-top:1px dashed rgba(255,255,255,0.15)">
+        <b style="color:${allReady?'#a5d6a7':'#ffd54f'}">${allReady?'🚀 시작 준비 완료!':'⏳ 모두 준비완료 필요'}</b>
+      </div>`;
+  }
+  // ★ 시작 버튼: 항상 클릭 가능 (검증은 bvStartGame 내부에서)
   const sb=el("rbw-start-btn");
   if(sb){
-    const allReady=data.players.length>=2&&data.players.every(p=>p.isReady);
     sb.style.display=bvIsHost?"block":"none";
-    sb.disabled=!allReady;sb.style.opacity=allReady?"1":"0.5";
+    sb.disabled=false; // 클릭 가능
+    sb.style.opacity=allReady?"1":"0.6";
+    sb.style.cursor="pointer";
   }
 }
 
 async function bvToggleReady(){
   const me=bvMe();
-  const snap=await bvRef().get();
-  const data=snap.data();
-  const idx=data.players.findIndex(p=>p.name===me);if(idx===-1)return;
-  const players=[...data.players];
-  players[idx]={...players[idx],isReady:!players[idx].isReady};
-  await bvRef().update({players});
+  console.log("[bvToggleReady] me=",me);
+  if(!bvRoomId){bvToast("방 정보 없음");return;}
+  try{
+    const snap=await bvRef().get();
+    if(!snap.exists){bvToast("방이 사라짐");return;}
+    const data=snap.data();
+    const idx=data.players.findIndex(p=>p.name===me);
+    if(idx===-1){bvToast("❌ 플레이어 목록에서 찾을 수 없음 (이름: "+me+")");console.error("플레이어 못 찾음");return;}
+    const players=[...data.players];
+    const newReady=!players[idx].isReady;
+    players[idx]={...players[idx],isReady:newReady};
+    await bvRef().update({players});
+    console.log("[bvToggleReady]",me,"준비:",newReady);
+  }catch(e){
+    bvToast("준비 토글 실패: "+e.message);
+    console.error(e);
+  }
 }
 
 async function bvStartGame(){
-  if(!bvIsHost)return;
-  const snap=await bvRef().get();const data=snap.data();
-  if(data.players.length<2){bvToast("최소 2명이 필요합니다");return;}
-  if(!data.players.every(p=>p.isReady)){bvToast("모든 플레이어가 준비해야 합니다");return;}
+  console.log("[bvStartGame] 호출됨, bvIsHost=",bvIsHost);
+  const me=bvMe();
+  if(!bvRoomId){bvToast("❌ 방 정보가 없습니다");return;}
+  let data;
+  try{
+    const snap=await bvRef().get();
+    if(!snap.exists){bvToast("❌ 방이 사라졌습니다");return;}
+    data=snap.data();
+  }catch(e){bvToast("❌ 방 정보 불러오기 실패: "+e.message);return;}
+  console.log("[bvStartGame] data.host=",data.host,"me=",me);
+  // 호스트 재확인 (bvIsHost가 어디선가 false로 세팅되었을 수 있음)
+  if(data.host!==me){bvToast("❌ 방장만 시작할 수 있습니다 (방장: "+data.host+")");return;}
+  bvIsHost=true;
+  if(!data.players||data.players.length<2){
+    bvToast(`❌ 최소 2명이 필요합니다 (현재 ${data.players?.length||0}명)`);return;
+  }
+  const notReady=data.players.filter(p=>!p.isReady).map(p=>p.name);
+  if(notReady.length>0){
+    bvToast(`❌ 준비 안한 플레이어: ${notReady.join(", ")}`);return;
+  }
+  console.log("[bvStartGame] 모든 검증 통과, 게임 시작!");
   const startCash=data.players.length===2?5000000:3000000;
   const players=data.players.map(p=>({...p,cash:startCash,loan:0,position:0,round:0,extraTurn:false,extraTurnUsed:false}));
   const deck=bvMakeDeck();
-  await bvRef().update({
-    status:"playing",players,deck,discard:[],removed:[],board:{},
-    welfare:0,turn:players[0].name,phase:"rolling",
-    log:["🎮 게임이 시작되었습니다!"],round:1,
-    synergies:{},achievedSynergies:[],spaceTravel:null,nasaOwner:""
-  });
+  try{
+    await bvRef().update({
+      status:"playing",players,deck,discard:[],removed:[],board:{},
+      welfare:0,turn:players[0].name,phase:"rolling",
+      log:["🎮 게임이 시작되었습니다!"],round:1,
+      synergies:{},achievedSynergies:[],spaceTravel:null,nasaOwner:""
+    });
+    console.log("[bvStartGame] Firebase 업데이트 성공");
+  }catch(e){
+    bvToast("❌ 게임 시작 실패: "+e.message);
+    console.error("[bvStartGame] Firebase 업데이트 실패:",e);
+  }
 }
 
 // ── 구독 & 렌더 ──
