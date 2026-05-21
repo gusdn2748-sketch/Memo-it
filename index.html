@@ -2443,21 +2443,21 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 
 /* ════ Stage 2: 비주얼 강화 ════ */
 .bv-sq-name{
-  font-size:clamp(20px,2vw,28px);
-  font-weight:800;color:#0c0c0c;
+  font-size:clamp(36px,3.6vw,52px)!important;
+  font-weight:900!important;color:#0c0c0c;
   text-align:center;line-height:1.15;
   word-break:keep-all;
   letter-spacing:-0.2px;
   max-width:100%;padding:0 1px;
 }
 .bv-sq-price{
-  font-size:clamp(16px,1.6vw,22px);
-  color:#222;text-align:center;font-weight:700;
+  font-size:clamp(28px,2.6vw,38px)!important;
+  color:#222;text-align:center;font-weight:800!important;
   margin-top:1px;
 }
 .bv-sq-special{
-  font-size:clamp(17px,1.8vw,24px);
-  font-weight:800;text-align:center;line-height:1.1;
+  font-size:clamp(28px,2.8vw,40px)!important;
+  font-weight:900!important;text-align:center;line-height:1.1;
 }
 /* 건물 이모지: 크게! */
 .bv-bld-row{
@@ -2824,6 +2824,46 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
   filter:drop-shadow(0 1px 2px rgba(0,0,0,0.4));
 }
 
+
+/* ════ 토지 폰트 강제 키움 (v18) ════ */
+.bv-board .bv-sq-name{font-size:clamp(36px,3.6vw,52px)!important;font-weight:900!important;line-height:1.05!important;}
+.bv-board .bv-sq-price{font-size:clamp(28px,2.6vw,38px)!important;font-weight:800!important;}
+.bv-board .bv-sq-special-name{font-size:clamp(28px,2.8vw,40px)!important;font-weight:900!important;}
+.bv-board .bv-sq-flag{font-size:clamp(40px,4vw,56px)!important;}
+
+
+/* ════ 튜토리얼 준비 UI ════ */
+.bv-tut-player-section{
+  margin-top:10px;padding:10px;
+  background:rgba(255,213,79,0.08);
+  border:1px solid rgba(255,213,79,0.25);
+  border-radius:10px;
+}
+.bv-tut-players{
+  display:flex;flex-direction:column;gap:5px;
+  max-height:150px;overflow-y:auto;
+}
+.bv-tut-prow{
+  display:flex;align-items:center;gap:8px;
+  padding:7px 10px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:8px;
+  transition:all 0.2s;
+}
+.bv-tut-prow.ready{
+  background:linear-gradient(135deg,rgba(76,175,80,0.18),rgba(76,175,80,0.08));
+  border-color:rgba(76,175,80,0.45);
+}
+.bv-tut-dot{
+  width:14px;height:14px;border-radius:50%;
+  border:2px solid rgba(255,255,255,0.2);
+  flex-shrink:0;
+}
+.bv-tut-pname{flex:1;font-size:13px;color:white;font-weight:600}
+.bv-tut-pstatus{font-size:11px;font-weight:700;color:rgba(255,255,255,0.65)}
+.bv-tut-prow.ready .bv-tut-pstatus{color:#a5d6a7}
+
 </style>
 </head>
 <body>
@@ -2899,7 +2939,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v05.21.17</div>
+  <div class="splash-ver">v05.21.18</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -4153,11 +4193,10 @@ init();
         </div>
       </div>
       <div class="bvwt-players" id="rbw-pgrid"></div>
-      <div class="bvwt-hint">모든 플레이어가 준비 완료되면 방장이 게임을 시작할 수 있습니다</div>
+      <div class="bvwt-hint">2명 이상 참가 시 방장이 게임을 시작할 수 있습니다</div>
       <div class="bvwt-btns">
-        <button class="bvwt-ready-btn" style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.15);font-size:12px" onclick="bvOpenModal('bv-tutorial-modal')">📖 규칙</button>
-        <button id="rbw-ready-btn" class="bvwt-ready-btn" onclick="bvToggleReady()">✅ 준비완료</button>
         <button id="rbw-start-btn" class="bvwt-start-btn" onclick="bvStartGame()" style="display:none">🌍 게임 시작!</button>
+        <button class="bvwt-ready-btn" onclick="bvLeaveRoom()" style="background:rgba(255,80,80,0.15);border-color:rgba(255,80,80,0.4)">🚪 나가기</button>
       </div>
     </div>
   </div>
@@ -4393,7 +4432,20 @@ init();
           다른 플레이어를 <b>모두 파산</b>시키면 승리!</div>
         </div>
       </div>
-      <button class="bv-btn-ok" style="width:100%;margin-top:4px" onclick="bvCloseModal('bv-tutorial-modal')">✅ 이해했어요!</button>
+      <!-- ★ 플레이어 준비 상태 -->
+      <div class="bv-tut-player-section">
+        <div style="font-size:13px;font-weight:700;color:#ffd54f;margin-bottom:8px;text-align:center">👥 플레이어 준비 현황</div>
+        <div id="bv-tut-players" class="bv-tut-players"></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button id="bv-tut-ready-btn" onclick="bvTutorialReady()"
+          style="flex:1;padding:12px;background:linear-gradient(135deg,#43a047,#2e7d32);color:white;border:none;border-radius:10px;font-weight:800;font-size:14px;cursor:pointer">
+          ✅ 준비완료
+        </button>
+        <button id="bv-tut-start-btn" onclick="bvTutorialFinalStart()" style="display:none;flex:1;padding:12px;background:linear-gradient(135deg,#ff9800,#f57c00);color:white;border:none;border-radius:10px;font-weight:800;font-size:14px;cursor:pointer">
+          ⏳ 모두 준비 대기 중
+        </button>
+      </div>
     </div></div>
 
     <!-- ══ 출발 정확 도착 특별건설 모달 ══ -->
@@ -4425,7 +4477,7 @@ init();
     <!-- ══ 주사위 대형 오버레이 ══ -->
     
 
-    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.21.17</div>
+    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.21.18</div>
   </div>
 
 
@@ -5635,7 +5687,7 @@ document.addEventListener('keydown', e => {
 </script>
 <script>
 // ════════════════════════════════════════════════════════
-// 부루마블 WORLD EDITION  v05.21.17
+// 부루마블 WORLD EDITION  v05.21.18
 // prefix: bv (bravo)
 // ════════════════════════════════════════════════════════
 
@@ -5985,8 +6037,19 @@ function bvEnterWaiting(rid){
   bvUnsub=db.collection("bravo_rooms").doc(rid).onSnapshot(snap=>{
     if(!snap.exists){bvToast("방이 사라졌습니다");bvInit();return;}
     bvG=snap.data();
-    if(bvG.status==="playing"){rumiShowScreen("rbscr-game");bvRender(bvG);return;}
+    if(bvG.status==="playing"){
+      // 게임 시작 - 튜토리얼 모달이 떠있으면 닫기
+      bvCloseModal("bv-tutorial-modal");
+      rumiShowScreen("rbscr-game");bvRender(bvG);return;
+    }
     if(bvG.status==="ended"){if(bvG.winner)bvShowEndScreen(bvG.winner);return;}
+    if(bvG.status==="tutorial"){
+      // ★ 튜토리얼 단계: 대기실 위에 튜토리얼 모달 표시
+      bvRenderWaiting(bvG);
+      bvOpenModal("bv-tutorial-modal");
+      bvRenderTutorialReady(bvG);
+      return;
+    }
     bvRenderWaiting(bvG);
   });
 }
@@ -6001,16 +6064,13 @@ function bvRenderWaiting(data){
     <div class="bvwt-player-row">
       <div class="bvwt-player-dot" style="background:${BV_COLOR_HEX[p.color]||'#888'}"></div>
       <div class="bvwt-player-name">${p.name}${p.name===data.host?" 👑":""}</div>
-      <div class="bvwt-player-status ${p.isReady?"ready":""}">${p.isReady?"✅ 준비완료":"⏳ 준비중"}</div>
+      <div class="bvwt-player-status ready">✅ 참가완료</div>
     </div>`).join("");
-  const mp=data.players.find(p=>p.name===me);
-  const rb=el("rbw-ready-btn");
-  if(rb)rb.textContent=mp?.isReady?"준비 취소":"✅ 준비완료";
   const sb=el("rbw-start-btn");
   if(sb){
-    const allReady=data.players.length>=2&&data.players.every(p=>p.isReady);
+    const enough=data.players.length>=2;
     sb.style.display=bvIsHost?"block":"none";
-    sb.disabled=!allReady;sb.style.opacity=allReady?"1":"0.5";
+    sb.disabled=!enough;sb.style.opacity=enough?"1":"0.5";
   }
 }
 
@@ -6028,9 +6088,40 @@ async function bvStartGame(){
   if(!bvIsHost)return;
   const snap=await bvRef().get();const data=snap.data();
   if(data.players.length<2){bvToast("최소 2명이 필요합니다");return;}
-  if(!data.players.every(p=>p.isReady)){bvToast("모든 플레이어가 준비해야 합니다");return;}
+  // ★ 튜토리얼 단계로 전환 - 모든 플레이어가 규칙 확인 + 준비완료 해야 게임 시작
+  const players=data.players.map(p=>({...p,tutorialReady:false}));
+  await bvRef().update({status:"tutorial",players,log:firebase.firestore.FieldValue.arrayUnion("📖 튜토리얼 단계 - 모든 플레이어 준비 대기 중")});
+}
+
+// ★ 튜토리얼에서 본인 준비완료
+async function bvTutorialReady(){
+  const me=bvMe();
+  const snap=await bvRef().get();const data=snap.data();
+  const idx=data.players.findIndex(p=>p.name===me);if(idx<0)return;
+  const players=[...data.players];
+  players[idx]={...players[idx],tutorialReady:true};
+  await bvRef().update({players});
+}
+
+// ★ 튜토리얼에서 본인 준비취소
+async function bvTutorialUnready(){
+  const me=bvMe();
+  const snap=await bvRef().get();const data=snap.data();
+  const idx=data.players.findIndex(p=>p.name===me);if(idx<0)return;
+  const players=[...data.players];
+  players[idx]={...players[idx],tutorialReady:false};
+  await bvRef().update({players});
+}
+
+// ★ 방장이 최종 게임 시작 (모두 준비완료 시)
+async function bvTutorialFinalStart(){
+  if(!bvIsHost)return;
+  const snap=await bvRef().get();const data=snap.data();
+  if(!data.players.every(p=>p.tutorialReady)){
+    bvToast("모든 플레이어가 준비완료해야 시작할 수 있습니다");return;
+  }
   const startCash=data.players.length===2?5000000:3000000;
-  const players=data.players.map(p=>({...p,cash:startCash,loan:0,position:0,round:0,extraTurn:false,extraTurnUsed:false}));
+  const players=data.players.map(p=>({...p,cash:startCash,loan:0,position:0,round:0,extraTurn:false,extraTurnUsed:false,tutorialReady:false}));
   const deck=bvMakeDeck();
   await bvRef().update({
     status:"playing",players,deck,discard:[],removed:[],board:{},
@@ -6038,6 +6129,40 @@ async function bvStartGame(){
     log:["🎮 게임이 시작되었습니다!"],round:1,
     synergies:{},achievedSynergies:[],spaceTravel:null,nasaOwner:""
   });
+}
+
+// ★ 튜토리얼 모달 내부 상태 렌더링
+function bvRenderTutorialReady(data){
+  const me=bvMe();const myP=data.players.find(p=>p.name===me);
+  bvIsHost=data.host===me;
+
+  // 플레이어 상태 리스트
+  const list=document.getElementById("bv-tut-players");
+  if(list){
+    list.innerHTML=data.players.map(p=>`
+      <div class="bv-tut-prow ${p.tutorialReady?'ready':''}">
+        <div class="bv-tut-dot" style="background:${BV_COLOR_HEX[p.color]||'#888'}"></div>
+        <div class="bv-tut-pname">${p.name}${p.name===data.host?" 👑":""}</div>
+        <div class="bv-tut-pstatus">${p.tutorialReady?"✅ 준비완료":"⏳ 대기중"}</div>
+      </div>`).join("");
+  }
+  // 본인 준비완료 버튼
+  const rdyBtn=document.getElementById("bv-tut-ready-btn");
+  if(rdyBtn){
+    const isReady=myP?.tutorialReady;
+    rdyBtn.textContent=isReady?"❌ 준비취소":"✅ 준비완료";
+    rdyBtn.onclick=isReady?bvTutorialUnready:bvTutorialReady;
+    rdyBtn.style.background=isReady?"linear-gradient(135deg,#5a5a5a,#3a3a3a)":"linear-gradient(135deg,#43a047,#2e7d32)";
+  }
+  // 방장 최종 시작 버튼
+  const startBtn=document.getElementById("bv-tut-start-btn");
+  if(startBtn){
+    const allReady=data.players.every(p=>p.tutorialReady);
+    startBtn.style.display=bvIsHost?"block":"none";
+    startBtn.disabled=!allReady;
+    startBtn.style.opacity=allReady?"1":"0.5";
+    startBtn.textContent=allReady?"🎮 게임 시작!":"⏳ 모두 준비 대기 중";
+  }
 }
 
 function bvMakeDeck(){
@@ -7734,8 +7859,13 @@ async function bvApplyCard(card,playerIdx,data){
         if(player.cash>=total){players[playerIdx]={...player,cash:player.cash-total};}
         else{players[playerIdx]={...player,loan:player.loan+(total-player.cash),cash:0};}
         await bvRef().update({players,log:firebase.firestore.FieldValue.arrayUnion(`🗝 ${player.name} 수리비 ${bvFmt(total)}`)});
-      }
-      bvAddLog(`🗝 수리비 ${bvFmt(total)}`);break;}
+        bvAddLog(`🗝 수리비 ${bvFmt(total)}`);
+      }else{
+        // ★ 건물 없음
+        await bvRef().update({log:firebase.firestore.FieldValue.arrayUnion(`🗝 ${player.name} [수리비] 건물 없음 (납부 면제)`)});
+        bvAddLog(`🗝 수리비 - 건물 없음 (면제)`);
+        bvSetEvent(`🗝 [수리비] 보유 건물이 없어 면제됩니다`);
+      }break;}
 
     case"pay_all":{
       let totalPay=0;
@@ -7783,6 +7913,12 @@ async function bvApplyCard(card,playerIdx,data){
         const board2={...data.board};delete board2[maxK];
         await bvRef().update({players,board:board2,log:firebase.firestore.FieldValue.arrayUnion(`🗝 반액대매출 ${sq2.name} (${bvFmt(saleP)})`)});
         bvAddLog(`🗝 반액대매출`);
+        bvTriggerMoneyRain(parseInt(maxK),bvCalcMoneyCount(saleP));
+      }else{
+        // ★ 대상 없음 - 명시적 로그 + 이벤트 표시
+        await bvRef().update({log:firebase.firestore.FieldValue.arrayUnion(`🗝 ${player.name} [반액대매출] 매각 대상 없음`)});
+        bvAddLog(`🗝 반액대매출 - 대상 토지 없음`);
+        bvSetEvent(`🗝 [반액대매출] 매각할 토지가 없습니다`);
       }break;}
 
     case"salary_bonus":
@@ -7797,12 +7933,46 @@ async function bvApplyCard(card,playerIdx,data){
       bvAddLog("🗝 퇴직연금! 월급 +10만 영구");break;
 
     case"free_build":
-      if(isMe){bvFreeBuildSelecting=true;bvSetEvent("🏗 건설할 내 땅을 보드에서 클릭하세요<br><button onclick='bvSkipFreeBuild()' style='margin-top:4px;padding:3px 10px;background:rgba(255,255,255,0.1);color:white;border:1px solid rgba(255,255,255,0.2);border-radius:6px;cursor:pointer;font-size:10px'>건너뛰기</button>");bvRender(data);}
-      // 내 카드가 아닌 경우 (AI 미구현이므로 해당없음)
+      if(isMe){
+        // ★ 건설 가능한 토지 사전 체크
+        const myRound=player.round||0;
+        const canBuildAny=Object.entries(data.board||{}).some(([k,l])=>{
+          if(l.owner!==player.name)return false;
+          const sq2=BV_BOARD[parseInt(k)];if(!sq2||sq2.canBuild===false)return false;
+          const bld=l.buildings||{villa:0,building:0,hotel:0};
+          return bld.villa===0||(bld.building===0&&myRound>=1)||(bld.hotel===0&&myRound>=2);
+        });
+        if(!canBuildAny){
+          bvSetEvent(`🗝 [도시개발] 건설 가능 토지 없음 (자동 종료)`);
+          await bvRef().update({log:firebase.firestore.FieldValue.arrayUnion(`🗝 ${player.name} [도시개발] 건설 가능 토지 없음`)});
+          bvAddLog(`🗝 도시개발 - 대상 없음`);
+          await bvEndTurn();
+        }else{
+          bvFreeBuildSelecting=true;
+          bvSetEvent("🏗 건설할 내 땅을 보드에서 클릭하세요<br><button onclick='bvSkipFreeBuild()' style='margin-top:4px;padding:3px 10px;background:rgba(255,255,255,0.1);color:white;border:1px solid rgba(255,255,255,0.2);border-radius:6px;cursor:pointer;font-size:10px'>건너뛰기</button>");
+          bvRender(data);
+        }
+      }
       break;
 
     case"free_land":
-      if(isMe){bvFreeLandSelecting=true;bvSetEvent("🏡 획득할 빈 땅을 보드에서 클릭하세요<br><button onclick='bvSkipFreeLand()' style='margin-top:4px;padding:3px 10px;background:rgba(255,255,255,0.1);color:white;border:1px solid rgba(255,255,255,0.2);border-radius:6px;cursor:pointer;font-size:10px'>건너뛰기</button>");bvRender(data);}
+      if(isMe){
+        // ★ 빈 땅(property/tourist 무소유) 사전 체크
+        const hasEmpty=BV_BOARD.some(sq=>{
+          if(!sq||(sq.type!=="property"&&sq.type!=="tourist"))return false;
+          return !data.board?.[sq.index]?.owner;
+        });
+        if(!hasEmpty){
+          bvSetEvent(`🗝 [토지무상불하] 빈 땅 없음 (자동 종료)`);
+          await bvRef().update({log:firebase.firestore.FieldValue.arrayUnion(`🗝 ${player.name} [토지무상불하] 빈 땅 없음`)});
+          bvAddLog(`🗝 토지무상불하 - 대상 없음`);
+          await bvEndTurn();
+        }else{
+          bvFreeLandSelecting=true;
+          bvSetEvent("🏡 획득할 빈 땅을 보드에서 클릭하세요<br><button onclick='bvSkipFreeLand()' style='margin-top:4px;padding:3px 10px;background:rgba(255,255,255,0.1);color:white;border:1px solid rgba(255,255,255,0.2);border-radius:6px;cursor:pointer;font-size:10px'>건너뛰기</button>");
+          bvRender(data);
+        }
+      }
       break;
   }
 }
