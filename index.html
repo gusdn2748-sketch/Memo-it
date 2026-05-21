@@ -1458,11 +1458,11 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 .bv-board-wrap{flex:1;display:flex;align-items:flex-start;justify-content:flex-start;min-width:0;overflow:hidden;position:relative}
 
 /* ══ 보드 ══ */
-.bv-board{display:flex;flex-direction:column;width:1200px;height:900px;flex-shrink:0;border:2px solid rgba(255,255,255,0.15);border-radius:4px;overflow:hidden;background:#2e7d2e;box-shadow:0 0 30px rgba(0,0,0,0.6);transform-origin:0 0;transition:transform 0.15s cubic-bezier(.2,.8,.4,1)}
+.bv-board{display:flex;flex-direction:column;width:1600px;height:1300px;flex-shrink:0;border:2px solid rgba(255,255,255,0.15);border-radius:4px;overflow:hidden;background:#2e7d2e;box-shadow:0 0 30px rgba(0,0,0,0.6);transform-origin:0 0;transition:transform 0.15s cubic-bezier(.2,.8,.4,1)}
 .bv-row{display:flex;flex-shrink:0}
-.bv-row-top,.bv-row-bot{height:100px;flex-shrink:0}
+.bv-row-top,.bv-row-bot{height:130px;flex-shrink:0}
 .bv-row-mid{flex:1;min-height:0}
-.bv-col{display:flex;flex-direction:column;width:100px;flex-shrink:0}
+.bv-col{display:flex;flex-direction:column;width:130px;flex-shrink:0}
 .bv-col-left .bv-sq,.bv-col-right .bv-sq{flex:1;min-height:0}
 .bv-center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:space-around;padding:4px;min-width:0;overflow:hidden}
 .bv-center-logo{font-size:clamp(18px,2vw,32px);font-weight:700;color:white;letter-spacing:1px;text-shadow:0 0 10px rgba(255,255,255,0.4)}
@@ -1475,14 +1475,14 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 /* ══ 칸 기본 ══ */
 .bv-sq{position:relative;background:white;border:0.5px solid rgba(0,0,0,0.15);display:flex;flex-direction:column;cursor:default;overflow:hidden;box-sizing:border-box}
 .bv-row-top .bv-sq:not(.corner),.bv-row-bot .bv-sq:not(.corner){flex:1;min-width:0}
-.bv-sq.corner{width:100px;height:100%;flex-shrink:0;background:#fffde7}
+.bv-sq.corner{width:130px;height:100%;flex-shrink:0;background:#fffde7}
 .bv-sq.corner.tl,.bv-sq.corner.bl{background:#c8e6c9}
 .bv-sq.corner.tr{background:#e8eaf6}
 .bv-sq-bar{height:42%;width:100%;flex-shrink:0}
 .bv-col-left .bv-sq-bar,.bv-col-right .bv-sq-bar{width:34%;height:100%;flex-shrink:0}
 .bv-col-left .bv-sq{flex-direction:row}
 .bv-col-right .bv-sq{flex-direction:row-reverse}
-.bv-sq-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1px;overflow:hidden;min-width:0}
+.bv-sq-body{flex:1;display:flex;flex-direction:column;align-items:stretch;overflow:hidden;min-width:0}
 .bv-sq-name{font-size:clamp(9px,0.85vw,13px);font-weight:600;text-align:center;line-height:1.2;word-break:keep-all;color:#111}
 .bv-sq-price{font-size:clamp(8px,0.7vw,11px);color:#444;text-align:center}
 .bv-sq-bld{font-size:clamp(14px,1.5vw,20px);text-align:center;line-height:1}
@@ -1498,9 +1498,38 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 /* 말은 SVG로 처리 (CSS는 여기선 불필요하지만 fallback) */
 .bv-sq-pieces{display:flex;flex-wrap:wrap;gap:2px;justify-content:center;align-items:center;padding:2px}
 
-/* 클릭 가능 칸 (우주여행 목적지 선택 시) */
-.bv-sq.space-target{cursor:pointer!important;animation:bvPulse 0.8s infinite}
-@keyframes bvPulse{0%,100%{box-shadow:inset 0 0 0 2px #7c4dff}50%{box-shadow:inset 0 0 0 3px #7c4dff,0 0 8px rgba(124,77,255,0.6)}}
+/* ── 클릭 가능 칸 공통 ── */
+.bv-sq.space-target{cursor:pointer!important;position:relative}
+/* 우주여행 (보라) */
+.bv-sq.bv-sel-space{animation:bvSelSpace 0.65s infinite}
+@keyframes bvSelSpace{
+  0%,100%{box-shadow:inset 0 0 0 3px #7c4dff,0 0 0 0 rgba(124,77,255,0)}
+  50%{box-shadow:inset 0 0 0 4px #b388ff,0 0 14px rgba(124,77,255,0.7);filter:brightness(1.15)}
+}
+/* 자산 매각 (주황) */
+.bv-sq.bv-sel-sale{animation:bvSelSale 0.65s infinite}
+@keyframes bvSelSale{
+  0%,100%{box-shadow:inset 0 0 0 3px #ff6f00,0 0 0 0 rgba(255,111,0,0)}
+  50%{box-shadow:inset 0 0 0 4px #ffab40,0 0 14px rgba(255,111,0,0.7);filter:brightness(1.15)}
+}
+/* 무료 건설 (초록) */
+.bv-sq.bv-sel-build{animation:bvSelBuild 0.65s infinite}
+@keyframes bvSelBuild{
+  0%,100%{box-shadow:inset 0 0 0 3px #00c853,0 0 0 0 rgba(0,200,83,0)}
+  50%{box-shadow:inset 0 0 0 4px #69f0ae,0 0 14px rgba(0,200,83,0.7);filter:brightness(1.15)}
+}
+/* 무료 토지 획득 (금) */
+.bv-sq.bv-sel-land{animation:bvSelLand 0.65s infinite}
+@keyframes bvSelLand{
+  0%,100%{box-shadow:inset 0 0 0 3px #ffd600,0 0 0 0 rgba(255,214,0,0)}
+  50%{box-shadow:inset 0 0 0 4px #ffff00,0 0 14px rgba(255,214,0,0.7);filter:brightness(1.15)}
+}
+/* 유료 건설 (청록) */
+.bv-sq.bv-sel-paid{animation:bvSelPaid 0.65s infinite}
+@keyframes bvSelPaid{
+  0%,100%{box-shadow:inset 0 0 0 3px #00bcd4,0 0 0 0 rgba(0,188,212,0)}
+  50%{box-shadow:inset 0 0 0 4px #80deea,0 0 14px rgba(0,188,212,0.7);filter:brightness(1.15)}
+}
 
 /* ══ 주사위 ══ */
 .bv-dice-wrap{display:flex;gap:8px;align-items:center;justify-content:center}
@@ -1639,8 +1668,8 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 
 /* ══ 주사위 대형 오버레이 ══ */
 .bv-dice-overlay{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  z-index:60;pointer-events:none;
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+  z-index:9999;pointer-events:none;
   animation:bvOverlayIn 0.25s ease-out;
 }
 @keyframes bvOverlayIn{from{opacity:0;transform:translate(-50%,-55%)}to{opacity:1;transform:translate(-50%,-50%)}}
@@ -1650,8 +1679,16 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
   box-shadow:0 0 60px rgba(0,0,0,0.8),0 0 20px rgba(255,255,255,0.05);
 }
 .bv-dice-big-wrap{display:flex;gap:36px;justify-content:center;margin-bottom:16px}
-.bv-die-big{font-size:88px;line-height:1;display:inline-block;
-  filter:drop-shadow(0 4px 12px rgba(0,0,0,0.6))}
+.bv-die-big{
+  font-size:68px;line-height:1;
+  width:110px;height:110px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:18px;
+  border:3px solid rgba(255,255,255,0.55);
+  box-shadow:0 6px 24px rgba(0,0,0,0.7),inset 0 1px 0 rgba(255,255,255,0.2);
+}
+#bv-die-big1{background:linear-gradient(135deg,#c62828,#ef5350);}
+#bv-die-big2{background:linear-gradient(135deg,#1565c0,#42a5f5);}
 .bv-die-big.spin{animation:bvDiceBigSpin 1.6s cubic-bezier(.3,0,.2,1)}
 @keyframes bvDiceBigSpin{
   0%{transform:rotate(0) scale(1) translateY(0)}
@@ -1850,7 +1887,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 
 /* ══ 새 칸 스타일 ══ */
 .bv-sq-full{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%}
-.bv-sq-flag{font-size:clamp(13px,1.4vw,20px);line-height:1;text-align:center;margin-bottom:1px}
+/* bv-sq-flag: removed - photos replace flags */
 .bv-sq-name{font-size:clamp(10px,1.0vw,14px);font-weight:700;text-align:center;line-height:1.2;word-break:keep-all;color:#111}
 .bv-sq-name-lg{font-size:clamp(11px,1.1vw,15px)!important;font-weight:800}
 .bv-sq-price{font-size:clamp(9px,0.85vw,12px);color:#333;text-align:center;font-weight:500}
@@ -1876,18 +1913,291 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 }
 
 /* 관광지 CSS 덮어쓰기 */
-.bv-sq.tourist{background:transparent!important}
+/* tourist background handled by bv-sq-full */
+.bv-sq.tourist{background:white}
 
 /* ══ 주사위 오버레이 개선 ══ */
 .bv-dice-overlay-inner{
-  background:linear-gradient(135deg,rgba(8,30,80,0.97),rgba(5,50,30,0.97))!important;
-  border:2px solid rgba(255,255,255,0.3)!important;
-  box-shadow:0 0 60px rgba(0,0,0,0.9),0 0 30px rgba(255,215,0,0.1)!important;
+  background:linear-gradient(135deg,rgba(15,15,50,0.97),rgba(5,30,15,0.97))!important;
+  border:2px solid rgba(255,255,255,0.35)!important;
+  box-shadow:0 0 80px rgba(0,0,0,0.95),0 0 40px rgba(100,150,255,0.15),0 0 40px rgba(255,100,100,0.1)!important;
 }
 .bv-die-big{
   font-size:88px;line-height:1;display:inline-block;
   filter:drop-shadow(0 0 12px rgba(255,215,0,0.6)) drop-shadow(0 4px 16px rgba(0,0,0,0.7))!important;
 }
+
+
+/* ══ 사진 + 1줄 레이아웃 ══ */
+.bv-sq-photo{
+  width:100%;flex:1;min-height:0;
+  object-fit:cover;display:block;
+}
+.bv-sq-info-line{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:3px 5px;gap:3px;flex-shrink:0;
+  border-top:1px solid rgba(0,0,0,0.08);
+}
+.bv-sq-name{
+  font-size:clamp(9px,0.85vw,12px);font-weight:700;
+  color:#111;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;
+}
+.bv-sq-name-lg{font-size:clamp(10px,0.9vw,13px)!important;font-weight:800}
+.bv-sq-price{
+  font-size:clamp(8px,0.75vw,10px);color:#333;
+  white-space:nowrap;flex-shrink:0;font-weight:600;
+}
+/* 사이드 칸 가로 레이아웃 조정 */
+.bv-col-left .bv-sq-body,.bv-col-right .bv-sq-body{
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.bv-col-left .bv-sq-info-line,.bv-col-right .bv-sq-info-line{
+  flex-direction:column;align-items:flex-start;gap:1px;padding:2px 4px;
+}
+.bv-col-left .bv-sq-price,.bv-col-right .bv-sq-price{
+  font-size:clamp(7px,0.7vw,9px);color:#555;
+}
+
+/* 사이드 칸 배너 건물 세로 배치 */
+.bv-col-left .bv-bld-banner,.bv-col-right .bv-bld-banner{
+  flex-direction:column;font-size:clamp(10px,1.1vw,16px);
+}
+
+/* 관광지 전체 레이아웃 */
+.bv-sq-full{
+  display:flex;flex-direction:column;width:100%;height:100%;
+}
+.bv-sq-owner-strip{
+  width:80%;height:4px;border-radius:2px;margin:1px auto;opacity:0.8;flex-shrink:0;
+}
+
+/* 코너 텍스트 크기 조정 */
+.bv-sq.corner .bv-sq-body{
+  display:flex;align-items:center;justify-content:center;width:100%;height:100%;
+}
+
+
+/* ══ 건설 다중선택 카드 ══ */
+.bv-build-opt{
+  background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);
+  border-radius:8px;padding:8px 12px;margin:4px 0;cursor:pointer;
+  font-size:13px;color:white;transition:all 0.15s;
+}
+.bv-build-opt:hover{background:rgba(255,255,255,0.13)}
+.bv-build-opt.bv-build-sel{
+  background:rgba(5,25,5,0.75);border-color:#43a047;
+  box-shadow:inset 0 0 10px rgba(67,160,71,0.2);
+}
+
+
+/* ══ 통행료 선택지 UI ══ */
+.bv-toll-box{max-width:380px;width:95%}
+.bv-toll-info{font-size:13px;color:rgba(255,255,255,0.7);text-align:center;margin-bottom:16px;line-height:1.5}
+.bv-toll-options{display:flex;flex-direction:column;gap:8px}
+.bv-toll-opt{
+  display:flex;align-items:center;gap:12px;width:100%;
+  background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);
+  border-radius:12px;padding:12px 14px;cursor:pointer;
+  color:white;text-align:left;transition:all 0.15s;
+}
+.bv-toll-opt:hover:not(.bv-toll-dim){background:rgba(255,255,255,0.14);border-color:rgba(255,255,255,0.35)}
+.bv-toll-ok{border-color:rgba(255,255,255,0.2)}
+.bv-toll-dim{opacity:0.38;cursor:default}
+.bvo-icon{font-size:22px;flex-shrink:0}
+.bvo-body{display:flex;flex-direction:column;gap:2px;flex:1}
+.bvo-title{font-size:14px;font-weight:700}
+.bvo-sub{font-size:11px;color:rgba(255,255,255,0.55)}
+
+/* ══ 자산 매각 상세 ══ */
+.bv-sale-options{display:flex;flex-direction:column;gap:6px}
+.bv-sale-detail-opt{
+  display:flex;align-items:center;width:100%;
+  background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);
+  border-radius:10px;padding:10px 14px;cursor:pointer;
+  color:white;transition:all 0.15s;
+}
+.bv-sale-detail-opt:hover:not(.bv-sale-unavail){background:rgba(255,255,255,0.14);border-color:#a5d6a7}
+.bv-sale-unavail{
+  opacity:0.22;cursor:not-allowed;
+  filter:brightness(0.45) grayscale(0.3);
+}
+
+
+/* ══ 관전 모드 이벤트 패널 ══ */
+.bv-obs-live{
+  display:flex;align-items:flex-start;gap:10px;
+  background:rgba(255,215,0,0.06);
+  border:1px solid rgba(255,215,0,0.18);
+  border-radius:10px;padding:10px;
+}
+.bv-obs-pulse{
+  width:10px;height:10px;border-radius:50%;
+  flex-shrink:0;margin-top:3px;
+  animation:bvObsPulse 1.2s infinite;
+}
+@keyframes bvObsPulse{
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:0.45;transform:scale(0.7)}
+}
+.bv-obs-who{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.bv-obs-what{font-size:12px;color:rgba(255,255,255,0.85);margin-bottom:2px}
+.bv-obs-extra{font-size:11px;color:rgba(255,255,255,0.5)}
+
+
+/* ── 소유 토지 컬러 글로우 ── */
+.bv-sq-owner-glow{
+  position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  animation:bvOwnerGlow 2.8s infinite;
+}
+@keyframes bvOwnerGlow{
+  0%,55%,100%{opacity:0;box-shadow:inset 0 0 0 2px transparent}
+  30%{opacity:0.7;box-shadow:inset 0 0 0 2.5px var(--og-color,rgba(255,255,255,0.4))}
+}
+
+
+/* ══ 구매 즉시 강한 반짝임 ══ */
+@keyframes bvJustBought{
+  0%{box-shadow:0 0 0 0 rgba(255,255,255,0);filter:brightness(1)}
+  10%{box-shadow:0 0 0 8px rgba(255,255,255,0.9),0 0 30px rgba(255,255,255,0.8);filter:brightness(2.2)}
+  40%{box-shadow:0 0 0 12px rgba(255,255,255,0.5),0 0 20px rgba(255,255,255,0.4);filter:brightness(1.5)}
+  100%{box-shadow:0 0 0 0 rgba(255,255,255,0);filter:brightness(1)}
+}
+.bv-sq-just-bought{
+  animation:bvJustBought 2s ease-out forwards!important;
+  z-index:5;
+}
+
+
+/* ══ 튜토리얼 ══ */
+.bv-tuto-box{max-width:400px;width:95%;max-height:85vh;overflow-y:auto}
+.bv-tuto-header{text-align:center;margin-bottom:16px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.bv-tuto-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.bv-tuto-item{
+  display:flex;gap:12px;align-items:flex-start;
+  background:rgba(255,255,255,0.05);border-radius:10px;
+  padding:10px 12px;border:1px solid rgba(255,255,255,0.08);
+  font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5;
+}
+.bv-tuto-icon{font-size:20px;flex-shrink:0;margin-top:2px}
+.bv-tuto-item b{color:white;font-size:13px}
+.bv-tuto-tip{
+  display:block;margin-top:4px;
+  color:#ffd54f;font-size:11px;font-style:italic;
+}
+
+
+/* ════ 보드 센터 디자인 ════ */
+.bv-center{
+  flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;
+  background:linear-gradient(160deg,#0a0d1a 0%,#0d1e0a 45%,#0a0d1a 100%);
+}
+.bvc-deco{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;min-height:0;padding:8px;
+}
+/* 배경 지구본 */
+.bvc-globe-bg{
+  position:absolute;font-size:clamp(80px,11vw,180px);
+  opacity:0.07;filter:blur(3px);pointer-events:none;
+  animation:bvcGlobeRot 20s linear infinite;
+}
+@keyframes bvcGlobeRot{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+
+/* 비행기 */
+.bvc-plane-ico{
+  position:absolute;top:12%;right:14%;
+  font-size:clamp(14px,2vw,28px);opacity:0.75;
+  animation:bvcFly 5s ease-in-out infinite;
+}
+@keyframes bvcFly{
+  0%,100%{transform:translate(0,0) rotate(-8deg)}
+  50%{transform:translate(12px,-10px) rotate(4deg)}
+}
+
+/* 로고 래퍼 */
+.bvc-logo-wrap{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  z-index:1;
+}
+/* 부루마블 타이틀 */
+.bvc-logo-text{
+  font-size:clamp(20px,3vw,48px);
+  font-weight:900;font-style:italic;
+  color:#ffd54f;
+  text-shadow:0 0 30px rgba(255,213,79,0.6),0 0 60px rgba(255,213,79,0.2),0 3px 6px rgba(0,0,0,0.9);
+  letter-spacing:1px;line-height:1;
+}
+.bvc-game-text{
+  font-size:clamp(9px,1.1vw,16px);
+  color:rgba(255,213,79,0.65);letter-spacing:6px;font-weight:700;
+}
+.bvc-divider{
+  width:60%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,213,79,0.4),transparent);
+  margin:4px 0;
+}
+.bvc-sub-text{
+  font-size:clamp(6px,0.7vw,10px);
+  color:rgba(255,255,255,0.3);letter-spacing:2px;
+}
+.bvc-deco-keys{
+  position:absolute;bottom:10%;
+  font-size:clamp(10px,1.2vw,18px);opacity:0.4;
+  filter:sepia(1) hue-rotate(10deg);
+}
+
+/* 게임 UI */
+.bvc-ui{
+  display:flex;flex-direction:column;align-items:center;
+  gap:4px;padding:6px 8px;flex-shrink:0;
+  background:rgba(0,0,0,0.35);
+  border-top:1px solid rgba(255,255,255,0.06);
+}
+
+/* ════ 승리 화면 ════ */
+.bv-victory-overlay{
+  position:fixed;inset:0;z-index:9999;
+  display:flex;align-items:center;justify-content:center;
+}
+.bv-victory-bg{
+  position:absolute;inset:0;
+  background:rgba(0,0,0,0.72);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+}
+.bv-victory-card{
+  position:relative;z-index:1;
+  background:linear-gradient(145deg,#0a0f2e,#071a07);
+  border:2px solid rgba(255,215,0,0.45);
+  border-radius:28px;padding:44px 52px;
+  text-align:center;
+  box-shadow:0 0 80px rgba(255,215,0,0.18),0 20px 60px rgba(0,0,0,0.8);
+  animation:bvVictoryPop 0.55s cubic-bezier(.2,.8,.3,1.4) forwards;
+  min-width:280px;
+}
+@keyframes bvVictoryPop{
+  from{opacity:0;transform:scale(0.6)}
+  to{opacity:1;transform:scale(1)}
+}
+.bv-victory-trophy{font-size:60px;margin-bottom:12px;animation:bvTrophyBob 1.5s ease-in-out infinite}
+@keyframes bvTrophyBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.bv-victory-label{font-size:15px;color:rgba(255,255,255,0.5);margin-bottom:14px}
+.bv-victory-name{
+  font-size:clamp(24px,3vw,36px);font-weight:900;
+  color:#ffd54f;
+  text-shadow:0 0 20px rgba(255,213,79,0.5);
+  margin-bottom:8px;
+}
+.bv-victory-sub{font-size:14px;color:rgba(255,255,255,0.55);margin-bottom:28px}
+.bv-victory-exit{
+  background:rgba(255,255,255,0.08);
+  color:rgba(255,255,255,0.8);
+  border:1.5px solid rgba(255,255,255,0.2);
+  border-radius:24px;padding:11px 36px;
+  font-size:14px;cursor:pointer;
+  transition:all 0.2s;
+}
+.bv-victory-exit:hover{background:rgba(255,255,255,0.16);color:white}
 
 </style>
 </head>
@@ -1964,7 +2274,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v05.19.7</div>
+  <div class="splash-ver">v05.21.0</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -3186,7 +3496,7 @@ init();
       <div class="bvlb-title">🌍 부루마블 WORLD EDITION</div>
       <div class="bvlb-sub">방을 만들거나 참가하세요</div>
       <div class="bvlb-actions">
-        <button class="bvlb-btn-create" onclick="bvOpenCreateModal()">+ 방 만들기</button>
+        <button class="bvlb-btn-create" onclick="bvCreateRoom()">+ 방 만들기</button>
         <button class="bvlb-btn-refresh" onclick="bvLoadRooms()">🔄 새로고침</button>
       </div>
       <div id="rb-room-list" class="bvlb-room-list">
@@ -3220,6 +3530,7 @@ init();
       <div class="bvwt-players" id="rbw-pgrid"></div>
       <div class="bvwt-hint">모든 플레이어가 준비 완료되면 방장이 게임을 시작할 수 있습니다</div>
       <div class="bvwt-btns">
+        <button class="bvwt-ready-btn" style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.15);font-size:12px" onclick="bvOpenModal('bv-tutorial-modal')">📖 규칙</button>
         <button id="rbw-ready-btn" class="bvwt-ready-btn" onclick="bvToggleReady()">✅ 준비완료</button>
         <button id="rbw-start-btn" class="bvwt-start-btn" onclick="bvStartGame()" style="display:none">🌍 게임 시작!</button>
       </div>
@@ -3245,17 +3556,29 @@ init();
           <div class="bv-row bv-row-mid">
             <div class="bv-col bv-col-left" id="bv-col-left"></div>
             <div class="bv-center" id="bv-center">
-              <div class="bv-center-logo">부루마블</div>
-              <div class="bv-center-sub">WORLD EDITION</div>
-
-              <div id="bv-turn-label" class="bv-turn-label"></div>
-              <div class="bv-dice-wrap">
-                <div class="bv-die" id="bv-die1">🎲</div>
-                <div class="bv-die" id="bv-die2">🎲</div>
+              <!-- ★ 로고 데코 영역 ★ -->
+              <div class="bvc-deco">
+                <div class="bvc-globe-bg">🌍</div>
+                <div class="bvc-plane-ico">✈</div>
+                <div class="bvc-logo-wrap">
+                  <div class="bvc-logo-text">부루마블</div>
+                  <div class="bvc-game-text">GAME</div>
+                  <div class="bvc-divider"></div>
+                  <div class="bvc-sub-text">Blue Marble World Edition</div>
+                </div>
+                <div class="bvc-deco-keys">🗝&ensp;🗝</div>
               </div>
-              <button class="bv-roll-btn" id="bv-roll-btn" onclick="bvRollDice()" style="display:none">🎲 굴리기</button>
-              <div id="bv-double-hint" class="bv-double-hint" style="display:none"></div>
-              <div class="bv-log-wrap"><div class="bv-log" id="bv-log"></div></div>
+              <!-- ★ 게임 UI 영역 ★ -->
+              <div class="bvc-ui">
+                <div id="bv-turn-label" class="bv-turn-label"></div>
+                <div class="bv-dice-wrap">
+                  <div class="bv-die" id="bv-die1">🎲</div>
+                  <div class="bv-die" id="bv-die2">🎲</div>
+                </div>
+                <button class="bv-roll-btn" id="bv-roll-btn" onclick="bvRollDice()" style="display:none">🎲 굴리기</button>
+                <div id="bv-double-hint" class="bv-double-hint" style="display:none"></div>
+                <div class="bv-log-wrap"><div class="bv-log" id="bv-log"></div></div>
+              </div>
             </div>
             <div class="bv-col bv-col-right" id="bv-col-right"></div>
           </div>
@@ -3333,10 +3656,19 @@ init();
         <button class="bv-btn-yes" id="bv-pm-ok-btn" onclick="bvConfirmPurchase()">구매 완료</button>
       </div>
     </div></div>
-    <div id="bv-toll-modal" class="bv-modal"><div class="bv-modal-box">
-      <div class="bv-modal-title">💸 통행료</div>
-      <div class="bv-modal-body" id="bv-toll-body"></div>
-      <div class="bv-modal-btns" id="bv-toll-btns"></div>
+    <!-- ══ 통행료 선택 모달 ══ -->
+    <div id="bv-toll-modal" class="bv-modal"><div class="bv-modal-box bv-toll-box">
+      <div class="bv-modal-title" id="bv-toll-title">💸 통행료</div>
+      <div id="bv-toll-info" class="bv-toll-info"></div>
+      <div id="bv-toll-options" class="bv-toll-options"></div>
+    </div></div>
+
+    <!-- ══ 자산 매각 상세 모달 ══ -->
+    <div id="bv-sale-modal" class="bv-modal"><div class="bv-modal-box">
+      <div class="bv-modal-title" id="bv-sale-title">🏚 자산 매각</div>
+      <div class="bv-modal-body" style="font-size:12px;margin-bottom:12px" id="bv-sale-desc"></div>
+      <div id="bv-sale-options" class="bv-sale-options"></div>
+      <button class="bv-btn-no" style="margin-top:10px;width:100%" onclick="bvCancelSale()">← 돌아가기</button>
     </div></div>
     <div id="bv-build-modal" class="bv-modal"><div class="bv-modal-box">
       <div class="bv-modal-title">🏗 건물 건설</div>
@@ -3375,6 +3707,49 @@ init();
       <div class="bv-modal-body" id="bv-desert-body"></div>
       <div class="bv-modal-btns" id="bv-desert-btns"></div>
     </div></div>
+    <!-- ══ 튜토리얼 모달 ══ -->
+    <div id="bv-tutorial-modal" class="bv-modal"><div class="bv-modal-box bv-tuto-box">
+      <div class="bv-tuto-header">
+        <div style="font-size:32px">🌍</div>
+        <div style="font-size:18px;font-weight:700;color:white">부루마블 기본 규칙</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.45)">WORLD EDITION</div>
+      </div>
+      <div class="bv-tuto-list">
+        <div class="bv-tuto-item">
+          <span class="bv-tuto-icon">🎲</span>
+          <div><b>주사위 & 이동</b><br>
+          내 턴에 주사위를 굴려 이동합니다.<br>
+          <span class="bv-tuto-tip">더블(같은 숫자) → 이동 후 <b>추가턴 1회</b> 획득!</span></div>
+        </div>
+        <div class="bv-tuto-item">
+          <span class="bv-tuto-icon">🏡</span>
+          <div><b>토지 & 통행료</b><br>
+          빈 토지 도착 → 구매 가능<br>
+          남의 토지 도착 → 통행료 지불<br>
+          <span class="bv-tuto-tip">별장→빌딩→호텔 건설할수록 통행료 ↑</span></div>
+        </div>
+        <div class="bv-tuto-item">
+          <span class="bv-tuto-icon">💳</span>
+          <div><b>대출 한도</b><br>
+          기본 200만원 + 보유 자산의 50%<br>
+          <span class="bv-tuto-tip">출발 통과 시 대출 자동 상환</span></div>
+        </div>
+        <div class="bv-tuto-item">
+          <span class="bv-tuto-icon">🗝</span>
+          <div><b>황금열쇠 & 시너지</b><br>
+          황금열쇠 타일 → 카드 뽑기!<br>
+          특정 토지 조합 보유 시 <b>시너지</b> 발동 🤫<br>
+          <span class="bv-tuto-tip">시너지 달성 후 황금열쇠 밟으면<br>시너지 전용 황금카드 자동 지급!</span></div>
+        </div>
+        <div class="bv-tuto-item">
+          <span class="bv-tuto-icon">🏆</span>
+          <div><b>승리 조건</b><br>
+          다른 플레이어를 <b>모두 파산</b>시키면 승리!</div>
+        </div>
+      </div>
+      <button class="bv-btn-ok" style="width:100%;margin-top:4px" onclick="bvCloseModal('bv-tutorial-modal')">✅ 이해했어요!</button>
+    </div></div>
+
     <!-- ══ 출발 정확 도착 특별건설 모달 ══ -->
     <div id="bv-startbuild-modal" class="bv-modal"><div class="bv-modal-box">
       <div style="font-size:46px;margin-bottom:10px">🟢</div>
@@ -3387,12 +3762,17 @@ init();
       </div>
     </div></div>
 
-    <div id="bv-end-modal" class="bv-modal"><div class="bv-modal-box">
-      <div class="bv-synergy-header-icon" id="bv-end-emoji">🏆</div>
-      <div class="bv-modal-title" id="bv-end-title">게임 종료!</div>
-      <div class="bv-modal-body" id="bv-end-body"></div>
-      <button class="bv-btn-ok" onclick="bvLeaveGame()">나가기</button>
-    </div></div>
+    <!-- ══ 승리 화면 ══ -->
+    <div id="bv-end-modal" class="bv-victory-overlay" style="display:none">
+      <div class="bv-victory-bg"></div>
+      <div class="bv-victory-card">
+        <div class="bv-victory-trophy" id="bv-end-emoji">🏆</div>
+        <div class="bv-victory-label" id="bv-end-title">게임 종료!</div>
+        <div class="bv-victory-name" id="bv-end-body"></div>
+        <div class="bv-victory-sub" id="bv-end-sub">🎉 축하합니다!</div>
+        <button class="bv-victory-exit" onclick="bvLeaveGame()">← 나가기</button>
+      </div>
+    </div>
     <div id="bv-money-rain-layer" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999"></div>
     <div id="bv-toast" class="bv-toast"></div>
 
@@ -3408,7 +3788,7 @@ init();
       </div>
     </div>
 
-    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.19.7</div>
+    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.21.0</div>
   </div>
 
 
@@ -4618,7 +4998,7 @@ document.addEventListener('keydown', e => {
 </script>
 <script>
 // ════════════════════════════════════════════════════════
-// 부루마블 WORLD EDITION  v05.19.7
+// 부루마블 WORLD EDITION  v05.21.0
 // prefix: bv (bravo)
 // ════════════════════════════════════════════════════════
 
@@ -4732,6 +5112,43 @@ const BV_FLAGS={
 // ── 색상 ──
 const BV_COLOR_HEX={red:"#ef5350",blue:"#42a5f5",green:"#66bb6a",yellow:"#ffa726"};
 const BV_ZONE_COLOR={1:"#e53935",2:"#2e7d32",3:"#f9a825",4:"#212121",tourist:"#f57c00"};
+// ── 국가별 관광명소 사진 (Wikimedia Commons) ──
+const BV_PHOTOS = {
+  // Zone 1 (하단)
+  1: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Taipei_101_from_afar.jpg/160px-Taipei_101_from_afar.jpg",          // 타이베이 - 타이베이101
+  3: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Forbidden_city_1.jpg/160px-Forbidden_city_1.jpg",                  // 베이징 - 자금성
+  4: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Rizal_Park%2C_Manila.jpg/160px-Rizal_Park%2C_Manila.jpg",          // 마닐라 - 리잘공원
+  5: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Seongsan_Ilchulbong_on_a_clear_day.jpg/160px-Seongsan_Ilchulbong_on_a_clear_day.jpg", // 제주 - 성산일출봉
+  6: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Marina_Bay_Sands_in_Singapore_-_20110226.jpg/160px-Marina_Bay_Sands_in_Singapore_-_20110226.jpg", // 싱가포르 - 마리나베이
+  8: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/All_Gizah_Pyramids.jpg/160px-All_Gizah_Pyramids.jpg",              // 카이로 - 피라미드
+  9: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Hagia_Sophia_Exterior_2007.jpg/160px-Hagia_Sophia_Exterior_2007.jpg", // 이스탄불 - 하기아소피아
+  // Zone 2 (좌측)
+  11:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/The_Parthenon_in_Athens.jpg/160px-The_Parthenon_in_Athens.jpg",     // 아테네 - 파르테논
+  13:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Copenhagen_Nyhavn_panorama.jpg/160px-Copenhagen_Nyhavn_panorama.jpg", // 코펜하겐 - 뉘하운
+  14:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/GamlaStan.jpg/160px-GamlaStan.jpg",                                 // 스톡홀름 - 구시가지
+  15:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Air_France_Concorde_F-BVFF_arp.jpg/160px-Air_France_Concorde_F-BVFF_arp.jpg", // 콩코드여객기
+  16:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Switzerland_Alps.jpg/160px-Switzerland_Alps.jpg",                   // 스위스 - 알프스
+  18:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Brandenburger_Tor_abends.jpg/160px-Brandenburger_Tor_abends.jpg",   // 베를린 - 브란덴부르크문
+  19:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Niagara_falls_from_the_rainbow_bridge.jpg/160px-Niagara_falls_from_the_rainbow_bridge.jpg", // 캐나다 - 나이아가라
+  // Zone 3 (상단)
+  21:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Obelisco_buenos_aires2.jpg/160px-Obelisco_buenos_aires2.jpg",       // 부에노스아이레스
+  23:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Sao_paulo_from_paulista_avenue.jpg/160px-Sao_paulo_from_paulista_avenue.jpg", // 상파울루
+  24:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Sydney_Australia._%2821339175489%29.jpg/160px-Sydney_Australia._%2821339175489%29.jpg", // 시드니 - 오페라하우스
+  25:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Haeundae_beach.jpg/160px-Haeundae_beach.jpg",                       // 부산 - 해운대
+  26:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Diamond_Head_from_Waikiki.jpg/160px-Diamond_Head_from_Waikiki.jpg", // 하와이 - 다이아몬드헤드
+  27:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Torre_de_bel%C3%A9m_2009.jpg/160px-Torre_de_bel%C3%A9m_2009.jpg",  // 리스본 - 벨렘탑
+  28:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/QM2_at_Southampton.jpg/160px-QM2_at_Southampton.jpg",              // 퀸엘리자베스호
+  29:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Palacio_Real_de_Madrid_12.jpg/160px-Palacio_Real_de_Madrid_12.jpg", // 마드리드 - 왕궁
+  // Zone 4 (우측)
+  31:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Senso-ji_Temple_Nakamise_at_night.jpg/160px-Senso-ji_Temple_Nakamise_at_night.jpg", // 도쿄 - 센소지
+  32:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/STS-1_Columbia_launched.jpg/160px-STS-1_Columbia_launched.jpg",    // 컬럼비아호 - 발사
+  33:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Tour_eiffel_at_sunrise_from_the_trocadero.jpg/160px-Tour_eiffel_at_sunrise_from_the_trocadero.jpg", // 파리 - 에펠탑
+  34:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Colosseum_in_Rome-April_2007-1-_copie_2B.jpg/160px-Colosseum_in_Rome-April_2007-1-_copie_2B.jpg", // 로마 - 콜로세움
+  36:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Big_Ben_Clock_Tower%2C_London.jpg/160px-Big_Ben_Clock_Tower%2C_London.jpg", // 런던 - 빅벤
+  37:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Statue_of_Liberty_7.jpg/160px-Statue_of_Liberty_7.jpg",             // 뉴욕 - 자유의여신상
+  39:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Gyeongbok-gung.jpg/160px-Gyeongbok-gung.jpg",                       // 서울 - 경복궁
+};
+
 const BV_TOURIST_COLOR={
   5:"#FF5733",   // 제주 - 붉은오렌지
   15:"#0288D1",  // 콩코드여객기 - 하늘파랑
@@ -4749,8 +5166,10 @@ let bvPendingCard=null,bvPendingSquare=null,bvAcquireTarget=null;
 let bvSynergyQueue=[],bvFreeBuildSelecting=false,bvLastLog="",bvStarsStarted=false,bvZoomLevel=1.0,bvLastBuildSq=-1;
 let bvPanX=0,bvPanY=0,bvIsDragging=false,bvDragSX=0,bvDragSY=0,bvDragSPX=0,bvDragSPY=0;
 let bvPrevPlayerCash={};
-let bvPmSelectedBld=null; // 구매모달 선택 건물
+let bvPmSelectedBlds=new Set(); // 구매모달 선택 건물들 (다중 선택)
 let bvStartBuildSelecting=false; // 출발 정확도착 유료 건설 모드
+let bvSaleSelecting=false; // 자산 매각 토지 선택 모드
+let bvTollContext=null;  // {playerIdx,sqIdx,toll,ownerName}
 
 // ── 유틸 ──
 const bvFmt=n=>{if(!n&&n!==0)return"0원";const a=Math.abs(n);if(a>=10000){const w=Math.round(a/10000*10)/10;return(n<0?"-":"")+w+"만원";}return(n<0?"-":"")+a.toLocaleString()+"원";};
@@ -4764,6 +5183,18 @@ function bvToast(msg,dur=2500){
   if(!t)return;
   t.textContent=msg;t.classList.add("show");
   clearTimeout(t._timer);t._timer=setTimeout(()=>t.classList.remove("show"),dur);
+}
+
+// ── 이벤트 방송 (모든 플레이어 관전 가능) ──
+async function bvBroadcastEvent(type, desc, detail){
+  if(!bvRoomId)return;
+  try{await bvRef().update({currentEvent:{type,desc,detail:detail||'',player:bvMe(),ts:Date.now()}});}
+  catch(e){}
+}
+async function bvClearBroadcast(){
+  if(!bvRoomId)return;
+  try{await bvRef().update({currentEvent:null});}
+  catch(e){}
 }
 
 function bvSetEvent(msg){
@@ -4827,17 +5258,13 @@ function bvLoadRooms(){
     }).catch(()=>{list.innerHTML='<div class="bvlb-room-empty">오류가 발생했습니다. 새로고침 해주세요.</div>';});
 }
 
-function bvOpenCreateModal(){
-  document.getElementById("rb-create-modal").style.display="flex";
-  document.getElementById("rb-rname-inp").value="";
-  document.getElementById("rb-rname-inp").focus();
-}
-function bvCloseCreateModal(){document.getElementById("rb-create-modal").style.display="none";}
+function bvOpenCreateModal(){bvCreateRoom();}
+function bvCloseCreateModal(){const m=document.getElementById("rb-create-modal");if(m)m.style.display="none";}
 
 async function bvCreateRoom(){
-  const name=(document.getElementById("rb-rname-inp").value||"").trim();
-  if(!name){bvToast("방 이름을 입력하세요");return;}
   const me=bvMe();if(!me){bvToast("이름을 먼저 설정하세요");return;}
+  // 자동 이름 생성 (루미큐브 방식)
+  const name=`${me}의 방 🌍`;
   const color="red";
   try{
     const ref=await db.collection("bravo_rooms").add({
@@ -4960,12 +5387,18 @@ function bvRender(data){
   if(!bvStarsStarted){bvStarsStarted=true;setTimeout(bvStartStarCanvas,100);}
   setTimeout(bvInitBoardEvents,200);
 
-  // 다른 플레이어 주사위 결과 표시
+  // 다른 플레이어 주사위 처리
   if(data.diceAnim&&data.diceAnim.roller!==bvMe()){
-    const age=Date.now()-(data.diceAnim.ts||0);
-    if(age<5000&&bvG._shownDiceTs!==data.diceAnim.ts){
-      bvG._shownDiceTs=data.diceAnim.ts;
-      bvShowDiceForOthers(data.diceAnim);
+    const da=data.diceAnim;const age=Date.now()-(da.ts||0);
+    if(da.rolling&&!bvG._cycleActive&&age<8000){
+      // rolling=true → 사이클링 시작
+      bvG._cycleActive=true;
+      bvG._shownDiceTs=da.ts;
+      bvStartDiceCycleForOthers();
+    }else if(!da.rolling&&da.d1&&bvG._cycleActive&&bvG._shownDiceTs===da.ts){
+      // rolling=false → 최종 결과 표시
+      bvG._cycleActive=false;
+      bvStopDiceCycleForOthers(da.d1,da.d2,da.isDouble);
     }
   }
 
@@ -4978,6 +5411,18 @@ function bvRender(data){
   if(data.chatMsgs){
     const cm=document.getElementById("bv-chat-msgs");
     if(cm){cm.innerHTML=data.chatMsgs.slice(-30).map(m=>`<div class="bv-chat-msg"><b>${m.name}:</b> ${m.text}</div>`).join("");cm.scrollTop=cm.scrollHeight;}
+  }
+
+  // 관전 모드: 다른 플레이어 상호작용 중이면 이벤트 패널에 표시
+  const me2=bvMe();const myTurn2=data.turn===me2;
+  if(data.currentEvent&&!myTurn2){
+    const ev=data.currentEvent;
+    const age2=Date.now()-(ev.ts||0);
+    if(age2<90000)bvShowObserverStatus(ev,data);
+  }else if(!data.currentEvent&&!myTurn2){
+    // 내 턴 아니고 방송도 없으면 기본 상태
+    const eb=document.getElementById("bv-event-body");
+    if(eb&&!eb.classList.contains("highlight"))eb.innerHTML=`<span style="color:rgba(255,255,255,0.4)">${data.turn||"?"}의 턴 진행 중...</span>`;
   }
 }
 
@@ -5062,6 +5507,7 @@ function bvMakeSqEl(idx,data){
   const sq=BV_BOARD[idx];
   const el=document.createElement("div");
   el.dataset.sq=idx;
+  if(idx===bvJustBoughtSq)el.classList.add("bv-sq-just-bought");
   const land=data.board?.[idx];
   const isCorner=(sq.type==="corner");
   let cls="bv-sq";
@@ -5071,21 +5517,26 @@ function bvMakeSqEl(idx,data){
   el.className=cls;
 
   // 우주여행 선택 모드
-  if(bvSpaceSelecting&&sq.type!=="corner"&&sq.type!=="tax"){
-    el.classList.add("space-target");
+  if(!bvAnimating&&bvSpaceSelecting&&sq.type!=="corner"&&sq.type!=="tax"){
+    el.classList.add("space-target","bv-sel-space");
     el.onclick=()=>bvSelectSpaceTarget(idx);
   }
-  if(bvFreeLandSelecting&&sq.type==="property"&&!land){
-    el.classList.add("space-target");
+  if(!bvAnimating&&bvFreeLandSelecting&&sq.type==="property"&&!land){
+    el.classList.add("space-target","bv-sel-land");
     el.onclick=()=>bvSelectFreeLand(idx);
   }
-  if(bvFreeBuildSelecting&&sq.type==="property"&&land?.owner===bvMe()){
-    el.classList.add("space-target");
+  if(!bvAnimating&&bvFreeBuildSelecting&&sq.type==="property"&&land?.owner===bvMe()){
+    el.classList.add("space-target","bv-sel-build");
     el.onclick=()=>bvSelectFreeBuild(idx);
   }
-  if(bvStartBuildSelecting&&sq.type==="property"&&land?.owner===bvMe()){
-    el.classList.add("space-target");
+  if(!bvAnimating&&bvStartBuildSelecting&&sq.type==="property"&&land?.owner===bvMe()){
+    el.classList.add("space-target","bv-sel-paid");
     el.onclick=()=>bvSelectPaidBuild(idx);
+  }
+  // 자산 매각 모드 (애니메이션 중엔 비활성)
+  if(!bvAnimating&&bvSaleSelecting&&land?.owner===bvMe()){
+    el.classList.add("space-target","bv-sel-sale");
+    el.onclick=()=>bvShowSaleDetail(idx);
   }
 
   el.innerHTML=bvSqInner(sq,land,data);
@@ -5147,31 +5598,38 @@ function bvSqInner(sq,land,data){
   const priceOrToll=ownerName?bvFmt(bvCalcToll(sq,land)):bvFmt(sq.price||0);
   const tollLabel=ownerName?"💸통행료":"구매가";
 
-  // ── 관광지 : 배너 없음, 전체 배경색 ──
+  // ── 관광지 : 배너 없음, 사진 + 이름+통행료 1줄 ──
   if(sq.type==="tourist"){
     const touristColor=BV_TOURIST_COLOR[sq.index]||"#f57c00";
-    const bg=ownerHex?bvHexToRgba(ownerHex,0.22):bvHexToRgba(touristColor,0.12);
-    const flag=BV_FLAGS[sq.country]||"";
+    const bg=ownerHex?bvHexToRgba(ownerHex,0.18):"white";
+    const photoUrl=BV_PHOTOS[sq.index]||"";
+    const tGlow=ownerHex?`<div class="bv-sq-owner-glow" style="--og-color:${ownerHex}"></div>`:"";
     return`<div class="bv-sq-body bv-sq-full" style="background:${bg}">
-      ${flag?`<div class="bv-sq-flag">${flag}</div>`:""}
-      <div class="bv-sq-name bv-sq-name-lg">${sq.name}</div>
-      <div class="bv-sq-price">${priceOrToll}</div>
+      ${photoUrl?`<img class="bv-sq-photo" src="${photoUrl}" loading="lazy" onerror="this.style.display='none'" alt="">`:""}
+      <div class="bv-sq-info-line" style="background:${ownerHex?bvHexToRgba(ownerHex,0.15):'rgba(255,255,255,0.93)'}">
+        <span class="bv-sq-name bv-sq-name-lg">${sq.name}</span>
+        <span class="bv-sq-price">${priceOrToll}</span>
+      </div>
       ${ownerHex?`<div class="bv-sq-owner-strip" style="background:${ownerHex}"></div>`:""}
-    </div>${piecesHtml}`;
+    </div>${tGlow}${piecesHtml}`;
   }
 
-  // ── 일반 토지 : 구역 배너 + 건물 + 본체 ──
+  // ── 일반 토지 : 구역 배너 + 건물 + 사진 + 이름+통행료 1줄 ──
   const barColor=BV_ZONE_COLOR[sq.zone]||"#888";
-  const bodyBg=ownerHex?bvHexToRgba(ownerHex,0.18):"white";
-  const flag=BV_FLAGS[sq.country]||"";
+  const bodyBg=ownerHex?bvHexToRgba(ownerHex,0.15):"white";
+  const photoUrl=BV_PHOTOS[sq.index]||"";
+  // 소유 토지 글로우 오버레이
+  const ownerGlow=ownerHex?`<div class="bv-sq-owner-glow" style="--og-color:${ownerHex}"></div>`:"";
   return`<div class="bv-sq-bar" style="background:${barColor}">
     ${bldStr?`<div class="bv-bld-banner${isNewBuild?" bv-bld-new":""}">${bldStr}</div>`:""}
   </div>
   <div class="bv-sq-body" style="background:${bodyBg}">
-    ${flag?`<div class="bv-sq-flag">${flag}</div>`:""}
-    <div class="bv-sq-name">${sq.name}</div>
-    <div class="bv-sq-price">${priceOrToll}</div>
-  </div>${piecesHtml}`;
+    ${photoUrl?`<img class="bv-sq-photo" src="${photoUrl}" loading="lazy" onerror="this.style.display='none'" alt="">`:""}
+    <div class="bv-sq-info-line" style="background:${ownerHex?bvHexToRgba(ownerHex,0.18):'rgba(255,255,255,0.93)'}">
+      <span class="bv-sq-name">${sq.name}</span>
+      <span class="bv-sq-price" style="flex-shrink:0">${priceOrToll}</span>
+    </div>
+  </div>${ownerGlow}${piecesHtml}`;
 }
 
 
@@ -5235,6 +5693,8 @@ async function bvRollDice(){
   const myP=bvG.players[myIdx];if(!myP?.isAlive)return;
 
   bvAnimating=true;
+  // 안전 타임아웃: 30초 후 자동 해제 (무한 lock 방지)
+  const animSafeTimer=setTimeout(()=>{bvAnimating=false;const rb2=document.getElementById("bv-roll-btn");if(rb2)rb2.style.display="block";},30000);
   const rb=document.getElementById("bv-roll-btn");
   if(rb)rb.style.display="none";
   const dh=document.getElementById("bv-double-hint");
@@ -5250,6 +5710,9 @@ async function bvRollDice(){
   const isDouble=d1===d2;
   const total=d1+d2;
   const faces=["⚀","⚁","⚂","⚃","⚄","⚅"];
+
+  // ── 모든 플레이어에게 rolling 시작 알림 ──
+  await bvRef().update({diceAnim:{rolling:true,roller:me,d1:0,d2:0,isDouble:false,ts:Date.now()}});
 
   // ── 대형 주사위 오버레이 표시 ──
   const overlay=document.getElementById("bv-dice-overlay");
@@ -5320,19 +5783,18 @@ async function bvMovePiece(playerIdx,steps){
   for(let i=0;i<steps;i++){
     pos=(pos+1)%40;
     if(pos===0)passedStart=true;
-    // 중간 이동: 로컬 bvG 업데이트 후 렌더만 (Firebase 요청 최소화)
+    // 매 칸마다 Firebase 업데이트 → 모든 플레이어가 이동 볼 수 있음
+    const players=[...data.players];
+    players[playerIdx]={...players[playerIdx],position:pos};
+    data={...data,players};
+    await bvRef().update({players});
+    // 로컬도 즉시 렌더
     if(bvG){
-      const localPlayers=[...bvG.players];
-      localPlayers[playerIdx]={...localPlayers[playerIdx],position:pos};
-      bvG={...bvG,players:localPlayers};
+      bvG={...bvG,players:[...bvG.players.slice(0,playerIdx),{...bvG.players[playerIdx],position:pos},...bvG.players.slice(playerIdx+1)]};
       bvRenderBoard(bvG);
     }
-    await bvDelay(420);
+    await bvDelay(600); // 느리게 → 모든 플레이어가 볼 수 있도록
   }
-  // 최종 위치만 Firebase 업데이트
-  const players=[...data.players];
-  players[playerIdx]={...players[playerIdx],position:pos};
-  await bvRef().update({players});
 
   // 출발 통과 월급
   if(passedStart&&pos!==0){
@@ -5431,147 +5893,205 @@ async function bvHandleSquare(playerIdx,sqIdx){
 function bvCalcToll(sq,land){
   if(!land||!sq.toll)return 0;
   const bld=land.buildings||{villa:0,building:0,hotel:0};
-  if(bld.hotel>0)return sq.toll.hotel||0;
-  if(bld.building>0)return sq.toll.building||0;
-  if(bld.villa>=2)return sq.toll.villa2||sq.toll.villa1||0;
-  if(bld.villa===1)return sq.toll.villa1||0;
-  return sq.toll.land||0;
+  // 전부 합산 (별장+빌딩+호텔 각각 합산)
+  let total=0;
+  if(bld.villa>0)total+=sq.toll.villa1||0;
+  if(bld.building>0)total+=sq.toll.building||0;
+  if(bld.hotel>0)total+=sq.toll.hotel||0;
+  return total>0?total:(sq.toll.land||0);
 }
 
-// ── 통행료 지불 ──
+// ════ 통행료 처리 (3가지 선택지) ════
 async function bvPayToll(playerIdx,sqIdx,toll,ownerName){
   const snap=await bvRef().get();const data=snap.data();
   const player=data.players[playerIdx];const players=[...data.players];
-
   // 우대권 체크
   if(player.tollFreeUses>0&&playerIdx===bvMyIdx()){
-    bvSetEvent(`🎫 우대권 사용! 통행료 ${bvFmt(toll)} 면제`);
+    bvSetEvent(`🎫 우대권 사용! ${bvFmt(toll)} 면제`);
     players[playerIdx]={...player,tollFreeUses:player.tollFreeUses-1};
-    await bvRef().update({players});
+    await bvRef().update({players});await bvEndTurn();return;
+  }
+  // 다른 플레이어 자동 처리
+  if(playerIdx!==bvMyIdx()){
+    const ownerIdx=data.players.findIndex(p=>p.name===ownerName);
+    if(player.cash>=toll){
+      players[playerIdx]={...player,cash:player.cash-toll};
+      if(ownerIdx>=0)players[ownerIdx]={...players[ownerIdx],cash:players[ownerIdx].cash+toll};
+      await bvRef().update({players,log:firebase.firestore.FieldValue.arrayUnion(`💸 ${player.name}→${ownerName} ${bvFmt(toll)}`)});
+    }
     await bvEndTurn();return;
   }
-
-  if(player.cash>=toll){
-    // 바로 지불
-    const ownerIdx=data.players.findIndex(p=>p.name===ownerName);
-    players[playerIdx]={...player,cash:player.cash-toll};
-    if(ownerIdx>=0)players[ownerIdx]={...players[ownerIdx],cash:players[ownerIdx].cash+toll};
-    await bvRef().update({players,log:firebase.firestore.FieldValue.arrayUnion(`💸 ${player.name}→${ownerName} 통행료 ${bvFmt(toll)}`)});
-    bvAddLog(`💸 통행료 ${bvFmt(toll)} 지불`);
-    bvSetEventHighlight(`💸 <b>${bvFmt(toll)}</b> 통행료 → <b>${ownerName}</b>`);
-    bvMoneyRain(sqIdx,5); // 돈 떨어지는 효과
-
-    // 인수 옵션 (충분한 현금 있고, 관광지 아니고, 미인수 경우)
-    const sq=BV_BOARD[sqIdx];
-    if(sq.canBuild!==false&&sq.canAcquire!==false&&playerIdx===bvMyIdx()){
-      const acquireCost=(sq.price+(bvCalcBuildValue(data.board?.[sqIdx]?.buildings)))*2;
-      if(player.cash-toll>=acquireCost){
-        bvAcquireTarget={sqIdx,cost:acquireCost,ownerName};
-        document.getElementById("bv-acq-body").innerHTML=`<b>${sq.name}</b> 인수<br>비용: ${bvFmt(acquireCost)}<br>현금: ${bvFmt(player.cash-toll)}`;
-        bvOpenModal("bv-acquire-modal");return;
-      }
-    }
-    await bvEndTurn();
-  }else{
-    // 현금 부족 - 선택창
-    if(playerIdx!==bvMyIdx()){await bvEndTurn();return;}
-    bvShowTollChoice(player,toll,ownerName,playerIdx,sqIdx,data);
-  }
+  // 내 턴: 선택지 모달
+  bvTollContext={playerIdx,sqIdx,toll,ownerName};
+  bvShowTollOptions(player,toll,ownerName,data);
 }
 
-function bvCalcBuildValue(bld){
-  // 인수합병 가격 계산: 건물 건설비의 80%를 자산 가치로 간주
-  return 0; // 단순화: 구매가×2만 사용
-}
-
-function bvShowTollChoice(player,toll,ownerName,playerIdx,sqIdx,data){
+function bvShowTollOptions(player,toll,ownerName,data){
   const loanLimit=bvLoanLimit(player,data);
-  const canLoan=player.loan<loanLimit;
-  const remainLoan=loanLimit-player.loan;
-  const canAffordWithLoan=(player.cash+remainLoan)>=toll;
-  const btns=document.getElementById("bv-toll-btns");
-  const body=document.getElementById("bv-toll-body");
-  if(body)body.innerHTML=`통행료 <b>${bvFmt(toll)}</b><br>현재 현금: ${bvFmt(player.cash)}<br>부족: ${bvFmt(toll-player.cash)}`;
-  const btnHtml=[];
-  if(canAffordWithLoan&&canLoan)btnHtml.push(`<button class="bv-btn-no" onclick="bvLoanAndPay(${playerIdx},${sqIdx},${toll},'${ownerName}')">💳 대출</button>`);
-  btnHtml.push(`<button class="bv-btn-no" onclick="bvSellToPay(${playerIdx},${sqIdx},${toll},'${ownerName}')">🏚 자산매각</button>`);
-  if(!canAffordWithLoan||player.cash+remainLoan<toll)btnHtml.push(`<button class="bv-btn-yes" style="background:#c62828" onclick="bvDeclareBankruptcy(${playerIdx})">🏳 파산</button>`);
-  if(btns)btns.innerHTML=btnHtml.join("");
+  const remainLoan=Math.max(0,loanLimit-player.loan);
+  const canCash=player.cash>=toll;
+  const canLoan=remainLoan>=toll;
+  const atMax=remainLoan<=0;
+  const hasAssets=Object.values(data.board||{}).some(l=>l.owner===player.name);
+  const noWay=!canCash&&!hasAssets&&!canLoan;
+
+  document.getElementById("bv-toll-title").textContent=`💸 통행료 ${bvFmt(toll)}`;
+  const info=document.getElementById("bv-toll-info");
+  if(info)info.innerHTML=`<b style="color:white">${ownerName}</b>에게 납부<br>
+    <span style="font-size:12px;color:rgba(255,255,255,0.5)">현금 ${bvFmt(player.cash)} | 대출 가능 ${bvFmt(remainLoan)}</span>`;
+
+  const opts=document.getElementById("bv-toll-options");
+  if(!opts)return;
+  opts.innerHTML=`
+    <button class="bv-toll-opt ${canCash?"bv-toll-ok":"bv-toll-dim"}"
+      onclick="${canCash?"bvTollCash()":"bvToast('현금이 부족합니다.')"}">
+      <span class="bvo-icon">💵</span>
+      <span class="bvo-body">
+        <span class="bvo-title">현금 지불</span>
+        <span class="bvo-sub">${canCash?"보유 현금으로 즉시 납부":`부족 (${bvFmt(player.cash)}/${bvFmt(toll)})`}</span>
+      </span>
+    </button>
+    <button class="bv-toll-opt bv-toll-ok" onclick="bvTollSaleMode()">
+      <span class="bvo-icon">🏚</span>
+      <span class="bvo-body">
+        <span class="bvo-title">자산 매각</span>
+        <span class="bvo-sub">보유 자산 선택 후 매각 (구매가×80%)</span>
+      </span>
+    </button>
+    <button class="bv-toll-opt ${canLoan?"bv-toll-ok":"bv-toll-dim"}"
+      onclick="${canLoan?"bvTollLoan()":"bvToast('"+(atMax?"대출 한도에 도달했습니다.":"대출 한도가 부족합니다.")+"')"}">
+      <span class="bvo-icon">💳</span>
+      <span class="bvo-body">
+        <span class="bvo-title">대출</span>
+        <span class="bvo-sub">${atMax?"⛔ 대출 한도 도달":canLoan?`은행 대출 (한도 ${bvFmt(remainLoan)})`:`한도 부족 (${bvFmt(remainLoan)}/${bvFmt(toll)})`}</span>
+      </span>
+    </button>
+    ${noWay?`<button class="bv-toll-opt" style="border-color:#c62828;margin-top:4px"
+      onclick="bvDeclareBankruptcy(bvTollContext?.playerIdx||0)">
+      <span class="bvo-icon">🏳</span>
+      <span class="bvo-body"><span class="bvo-title">파산 선언</span>
+      <span class="bvo-sub">납부 불가 – 모든 자산 초기화</span></span></button>`:""}
+  `;
   bvOpenModal("bv-toll-modal");
+  // 관전용 방송
+  bvBroadcastEvent('toll',`${player.name}이 통행료를 처리 중`,`💸 ${bvFmt(toll)} → ${ownerName}`);
 }
 
-function bvLoanLimit(player,data){
-  // 기본 200만 + 보유 자산 구매가 합계 × 50%
-  let assetVal=0;
-  if(data?.board){
-    Object.entries(data.board).forEach(([k,v])=>{
-      if(v.owner===player.name){
-        const sq=BV_BOARD[parseInt(k)];
-        if(sq)assetVal+=sq.price||0;
-      }
-    });
-  }
-  return 2000000+assetVal*0.5;
-}
-
-async function bvLoanAndPay(playerIdx,sqIdx,toll,ownerName){
+async function bvTollCash(){
   bvCloseModal("bv-toll-modal");
+  if(!bvTollContext)return;
+  const{playerIdx,sqIdx,toll,ownerName}=bvTollContext;
   const snap=await bvRef().get();const data=snap.data();
-  const player=data.players[playerIdx];const players=[...data.players];
+  const player=data.players[playerIdx];
+  if(player.cash<toll){bvToast("현금이 부족합니다");return;}
+  const players=[...data.players];
   const ownerIdx=data.players.findIndex(p=>p.name===ownerName);
-  // 전액 대출로 처리
-  players[playerIdx]={...player,loan:player.loan+toll};
+  players[playerIdx]={...player,cash:player.cash-toll};
   if(ownerIdx>=0)players[ownerIdx]={...players[ownerIdx],cash:players[ownerIdx].cash+toll};
-  await bvRef().update({players,log:firebase.firestore.FieldValue.arrayUnion(`💳 ${player.name} 대출로 통행료 ${bvFmt(toll)} 지불`)});
-  bvAddLog(`💳 대출 통행료 ${bvFmt(toll)}`);
-
+  await bvRef().update({players,log:firebase.firestore.FieldValue.arrayUnion(`💸 ${player.name}→${ownerName} ${bvFmt(toll)}`)});
+  bvSetEventHighlight(`💸 <b>${bvFmt(toll)}</b> → <b>${ownerName}</b>`);
+  bvMoneyRain(sqIdx,5);bvClearBroadcast();
+  const afterCash=players[playerIdx].cash;
+  bvTollContext=null;
   const sq=BV_BOARD[sqIdx];
-  if(sq.canBuild!==false&&sq.canAcquire!==false&&playerIdx===bvMyIdx()){
-    const acquireCost=(sq.price)*2;
-    const lim=bvLoanLimit(players[playerIdx],{board:data.board});
-    if(players[playerIdx].loan<lim&&(players[playerIdx].cash+(lim-players[playerIdx].loan))>=acquireCost){
-      bvAcquireTarget={sqIdx,cost:acquireCost,ownerName};
-      document.getElementById("bv-acq-body").innerHTML=`<b>${sq.name}</b> 인수<br>비용: ${bvFmt(acquireCost)}`;
+  if(sq?.canBuild!==false&&sq?.canAcquire!==false){
+    if(afterCash>=(sq.price)*2){
+      bvAcquireTarget={sqIdx,cost:sq.price*2,ownerName};
+      document.getElementById("bv-acq-body").innerHTML=`<b>${sq.name}</b> 인수<br>비용: ${bvFmt(sq.price*2)}`;
       bvOpenModal("bv-acquire-modal");return;
     }
   }
   await bvEndTurn();
 }
 
-async function bvSellToPay(playerIdx,sqIdx,toll,ownerName){
+async function bvTollLoan(){
   bvCloseModal("bv-toll-modal");
-  // 내 자산 목록 표시 (건물 우선 → 토지)
+  if(!bvTollContext)return;
+  const{playerIdx,sqIdx,toll,ownerName}=bvTollContext;
   const snap=await bvRef().get();const data=snap.data();
   const player=data.players[playerIdx];
-  const myLands=Object.entries(data.board||{}).filter(([k,v])=>v.owner===player.name);
-  
-  let html=`<b>자산 매각 (구매가×80%)</b><br>통행료 필요: ${bvFmt(toll)}<br><br>`;
-  myLands.forEach(([k,v])=>{
-    const sq=BV_BOARD[parseInt(k)];if(!sq)return;
-    const salePrice=Math.floor(sq.price*0.8);
-    html+=`<button style="margin:2px;font-size:11px;padding:4px 8px;background:rgba(255,255,255,0.1);color:white;border:1px solid rgba(255,255,255,0.2);border-radius:6px;cursor:pointer" onclick="bvSellAsset(${playerIdx},${k},${sqIdx},${toll},'${ownerName}')">${sq.name} (${bvFmt(salePrice)})</button>`;
-  });
-  const body=document.getElementById("bv-toll-body");if(body)body.innerHTML=html;
-  const btns=document.getElementById("bv-toll-btns");
-  if(btns)btns.innerHTML=`<button class="bv-btn-no" onclick="bvDeclareBankruptcy(${playerIdx})">🏳 파산</button>`;
-  bvOpenModal("bv-toll-modal");
+  const lim=bvLoanLimit(player,data);
+  if((lim-player.loan)<toll){bvToast("대출 한도가 부족합니다");return;}
+  const players=[...data.players];
+  const ownerIdx=data.players.findIndex(p=>p.name===ownerName);
+  players[playerIdx]={...player,loan:player.loan+toll};
+  if(ownerIdx>=0)players[ownerIdx]={...players[ownerIdx],cash:players[ownerIdx].cash+toll};
+  await bvRef().update({players,log:firebase.firestore.FieldValue.arrayUnion(`💳 ${player.name} 대출 통행료 ${bvFmt(toll)}`)});
+  bvMoneyRain(sqIdx,3);bvClearBroadcast();
+  bvTollContext=null;
+  await bvEndTurn();
 }
 
-async function bvSellAsset(playerIdx,landIdx,tollSqIdx,toll,ownerName){
+function bvTollSaleMode(){
+  bvCloseModal("bv-toll-modal");
+  bvSaleSelecting=true;
+  bvSetEvent("🏚 매각할 자산을 보드에서 클릭하세요");
+  bvBroadcastEvent('sale',`${bvMe()}이 자산을 매각 중...`,'🏚 자산 선택 중');
+  if(bvG)bvRender(bvG);
+}
+
+function bvShowSaleDetail(landIdx){
+  const sq=BV_BOARD[landIdx];
+  const land=bvG?.board?.[landIdx];
+  const bld=land?.buildings||{villa:0,building:0,hotel:0};
+  const{toll}=bvTollContext||{toll:0};
+  document.getElementById("bv-sale-title").textContent=`🏚 ${sq.name} 매각`;
+  document.getElementById("bv-sale-desc").innerHTML=`구매가의 <b>80%</b>로 매각 | 통행료: <b style="color:#ef9a9a">${bvFmt(toll)}</b>`;
+  const opts=[
+    {id:"villa",icon:"🏠",name:"별장",price:Math.floor((sq.buildCost?.villa||0)*0.8),avail:bld.villa>0},
+    {id:"building",icon:"🏢",name:"빌딩",price:Math.floor((sq.buildCost?.building||0)*0.8),avail:bld.building>0},
+    {id:"hotel",icon:"🏨",name:"호텔",price:Math.floor((sq.buildCost?.hotel||0)*0.8),avail:bld.hotel>0},
+    {id:"land",icon:"🏡",name:"토지 전체",price:Math.floor((sq.price||0)*0.8),avail:true},
+  ];
+  const c=document.getElementById("bv-sale-options");
+  if(c)c.innerHTML=opts.map(o=>`
+    <button class="bv-sale-detail-opt ${o.avail?"":"bv-sale-unavail"}"
+      ${o.avail?`onclick="bvSellComponent(${landIdx},'${o.id}')"`:""}>
+      <span style="font-size:18px">${o.icon}</span>
+      <span style="flex:1;text-align:left;padding-left:10px">
+        <b style="font-size:13px">${o.name}</b>
+        ${!o.avail?'<span style="font-size:10px;color:rgba(255,255,255,0.35);display:block">건설되지 않음</span>':""}
+      </span>
+      <span style="font-weight:700;color:#a5d6a7">+${bvFmt(o.price)}</span>
+    </button>`).join("");
+  bvSaleSelecting=false;
+  bvOpenModal("bv-sale-modal");
+}
+
+async function bvSellComponent(landIdx,component){
+  bvCloseModal("bv-sale-modal");
+  if(!bvTollContext)return;
+  const{playerIdx,sqIdx,toll,ownerName}=bvTollContext;
   const snap=await bvRef().get();const data=snap.data();
   const player=data.players[playerIdx];const players=[...data.players];
-  const sq=BV_BOARD[landIdx];if(!sq)return;
-  const salePrice=Math.floor(sq.price*0.8);
+  const sq=BV_BOARD[landIdx];const land=data.board?.[landIdx];
+  let salePrice=0;const board={...data.board};
+  if(component==="land"){
+    salePrice=Math.floor((sq.price||0)*0.8);
+    delete board[landIdx];
+  }else{
+    salePrice=Math.floor((sq.buildCost?.[component]||0)*0.8);
+    const bld={...(land?.buildings||{villa:0,building:0,hotel:0})};
+    bld[component]=0;board[landIdx]={...land,buildings:bld};
+  }
   players[playerIdx]={...player,cash:player.cash+salePrice};
-  const board={...data.board};delete board[landIdx];
-  await bvRef().update({players,board,log:firebase.firestore.FieldValue.arrayUnion(`🏚 ${player.name} ${sq.name} 매각 ${bvFmt(salePrice)}`)});
-  // 다시 통행료 시도
-  bvCloseModal("bv-toll-modal");
+  await bvRef().update({players,board,log:firebase.firestore.FieldValue.arrayUnion(`🏚 ${player.name} ${sq.name} 매각 +${bvFmt(salePrice)}`)});
+  bvAddLog(`🏚 ${sq.name} 매각 +${bvFmt(salePrice)}`);bvClearBroadcast();
   const snap2=await bvRef().get();const data2=snap2.data();
-  const p2=data2.players[playerIdx];
-  if(p2.cash>=toll){await bvPayToll(playerIdx,tollSqIdx,toll,ownerName);}
-  else{bvShowTollChoice(p2,toll,ownerName,playerIdx,tollSqIdx,data2);}
+  bvG=data2;bvRender(data2);
+  bvShowTollOptions(data2.players[playerIdx],toll,ownerName,data2);
 }
+
+function bvCancelSale(){
+  bvCloseModal("bv-sale-modal");
+  if(!bvTollContext)return;
+  bvRef().get().then(snap=>{
+    const data=snap.data();
+    bvShowTollOptions(data.players[bvTollContext.playerIdx],bvTollContext.toll,bvTollContext.ownerName,data);
+  });
+}
+
+function bvCalcBuildValue(bld){return 0;}
 
 async function bvDeclareBankruptcy(playerIdx){
   bvCloseModal("bv-toll-modal");
@@ -5592,32 +6112,35 @@ async function bvDeclareBankruptcy(playerIdx){
 
 // ── 구매 ──
 async function bvConfirmPurchase(){
-  bvCloseModal("bv-purchase-modal");
+  bvCloseModal("bv-purchase-modal");bvClearBroadcast();
   const sqIdx=bvPendingSquare;if(sqIdx==null)return;
   const snap=await bvRef().get();const data=snap.data();
   const playerIdx=bvMyIdx();const player=data.players[playerIdx];
   const sq=BV_BOARD[sqIdx];if(!sq)return;
 
-  // 총 비용 계산 (토지 + 선택 건물)
+  // 총 비용 계산 (토지 + 선택 건물들 합산)
   let totalCost=sq.price||0;
   let buildings={villa:0,building:0,hotel:0};
-  let bldLabel="";
-  if(bvPmSelectedBld&&sq.buildCost){
-    totalCost+=sq.buildCost[bvPmSelectedBld]||0;
-    if(bvPmSelectedBld==="villa"){buildings.villa=1;bldLabel=" + 🏠별장";}
-    else if(bvPmSelectedBld==="building"){buildings.building=1;bldLabel=" + 🏢빌딩";}
-    else if(bvPmSelectedBld==="hotel"){buildings.hotel=1;bldLabel=" + 🏨호텔";}
+  const bldLabels=[];
+  if(sq.buildCost){
+    if(bvPmSelectedBlds.has("villa")){totalCost+=sq.buildCost.villa||0;buildings.villa=1;bldLabels.push("🏠별장");}
+    if(bvPmSelectedBlds.has("building")){totalCost+=sq.buildCost.building||0;buildings.building=1;bldLabels.push("🏢빌딩");}
+    if(bvPmSelectedBlds.has("hotel")){totalCost+=sq.buildCost.hotel||0;buildings.hotel=1;bldLabels.push("🏨호텔");}
   }
+  const bldLabel=bldLabels.length>0?" + "+bldLabels.join("+"):"";
 
   if(player.cash<totalCost){bvToast("현금이 부족합니다");await bvEndTurn();return;}
   const players=[...data.players];
   players[playerIdx]={...player,cash:player.cash-totalCost};
   const board={...data.board,[sqIdx]:{owner:player.name,buildings}};
-  if(bvPmSelectedBld)bvLastBuildSq=sqIdx;
+  if(bvPmSelectedBlds.size>0)bvLastBuildSq=sqIdx;
   await bvRef().update({players,board,log:firebase.firestore.FieldValue.arrayUnion(`🏡 ${player.name} ${sq.name} 구매${bldLabel} (${bvFmt(totalCost)})`)});
   bvAddLog(`🏡 ${sq.name} 구매${bldLabel}`);
   bvSetEventHighlight(`🏡 <b>${sq.name}</b> 구매 완료!${bldLabel}`);
-  bvPendingSquare=null;bvPmSelectedBld=null;
+  // 구매 즉시 강한 반짝임
+  bvJustBoughtSq=sqIdx;
+  setTimeout(()=>{bvJustBoughtSq=-1;if(bvG)bvRenderBoard(bvG);},2000);
+  bvPendingSquare=null;bvPmSelectedBlds=new Set();
   await bvCheckSynergy(playerIdx);
   await bvEndTurn();
 }
@@ -5670,7 +6193,7 @@ function bvPopulatePurchaseModal(sq, player){
     document.getElementById("bv-pm-toll-hotel").textContent=bvFmt(sq.toll?.hotel||0);
     document.getElementById("bv-pm-tag-hotel").textContent=hLocked?`🔒 2바퀴 후 해금 (현재 ${myRound}바퀴)`:"✓ 해금됨";
   }
-  bvPmSelectedBld=null;
+  bvPmSelectedBlds=new Set();
   bvUpdatePmTotal(sq,player.cash);
 }
 
@@ -5680,16 +6203,13 @@ function bvPmToggle(type){
   if(!card||card.classList.contains("bv-pm-locked")){
     bvToast("아직 해금되지 않았습니다");return;
   }
-  if(bvPmSelectedBld===type){
-    // 선택 해제
-    bvPmSelectedBld=null;
+  // 다중 선택 토글
+  if(bvPmSelectedBlds.has(type)){
+    bvPmSelectedBlds.delete(type);
     card.classList.remove("bv-pm-selected");
   }else{
-    // 기존 선택 해제 후 선택
-    ["villa","building","hotel"].forEach(t=>{
-      document.getElementById(`bv-pm-card-${t}`)?.classList.remove("bv-pm-selected");
-    });
-    bvPmSelectedBld=type;
+    // 독립 선택 (호텔만, 빌딩만 등 자유롭게 선택 가능)
+    bvPmSelectedBlds.add(type);
     card.classList.add("bv-pm-selected");
   }
   const player=bvG?.players?.find(p=>p.name===bvMe());
@@ -5699,9 +6219,15 @@ function bvPmToggle(type){
 function bvUpdatePmTotal(sq,cash){
   if(!sq)sq=BV_BOARD[bvPendingSquare];if(!sq)return;
   let total=(sq.price||0);
-  if(bvPmSelectedBld&&sq.buildCost)total+=sq.buildCost[bvPmSelectedBld]||0;
+  // 선택된 건물 모두 합산
+  if(sq.buildCost){
+    if(bvPmSelectedBlds.has("villa"))total+=sq.buildCost.villa||0;
+    if(bvPmSelectedBlds.has("building"))total+=sq.buildCost.building||0;
+    if(bvPmSelectedBlds.has("hotel"))total+=sq.buildCost.hotel||0;
+  }
+  const bldCnt=bvPmSelectedBlds.size;
   const totalEl=document.getElementById("bv-pm-total");
-  if(totalEl)totalEl.textContent=bvFmt(total);
+  if(totalEl)totalEl.textContent=bvFmt(total)+(bldCnt>0?` (건물 ${bldCnt}개 포함)`:"");
   const btn=document.getElementById("bv-pm-ok-btn");
   if(btn){
     const canAfford=(cash||0)>=total;
@@ -5712,7 +6238,7 @@ function bvUpdatePmTotal(sq,cash){
 }
 
 async function bvDeclinePurchase(){
-  bvCloseModal("bv-purchase-modal");
+  bvCloseModal("bv-purchase-modal");bvClearBroadcast();
   bvPendingSquare=null;
   await bvEndTurn();
 }
@@ -5723,30 +6249,77 @@ async function bvShowBuildOptions(playerIdx,sqIdx,myRound){
   const player=data.players[playerIdx];const sq=BV_BOARD[sqIdx];
   const land=data.board?.[sqIdx];if(!land)return;
   const bld=land.buildings||{villa:0,building:0,hotel:0};
-  let html=`<b>${sq.name}</b><br>현금: ${bvFmt(player.cash)}<br><br>`;
-  const btns=[];
 
-  // 별장 (1바퀴 이상)
-  if(bld.villa<2&&bld.building===0&&bld.hotel===0){  // 별장: 바퀴 제한 없음
-    const cost=sq.buildCost?.villa||0;
-    btns.push(`<button class="bv-btn-yes" onclick="bvBuild(${playerIdx},${sqIdx},'villa',${cost})">${bld.villa===0?"🏠 별장 건설":"🏠🏠 별장 2채"} (${bvFmt(cost)})</button>`);
+  // 이미 건설된 건물 + 건설 가능한 건물 분리
+  const available=[];  // 건설 가능
+  const alreadyBuilt=[]; // 이미 건설됨
+  if(bld.villa===0)available.push({type:"villa",icon:"🏠",name:"별장",cost:sq.buildCost?.villa||0});
+  else alreadyBuilt.push("🏠별장");
+  if(bld.building===0&&myRound>=1)available.push({type:"building",icon:"🏢",name:"빌딩",cost:sq.buildCost?.building||0});
+  else if(bld.building>0)alreadyBuilt.push("🏢빌딩");
+  if(bld.hotel===0&&myRound>=2)available.push({type:"hotel",icon:"🏨",name:"호텔",cost:sq.buildCost?.hotel||0});
+  else if(bld.hotel>0)alreadyBuilt.push("🏨호텔");
+
+  if(available.length===0){
+    const alreadyMsg=alreadyBuilt.length>0?`이미 건설됨: ${alreadyBuilt.join(" ")}`:"";;
+    bvToast("건설 가능한 건물 없음");
+    if(alreadyMsg)bvSetEvent(`🏗 <b>${sq.name}</b><br>${alreadyMsg}`);
+    await bvEndTurn();return;
   }
-  // 빌딩 (2바퀴 이상)
-  if(myRound>=1&&bld.villa>=1&&bld.building===0&&bld.hotel===0){
-    const cost=sq.buildCost?.building||0;
-    btns.push(`<button class="bv-btn-yes" onclick="bvBuild(${playerIdx},${sqIdx},'building',${cost})">🏢 빌딩 건설 (${bvFmt(cost)})</button>`);
+
+  // 다중선택 상태
+  const selSet=new Set();
+  function calcTotal(){return available.filter(b=>selSet.has(b.type)).reduce((s,b)=>s+b.cost,0);}
+  function renderBuildModal(){
+    const totalCost=calcTotal();
+    const canAfford=player.cash>=totalCost;
+    const body=document.getElementById("bv-build-body");
+    const alreadySection=alreadyBuilt.length>0
+      ?`<div style="margin-bottom:8px;padding:6px 8px;background:rgba(255,255,255,0.05);border-radius:6px;font-size:11px;color:rgba(255,255,255,0.45)">
+          ✓ 이미 건설됨: ${alreadyBuilt.join(" &nbsp;")}
+        </div>`:"";
+    if(body)body.innerHTML=`<b>${sq.name}</b> | 현금: <b>${bvFmt(player.cash)}</b><br><br>`+
+      alreadySection+
+      available.map(b=>`<div class="bv-build-opt${selSet.has(b.type)?" bv-build-sel":""}" onclick="(function(){${selSet.has(b.type)?`selSet.delete('${b.type}')`:`selSet.add('${b.type}')`};bvBuildRenderModal()})()">
+        ${b.icon} ${b.name} <span style="color:#ffd54f">(${bvFmt(b.cost)})</span>
+        ${selSet.has(b.type)?'<span style="color:#81c784;float:right">✓</span>':''}
+      </div>`).join("")+
+      (selSet.size>0?`<div style="margin-top:10px;color:#a5d6a7;font-weight:700">총 건설비: ${bvFmt(totalCost)}</div>`:"");
+    const bbtns=document.getElementById("bv-build-btns");
+    if(bbtns)bbtns.innerHTML=(selSet.size>0&&canAfford
+      ?`<button class="bv-btn-no" onclick="bvCloseModal('bv-build-modal');bvEndTurn()">건설 안함</button>
+         <button class="bv-btn-yes" onclick="bvBuildMultiple(${playerIdx},${sqIdx},[...window._bvBuildSel])">
+           🏗 ${selSet.size}개 건설 (${bvFmt(totalCost)})
+         </button>`
+      :`<button class="bv-btn-no" onclick="bvCloseModal('bv-build-modal');bvEndTurn()">건설 안함</button>`);
+    window._bvBuildSel=selSet;
   }
-  // 호텔 (3바퀴 이상)
-  if(myRound>=2&&bld.building>=1&&bld.hotel===0){
-    const cost=sq.buildCost?.hotel||0;
-    btns.push(`<button class="bv-btn-yes" onclick="bvBuild(${playerIdx},${sqIdx},'hotel',${cost})">🏨 호텔 건설 (${bvFmt(cost)})</button>`);
-  }
-  if(btns.length===0){html+="건설 가능한 건물이 없습니다";bvToast("건설 가능 건물 없음");await bvEndTurn();return;}
-  
-  const body=document.getElementById("bv-build-body");if(body)body.innerHTML=html+btns.join("<br>");
-  const bbtns=document.getElementById("bv-build-btns");
-  if(bbtns)bbtns.innerHTML=`<button class="bv-btn-no" onclick="bvCloseModal('bv-build-modal');bvEndTurn()">건설 안함</button>`;
+  window.bvBuildRenderModal=renderBuildModal;
+  renderBuildModal();
   bvOpenModal("bv-build-modal");
+  const bvSq4=BV_BOARD[sqIdx];
+  bvBroadcastEvent('build',`${player.name}이 건물 건설을 결정 중...`,`🏗 ${bvSq4?.name||''}`);
+}
+
+async function bvBuildMultiple(playerIdx,sqIdx,types){
+  bvCloseModal("bv-build-modal");
+  const snap=await bvRef().get();const data=snap.data();
+  const player=data.players[playerIdx];const sq=BV_BOARD[sqIdx];
+  const players=[...data.players];
+  const bld={...(data.board?.[sqIdx]?.buildings||{villa:0,building:0,hotel:0})};
+  let totalCost=0;const bldLabels=[];
+  if(types.includes("villa")&&bld.villa===0){bld.villa=1;totalCost+=sq.buildCost?.villa||0;bldLabels.push("🏠별장");}
+  if(types.includes("building")&&bld.building===0){bld.building=1;totalCost+=sq.buildCost?.building||0;bldLabels.push("🏢빌딩");}
+  if(types.includes("hotel")&&bld.hotel===0){bld.hotel=1;totalCost+=sq.buildCost?.hotel||0;bldLabels.push("🏨호텔");}
+  if(player.cash<totalCost){bvToast("현금이 부족합니다");await bvEndTurn();return;}
+  players[playerIdx]={...player,cash:player.cash-totalCost};
+  const board={...data.board,[sqIdx]:{...data.board?.[sqIdx],buildings:bld}};
+  bvLastBuildSq=sqIdx;
+  await bvRef().update({players,board,log:firebase.firestore.FieldValue.arrayUnion(`🏗 ${player.name} ${sq.name} ${bldLabels.join("+")} 건설 (${bvFmt(totalCost)})`)});
+  bvAddLog(`🏗 ${sq.name} ${bldLabels.join("+")} 건설`);
+  bvSetEventHighlight(`🏗 <b>${sq.name}</b> ${bldLabels.join("+")} 완료!`);
+  await bvDelay(800);bvLastBuildSq=-1;
+  await bvEndTurn();
 }
 
 async function bvBuild(playerIdx,sqIdx,buildType,cost,freeOverride){
@@ -5758,9 +6331,10 @@ async function bvBuild(playerIdx,sqIdx,buildType,cost,freeOverride){
   if(!freeOverride)players[playerIdx]={...player,cash:player.cash-cost};
   const board={...data.board};
   const bld={...board[sqIdx].buildings};
-  if(buildType==="villa")bld.villa=Math.min(bld.villa+1,2);
-  else if(buildType==="building"){bld.building=1;bld.villa=0;}
-  else if(buildType==="hotel"){bld.hotel=1;bld.building=0;}
+  // 건물 누적 (최대 별장1+빌딩1+호텔1)
+  if(buildType==="villa"&&bld.villa===0)bld.villa=1;
+  else if(buildType==="building"&&bld.building===0)bld.building=1;
+  else if(buildType==="hotel"&&bld.hotel===0)bld.hotel=1;
   board[sqIdx]={...board[sqIdx],buildings:bld};
   const sq=BV_BOARD[sqIdx];
   bvLastBuildSq=sqIdx; // 애니메이션용
@@ -5927,13 +6501,14 @@ async function bvEnterSpaceTravel(playerIdx){
 
 function bvStartSpaceTravel(playerIdx){
   bvSpaceSelecting=true;bvAnimating=false;
+  bvBroadcastEvent('space',`${bvMe()}이 우주여행 목적지를 선택 중...`,'🚀 보드에서 이동할 칸 선택');
   // 모달 열지 않음 (클릭 막힘 방지) - 이벤트 패널에만 표시
   bvSetEvent("🚀 <b>우주여행!</b><br>이동할 칸을 보드에서 직접 클릭하세요<br><small style=\"color:rgba(255,255,255,0.6)\">1~3구역: 월급 지급 &nbsp; 4구역: 월급 없음</small>");
   if(bvG)bvRender(bvG); // space-target 클래스 붙이도록 재렌더
 }
 
 async function bvSelectSpaceTarget(sqIdx){
-  bvSpaceSelecting=false;bvCloseModal("bv-space-modal");
+  bvSpaceSelecting=false;bvCloseModal("bv-space-modal");bvClearBroadcast();
   const snap=await bvRef().get();const data=snap.data();
   const playerIdx=bvMyIdx();const player=data.players[playerIdx];const players=[...data.players];
   const sq=BV_BOARD[sqIdx];
@@ -6001,7 +6576,7 @@ async function bvDrawCard(playerIdx){
 }
 
 async function bvConfirmCard(){
-  bvCloseModal("bv-card-modal");
+  bvCloseModal("bv-card-modal");bvClearBroadcast();
   if(!bvPendingCard)return;
   const {card,playerIdx}=bvPendingCard;bvPendingCard=null;
   const snap=await bvRef().get();const data=snap.data();
@@ -6206,7 +6781,8 @@ async function bvAfterSynergy(){
 
 // ── 턴 종료 ──
 async function bvEndTurn(){
-  bvFreeBuildSelecting=false;bvFreeLandSelecting=false;bvSpaceSelecting=false;bvStartBuildSelecting=false;
+  bvFreeBuildSelecting=false;bvFreeLandSelecting=false;bvSpaceSelecting=false;bvStartBuildSelecting=false;bvSaleSelecting=false;bvTollContext=null;
+  bvClearBroadcast();
   const snap=await bvRef().get();const data=snap.data();
   const alive=data.players.filter(p=>p.isAlive);
   if(alive.length<=1){
@@ -6246,11 +6822,13 @@ async function bvEndTurn(){
 
 // ── 게임 종료 ──
 function bvShowEndScreen(winnerName){
-  const el=document.getElementById;
-  el("bv-end-emoji").textContent="🏆";
-  el("bv-end-title").textContent="게임 종료!";
-  el("bv-end-body").textContent=`🥇 ${winnerName} 승리!`;
-  bvOpenModal("bv-end-modal");
+  const isMe=(winnerName===bvMe());
+  const el=document.getElementById("bv-end-modal");
+  if(el)el.style.display="flex";
+  document.getElementById("bv-end-emoji").textContent=isMe?"🏆":"🥈";
+  document.getElementById("bv-end-title").textContent=isMe?"🎉 대단해요!":"게임 종료";
+  document.getElementById("bv-end-body").textContent=`${winnerName} 승리!`;
+  document.getElementById("bv-end-sub").textContent=isMe?"세계 정복 달성! 🌍":"다음엔 꼭 이겨봐요!";
 }
 
 function bvLeaveGame(){
@@ -6264,7 +6842,7 @@ function bvLeaveGame(){
 
 // ── 채팅 ──
 
-const BV_BOARD_W=1200, BV_BOARD_H=900; // 보드 자연 크기
+const BV_BOARD_W=1600, BV_BOARD_H=1300; // 보드 자연 크기
 
 function bvCalcFitZoom(){
   const wrap=document.getElementById("bv-board-wrap");
@@ -6289,8 +6867,28 @@ function bvAutoFit(){
   bvPanY=(wrap.clientHeight-BV_BOARD_H*bvZoomLevel)/2;
   bvApplyTransform();
 }
-// 다른 플레이어 주사위 결과를 내 화면에 표시
-function bvShowDiceForOthers(anim){
+// ── 관전 모드: 다른 플레이어 상호작용 표시 ──
+function bvShowObserverStatus(ev,data){
+  const el=document.getElementById("bv-event-body");
+  if(!el)return;
+  const icons={'toll':'💸','card':'🗝','purchase':'🏡','build':'🏗',
+               'space':'🚀','desert':'🏝','sale':'🏚','dice':'🎲'};
+  const icon=icons[ev.type]||'⏳';
+  const pColor=BV_COLOR_HEX[data?.players?.find(p=>p.name===ev.player)?.color]||"#aaa";
+  el.innerHTML=`<div class="bv-obs-live">
+    <div class="bv-obs-pulse" style="background:${pColor}"></div>
+    <div style="flex:1">
+      <div class="bv-obs-who">
+        <span style="color:${pColor};font-weight:700">${ev.player}</span>
+        <span style="font-size:10px;color:rgba(255,255,255,0.4)">상호작용 중</span>
+      </div>
+      <div class="bv-obs-what">${icon} ${ev.desc}</div>
+      ${ev.detail?`<div class="bv-obs-extra">${ev.detail}</div>`:""}
+    </div>
+  </div>`;
+}
+
+function bvStartDiceCycleForOthers(){
   const overlay=document.getElementById("bv-dice-overlay");
   const big1=document.getElementById("bv-die-big1");
   const big2=document.getElementById("bv-die-big2");
@@ -6298,12 +6896,31 @@ function bvShowDiceForOthers(anim){
   const extraText=document.getElementById("bv-dice-extra-text");
   if(!overlay)return;
   overlay.style.display="block";
-  if(big1)big1.textContent=BV_DICE_EMOJI[anim.d1]||"🎲";
-  if(big2)big2.textContent=BV_DICE_EMOJI[anim.d2]||"🎲";
   if(totalText)totalText.textContent="";
-  if(extraText)extraText.textContent=anim.isDouble?"🎯 더블! 추가턴":"";
-  clearTimeout(bvShowDiceForOthers._timer);
-  bvShowDiceForOthers._timer=setTimeout(()=>{overlay.style.display="none";},3500);
+  if(extraText)extraText.textContent="";
+  const faces=["⚀","⚁","⚂","⚃","⚄","⚅"];
+  if(big1){big1.classList.add("spin");big1.textContent="⚄";}
+  if(big2){big2.classList.add("spin");big2.textContent="⚃";}
+  clearInterval(bvStartDiceCycleForOthers._iv);
+  bvStartDiceCycleForOthers._iv=setInterval(()=>{
+    if(!bvG?._cycleActive){clearInterval(bvStartDiceCycleForOthers._iv);return;}
+    if(big1)big1.textContent=faces[Math.floor(Math.random()*6)];
+    if(big2)big2.textContent=faces[Math.floor(Math.random()*6)];
+  },95);
+}
+function bvStopDiceCycleForOthers(d1,d2,isDouble){
+  clearInterval(bvStartDiceCycleForOthers._iv);
+  const overlay=document.getElementById("bv-dice-overlay");
+  const big1=document.getElementById("bv-die-big1");
+  const big2=document.getElementById("bv-die-big2");
+  const extraText=document.getElementById("bv-dice-extra-text");
+  if(big1){big1.classList.remove("spin");big1.textContent=BV_DICE_EMOJI[d1]||"🎲";}
+  if(big2){big2.classList.remove("spin");big2.textContent=BV_DICE_EMOJI[d2]||"🎲";}
+  if(extraText)extraText.textContent=isDouble?"🎯 더블! 추가턴":"";
+  clearTimeout(bvStopDiceCycleForOthers._t);
+  bvStopDiceCycleForOthers._t=setTimeout(()=>{
+    if(overlay)overlay.style.display="none";
+  },2500);
 }
 
 function bvInitBoardEvents(){
@@ -6348,7 +6965,7 @@ function bvInitBoardEvents(){
   // ── 드래그 팬: 클릭+끌기 ──
   wrap.addEventListener("mousedown",e=>{
     if(e.button!==0)return;
-    if(bvSpaceSelecting||bvFreeLandSelecting||bvFreeBuildSelecting||bvStartBuildSelecting){
+    if(bvSpaceSelecting||bvFreeLandSelecting||bvFreeBuildSelecting||bvStartBuildSelecting||bvSaleSelecting){
       if(e.target.closest("[data-sq]"))return;
     }
     bvIsDragging=true;
