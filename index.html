@@ -2317,7 +2317,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v05.21.2</div>
+  <div class="splash-ver">v05.21.3</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -3831,7 +3831,7 @@ init();
       </div>
     </div>
 
-    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.21.2</div>
+    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.21.3</div>
   </div>
 
 
@@ -5041,7 +5041,7 @@ document.addEventListener('keydown', e => {
 </script>
 <script>
 // ════════════════════════════════════════════════════════
-// 부루마블 WORLD EDITION  v05.21.2
+// 부루마블 WORLD EDITION  v05.21.3
 // prefix: bv (bravo)
 // ════════════════════════════════════════════════════════
 
@@ -5602,92 +5602,106 @@ function bvMakeSqEl(idx,data){
 }
 
 function bvHexToRgba(hex,a){
-  try{
-    const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
-    return `rgba(${r},${g},${b},${a})`;
-  }catch{return `rgba(128,128,128,${a})`;}
+  try{const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+    return"rgba("+r+","+g+","+b+","+a+")";}
+  catch{return"rgba(128,128,128,"+a+")";}
+}
+
+function bvCalcToll(sq,land){
+  if(!land||!sq.toll)return 0;
+  const bld=land.buildings||{villa:0,building:0,hotel:0};
+  let t=0;
+  if(bld.villa>0)t+=sq.toll.villa1||0;
+  if(bld.building>0)t+=sq.toll.building||0;
+  if(bld.hotel>0)t+=sq.toll.hotel||0;
+  return t>0?t:(sq.toll.land||0);
 }
 
 function bvSqInner(sq,land,data){
   const me=bvMe();
+  const players=data&&data.players?data.players:[];
 
-  // ── 말(비행기) ──
-  const pieces=(data.players||[]).filter(p=>p.isAlive&&p.position===sq.index);
-  const piecesHtml=pieces.length?`<div class="bv-sq-pieces">${pieces.map(p=>{
-    const isMine=p.name===me;const isActive=data.turn===p.name;
-    const hex=BV_COLOR_HEX[p.color]||"#888";
-    const sz=isMine?28:22;
-    const glow=isActive?`filter:drop-shadow(0 0 5px ${hex}) drop-shadow(0 0 2px white)`:(isMine?`filter:drop-shadow(0 0 3px ${hex})`:"opacity:0.75");
-    return`<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" style="${glow};flex-shrink:0" title="${p.name}">
-      <path d="M21,16L21,14L13,9L13,3.5C13,2.67 12.33,2 11.5,2C10.67,2 10,2.67 10,3.5L10,9L2,14L2,16L10,13.5L10,19L8,20.5L8,22L11.5,21L15,22L15,20.5L13,19L13,13.5Z"
-        fill="${hex}" stroke="white" stroke-width="${isMine?1.5:1}" stroke-linejoin="round"/>
-    </svg>`;
-  }).join("")}</div>`:""
+  // 말 렌더링
+  const pieces=players.filter(function(p){return p.isAlive&&p.position===sq.index;});
+  let piecesHtml="";
+  if(pieces.length>0){
+    let svgs="";
+    for(var pi=0;pi<pieces.length;pi++){
+      var p=pieces[pi];
+      var isMine=(p.name===me);
+      var hex=BV_COLOR_HEX[p.color]||"#888";
+      var sz=isMine?26:20;
+      var glow=(data.turn===p.name)?"drop-shadow(0 0 5px "+hex+")":"";
+      svgs+='<svg width="'+sz+'" height="'+sz+'" viewBox="0 0 24 24" style="filter:'+glow+';flex-shrink:0">'
+           +'<path d="M21,16L21,14L13,9L13,3.5C13,2.67 12.33,2 11.5,2C10.67,2 10,2.67 10,3.5L10,9L2,14L2,16L10,13.5L10,19L8,20.5L8,22L11.5,21L15,22L15,20.5L13,19L13,13.5Z" fill="'+hex+'" stroke="white" stroke-width="1"/></svg>';
+    }
+    piecesHtml='<div class="bv-sq-pieces">'+svgs+'</div>';
+  }
 
-  // ── 코너 ──
+  // 코너
   if(sq.type==="corner"){
-    const icons={BR:"🟢",BL:"🏝",TL:"💰",TR:"🚀"};
-    const labels={BR:"출발",BL:"무인도",TL:"복지기금\n수령",TR:"우주여행"};
-    return`<div class="bv-sq-body" style="background:#fffde7"><div class="bv-sq-special" style="font-size:clamp(10px,1.1vw,14px);white-space:pre-wrap;text-align:center">${icons[sq.pos]||""}<br>${labels[sq.pos]||sq.name}</div></div>${piecesHtml}`;
+    var cicons={BR:"🟢",BL:"🏝",TL:"💰",TR:"🚀"};
+    var clabels={BR:"출발",BL:"무인도",TL:"복지기금\n수령",TR:"우주여행"};
+    return'<div class="bv-sq-body" style="background:#fffde7;width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;font-size:11px;white-space:pre-wrap">'
+      +(cicons[sq.pos]||"")+"<br>"+(clabels[sq.pos]||sq.name)+'</div>'+piecesHtml;
   }
-  // ── 황금열쇠 ──
+  // 황금열쇠
   if(sq.type==="golden"){
-    return`<div class="bv-sq-body" style="background:#fff9c4"><div class="bv-sq-special" style="font-size:18px">🗝<br><span style="font-size:11px;font-weight:600">황금열쇠</span></div></div>${piecesHtml}`;
+    return'<div class="bv-sq-body" style="background:#fff9c4;width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center">'
+      +'<div style="font-size:18px">🗝</div><div style="font-size:10px;font-weight:700">황금열쇠</div></div>'+piecesHtml;
   }
-  // ── 복지기금 ──
+  // 복지기금
   if(sq.type==="tax"){
-    return`<div class="bv-sq-body" style="background:#fff3e0"><div class="bv-sq-special" style="color:#c62828;font-size:16px">💸<br><span style="font-size:11px;font-weight:600">복지기금<br>15만 압수</span></div></div>${piecesHtml}`;
+    return'<div class="bv-sq-body" style="background:#fff3e0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center">'
+      +'<div style="font-size:14px;color:#c62828">💸</div><div style="font-size:9px;font-weight:700;color:#c62828">복지기금<br>15만압수</div></div>'+piecesHtml;
   }
 
-  // ── 소유자 정보 ──
-  const ownerName=land?.owner||null;
-  const ownerPlayer=ownerName?data.players.find(p=>p.name===ownerName):null;
-  const ownerHex=ownerPlayer?BV_COLOR_HEX[ownerPlayer.color]:"";
-  const bld=land?.buildings||{villa:0,building:0,hotel:0};
-  const isNewBuild=(sq.index===bvLastBuildSq);
+  // 소유자
+  var ownerName=land&&land.owner?land.owner:null;
+  var ownerHex="";
+  if(ownerName){
+    var op=players.find(function(p){return p.name===ownerName;});
+    if(op)ownerHex=BV_COLOR_HEX[op.color]||"";
+  }
+  var bld=land&&land.buildings?land.buildings:{villa:0,building:0,hotel:0};
+  var isNew=(sq.index===bvLastBuildSq);
 
-  // 건물 이모지 (배너에 표시)
-  let bldStr="";
-  if(bld.hotel>0)bldStr+="🏨".repeat(bld.hotel);
-  else if(bld.building>0)bldStr+="🏢";
-  else if(bld.villa>0)bldStr+="🏠".repeat(bld.villa);
+  // 건물 이모지
+  var bldStr="";
+  if(bld.hotel>0)bldStr+="🏨";
+  if(bld.building>0)bldStr+="🏢";
+  if(bld.villa>0)bldStr+="🏠";
 
-  // 구매가 or 통행료 표시
-  const priceOrToll=ownerName?bvFmt(bvCalcToll(sq,land)):bvFmt(sq.price||0);
-  const tollLabel=ownerName?"💸통행료":"구매가";
+  // 가격/통행료
+  var priceLabel=ownerName?bvFmt(bvCalcToll(sq,land)):bvFmt(sq.price||0);
 
-  // ── 관광지 : 배너 없음, 사진 + 이름+통행료 1줄 ──
+  // 구역 색
+  var barColor=BV_ZONE_COLOR[sq.zone]||BV_ZONE_COLOR[sq.color]||"#888";
+  var bodyBg=ownerHex?bvHexToRgba(ownerHex,0.18):"white";
+
+  // 관광지
   if(sq.type==="tourist"){
-    const touristColor=BV_TOURIST_COLOR[sq.index]||"#f57c00";
-    const bg=ownerHex?bvHexToRgba(ownerHex,0.18):"white";
-    const photoUrl=BV_PHOTOS[sq.index]||"";
-    const tGlow=ownerHex?`<div class="bv-sq-owner-glow" style="--og-color:${ownerHex}"></div>`:"";
-    return`<div class="bv-sq-body bv-sq-full" style="background:${bg}">
-      ${photoUrl?`<img class="bv-sq-photo" src="${photoUrl}" loading="lazy" onerror="this.style.display='none'" alt="">`:""}
-      <div class="bv-sq-info-line" style="background:${ownerHex?bvHexToRgba(ownerHex,0.15):'rgba(255,255,255,0.93)'}">
-        <span class="bv-sq-name bv-sq-name-lg">${sq.name}</span>
-        <span class="bv-sq-price">${priceOrToll}</span>
-      </div>
-      ${ownerHex?`<div class="bv-sq-owner-strip" style="background:${ownerHex}"></div>`:""}
-    </div>${tGlow}${piecesHtml}`;
+    var touristBg=ownerHex?bvHexToRgba(ownerHex,0.2):"white";
+    return'<div style="width:100%;height:100%;background:'+touristBg+';display:flex;flex-direction:column;overflow:hidden">'
+      +'<div style="flex:1;min-height:0;background:'+touristBg+'"></div>'
+      +'<div style="flex-shrink:0;background:rgba(255,255,255,0.9);padding:2px 3px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(0,0,0,0.07)">'
+      +'<span style="font-size:10px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+sq.name+'</span>'
+      +'<span style="font-size:9px;color:#555;white-space:nowrap">'+priceLabel+'</span></div>'
+      +(ownerHex?'<div class="bv-sq-owner-glow" style="--og-color:'+ownerHex+'"></div>':'')
+      +'</div>'+piecesHtml;
   }
 
-  // ── 일반 토지 : 구역 배너 + 건물 + 사진 + 이름+통행료 1줄 ──
-  const barColor=BV_ZONE_COLOR[sq.zone]||BV_ZONE_COLOR[sq.color]||"#888"; // zone 또는 color 중 하나
-  const bodyBg=ownerHex?bvHexToRgba(ownerHex,0.15):"white";
-  const photoUrl=BV_PHOTOS[sq.index]||"";
-  // 소유 토지 글로우 오버레이
-  const ownerGlow=ownerHex?`<div class="bv-sq-owner-glow" style="--og-color:${ownerHex}"></div>`:"";
-  return`<div class="bv-sq-bar" style="background:${barColor}">
-    ${bldStr?`<div class="bv-bld-banner${isNewBuild?" bv-bld-new":""}">${bldStr}</div>`:""}
-  </div>
-  <div class="bv-sq-body" style="background:${bodyBg}">
-    ${photoUrl?`<img class="bv-sq-photo" src="${photoUrl}" loading="lazy" onerror="this.style.display='none'" alt="">`:""}
-    <div class="bv-sq-info-line" style="background:${ownerHex?bvHexToRgba(ownerHex,0.18):'rgba(255,255,255,0.93)'}">
-      <span class="bv-sq-name">${sq.name}</span>
-      <span class="bv-sq-price" style="flex-shrink:0">${priceOrToll}</span>
-    </div>
-  </div>${ownerGlow}${piecesHtml}`;
+  // 일반 토지
+  return'<div style="background:'+barColor+';height:42%;width:100%;flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden">'
+    +(bldStr?'<span style="font-size:clamp(10px,1.3vw,18px);line-height:1">'+bldStr+'</span>':"")
+    +'</div>'
+    +'<div style="flex:1;background:'+bodyBg+';display:flex;flex-direction:column;overflow:hidden;min-height:0">'
+    +'<div style="flex-shrink:0;padding:2px 3px;display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.93);border-top:1px solid rgba(0,0,0,0.07)">'
+    +'<span style="font-size:clamp(8px,0.8vw,11px);font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;color:#111">'+sq.name+'</span>'
+    +'<span style="font-size:clamp(7px,0.7vw,9px);color:#333;white-space:nowrap;flex-shrink:0;margin-left:2px">'+priceLabel+'</span>'
+    +'</div>'
+    +(ownerHex?'<div class="bv-sq-owner-glow" style="--og-color:'+ownerHex+'"></div>':'')
+    +'</div>'+piecesHtml;
 }
 
 
