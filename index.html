@@ -2939,7 +2939,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v05.21.18</div>
+  <div class="splash-ver">v05.21.19</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -4193,10 +4193,11 @@ init();
         </div>
       </div>
       <div class="bvwt-players" id="rbw-pgrid"></div>
-      <div class="bvwt-hint">2명 이상 참가 시 방장이 게임을 시작할 수 있습니다</div>
+      <div class="bvwt-hint">모두 준비완료하면 방장이 게임을 시작할 수 있습니다</div>
       <div class="bvwt-btns">
+        <button id="rbw-ready-btn" class="bvwt-ready-btn" onclick="bvToggleReady()">✅ 준비완료</button>
         <button id="rbw-start-btn" class="bvwt-start-btn" onclick="bvStartGame()" style="display:none">🌍 게임 시작!</button>
-        <button class="bvwt-ready-btn" onclick="bvLeaveRoom()" style="background:rgba(255,80,80,0.15);border-color:rgba(255,80,80,0.4)">🚪 나가기</button>
+        <button class="bvwt-ready-btn" onclick="bvLeaveRoom()" style="background:rgba(255,80,80,0.15);border-color:rgba(255,80,80,0.4);font-size:12px">🚪 나가기</button>
       </div>
     </div>
   </div>
@@ -4477,7 +4478,7 @@ init();
     <!-- ══ 주사위 대형 오버레이 ══ -->
     
 
-    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.21.18</div>
+    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.21.19</div>
   </div>
 
 
@@ -5687,7 +5688,7 @@ document.addEventListener('keydown', e => {
 </script>
 <script>
 // ════════════════════════════════════════════════════════
-// 부루마블 WORLD EDITION  v05.21.18
+// 부루마블 WORLD EDITION  v05.21.19
 // prefix: bv (bravo)
 // ════════════════════════════════════════════════════════
 
@@ -6064,13 +6065,21 @@ function bvRenderWaiting(data){
     <div class="bvwt-player-row">
       <div class="bvwt-player-dot" style="background:${BV_COLOR_HEX[p.color]||'#888'}"></div>
       <div class="bvwt-player-name">${p.name}${p.name===data.host?" 👑":""}</div>
-      <div class="bvwt-player-status ready">✅ 참가완료</div>
+      <div class="bvwt-player-status ${p.isReady?"ready":""}">${p.isReady?"✅ 준비완료":"⏳ 준비중"}</div>
     </div>`).join("");
+  const mp=data.players.find(p=>p.name===me);
+  const rb=el("rbw-ready-btn");
+  if(rb){
+    rb.textContent=mp?.isReady?"❌ 준비취소":"✅ 준비완료";
+    rb.style.background=mp?.isReady
+      ?"linear-gradient(135deg,#5a5a5a,#3a3a3a)"
+      :"";
+  }
   const sb=el("rbw-start-btn");
   if(sb){
-    const enough=data.players.length>=2;
+    const allReady=data.players.length>=2&&data.players.every(p=>p.isReady);
     sb.style.display=bvIsHost?"block":"none";
-    sb.disabled=!enough;sb.style.opacity=enough?"1":"0.5";
+    sb.disabled=!allReady;sb.style.opacity=allReady?"1":"0.5";
   }
 }
 
