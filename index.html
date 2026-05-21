@@ -1753,12 +1753,11 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 /* ══ 돈 떨어지는 애니메이션 ══ */
 .bv-money-drop{
   position:fixed;z-index:9999;pointer-events:none;
-  filter:drop-shadow(0 6px 12px rgba(0,0,0,0.7))
-         drop-shadow(0 0 18px rgba(255,213,79,0.85))
-         drop-shadow(0 0 28px rgba(255,215,0,0.6));
-  animation:bvMoneyFall 1.7s cubic-bezier(.3,0,.5,1) forwards;
+  filter:drop-shadow(0 3px 6px rgba(0,0,0,0.5))
+         drop-shadow(0 0 8px rgba(255,213,79,0.45));
+  animation:bvMoneyFall 1.5s cubic-bezier(.3,0,.5,1) forwards;
   will-change:transform,opacity;
-  text-shadow:0 0 10px rgba(255,213,79,0.8);
+  text-shadow:0 0 4px rgba(255,213,79,0.4);
 }
 @keyframes bvMoneyFall{
   0%{transform:translate(0,-60px) rotate(0deg) scale(0.4);opacity:0;}
@@ -2939,7 +2938,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v05.21.23</div>
+  <div class="splash-ver">v05.21.24</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -4465,7 +4464,7 @@ init();
     <!-- ══ 주사위 대형 오버레이 ══ -->
     
 
-    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.21.23</div>
+    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.21.24</div>
   </div>
 
 
@@ -5675,7 +5674,7 @@ document.addEventListener('keydown', e => {
 </script>
 <script>
 // ════════════════════════════════════════════════════════
-// 부루마블 WORLD EDITION  v05.21.23
+// 부루마블 WORLD EDITION  v05.21.24
 // prefix: bv (bravo)
 // ════════════════════════════════════════════════════════
 
@@ -8225,41 +8224,39 @@ function bvMoneyRain(sqIdx, count){
   if(!layer)return;
   const rect=sq.getBoundingClientRect();
   const emojis=["💰","💵","💸","💴","💶","💷","💲","🪙"];
-  const n=count||20;
+  const n=count||10;
   for(let i=0;i<n;i++){
     setTimeout(()=>{
       const el=document.createElement("div");
       el.className="bv-money-drop";
       el.textContent=emojis[Math.floor(Math.random()*emojis.length)];
-      // 시작점: 칸 위쪽 + 더 넓은 범위
-      el.style.left=(rect.left-30+rect.width*0.1+Math.random()*(rect.width*1.0+60))+"px";
-      el.style.top=(rect.top-60+Math.random()*40)+"px";
-      // 더 큰 x 변화 & 회전 다양화
-      el.style.setProperty("--bv-rain-x",(Math.random()*120-60)+"px");
-      el.style.setProperty("--bv-rain-rot",(Math.random()*1080-540)+"deg");
-      // 더 큰 사이즈 (50-95px)
-      el.style.fontSize=(50+Math.random()*45)+"px";
-      // 속도 다양화
-      el.style.animationDuration=(1.6+Math.random()*0.7)+"s";
-      // 약간씩 다른 지연으로 더 자연스럽게
-      el.style.animationDelay=(Math.random()*0.15)+"s";
+      // 시작점
+      el.style.left=(rect.left-15+rect.width*0.15+Math.random()*(rect.width*0.7+30))+"px";
+      el.style.top=(rect.top-40+Math.random()*30)+"px";
+      // x 변화 & 회전 (절반)
+      el.style.setProperty("--bv-rain-x",(Math.random()*60-30)+"px");
+      el.style.setProperty("--bv-rain-rot",(Math.random()*540-270)+"deg");
+      // 사이즈 절반 (25-55px)
+      el.style.fontSize=(25+Math.random()*30)+"px";
+      el.style.animationDuration=(1.5+Math.random()*0.5)+"s";
+      el.style.animationDelay=(Math.random()*0.1)+"s";
       layer.appendChild(el);
-      setTimeout(()=>el.remove(),2400);
-    },i*65);
+      setTimeout(()=>el.remove(),2000);
+    },i*80);
   }
 }
 
 // 금액 기반 머니레인 개수 계산 (적으면 적게, 많으면 많게)
 function bvCalcMoneyCount(amount){
   if(amount<=0)return 0;
-  if(amount<=50000)return 2;        // ≤5만
-  if(amount<=150000)return 3;       // ≤15만
-  if(amount<=300000)return 5;       // ≤30만
-  if(amount<=500000)return 7;       // ≤50만
-  if(amount<=1000000)return 10;     // ≤100만
-  if(amount<=2000000)return 13;     // ≤200만
-  if(amount<=5000000)return 16;     // ≤500만
-  return 20;                         // >500만
+  if(amount<=50000)return 1;        // ≤5만
+  if(amount<=150000)return 2;       // ≤15만
+  if(amount<=300000)return 3;       // ≤30만
+  if(amount<=500000)return 4;       // ≤50만
+  if(amount<=1000000)return 5;      // ≤100만
+  if(amount<=2000000)return 7;      // ≤200만
+  if(amount<=5000000)return 9;      // ≤500만
+  return 11;                         // >500만
 }
 
 // 다른 플레이어에게 머니레인 브로드캐스트
