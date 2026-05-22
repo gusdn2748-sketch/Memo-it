@@ -2938,7 +2938,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v05.21.24</div>
+  <div class="splash-ver">v05.21.26</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -4255,6 +4255,7 @@ init();
         <div class="bv-event-panel">
           <div class="bv-event-title">📋 이벤트</div>
           <div id="bv-event-body" class="bv-event-body">대기 중...</div>
+          <button onclick="bvForceEndTurn()" id="bv-force-end-btn" style="margin:6px auto 0;padding:5px 10px;background:rgba(255,80,80,0.12);color:rgba(255,150,150,0.85);border:1px solid rgba(255,80,80,0.3);border-radius:6px;cursor:pointer;font-size:10px;font-weight:600;display:block">⚠ 비상 턴 종료 (멈췄을 때만)</button>
         </div>
         <div class="bv-chat-wrap">
           <div id="bv-chat-msgs" class="bv-chat-msgs"></div>
@@ -4464,7 +4465,7 @@ init();
     <!-- ══ 주사위 대형 오버레이 ══ -->
     
 
-    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.21.24</div>
+    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.21.26</div>
   </div>
 
 
@@ -5674,7 +5675,7 @@ document.addEventListener('keydown', e => {
 </script>
 <script>
 // ════════════════════════════════════════════════════════
-// 부루마블 WORLD EDITION  v05.21.24
+// 부루마블 WORLD EDITION  v05.21.26
 // prefix: bv (bravo)
 // ════════════════════════════════════════════════════════
 
@@ -6227,11 +6228,16 @@ function bvRender(data){
 }
 
 function bvRenderWealthRank(data){
-  // 자산 순위 계산 및 시각화
+  // 자산 순위 계산 및 시각화 (토지 + 건물 모두 구매가 기준)
   const landValMap={};
   Object.entries(data.board||{}).forEach(([k,land])=>{
-    const sq=BV_BOARD[parseInt(k)];if(!sq)return;
-    landValMap[land.owner]=(landValMap[land.owner]||0)+(sq.price||0);
+    const sq=BV_BOARD[parseInt(k)];if(!sq||!land.owner)return;
+    let v=sq.price||0;
+    const bld=land.buildings||{};
+    if(bld.villa>0)v+=sq.buildCost?.villa||0;
+    if(bld.building>0)v+=sq.buildCost?.building||0;
+    if(bld.hotel>0)v+=sq.buildCost?.hotel||0;
+    landValMap[land.owner]=(landValMap[land.owner]||0)+v;
   });
   const ranked=data.players.filter(p=>p.isAlive).map(p=>({
     name:p.name,color:p.color,
@@ -6465,13 +6471,18 @@ function bvRenderPlayers(data){
     bvPrevPlayerCash[p.name]=p.cash;
   });
 
-  // 자산 계산
+  // 자산 계산 (토지 + 건물 모두 구매가 기준)
   function calcLandVal(pName){
     let v=0;
     Object.entries(data.board||{}).forEach(([k,land])=>{
       if(land.owner!==pName)return;
       const sq=BV_BOARD[parseInt(k)];if(!sq)return;
       v+=sq.price||0;
+      // ★ 건물 가격도 포함 (구매가 기준)
+      const bld=land.buildings||{};
+      if(bld.villa>0)v+=sq.buildCost?.villa||0;
+      if(bld.building>0)v+=sq.buildCost?.building||0;
+      if(bld.hotel>0)v+=sq.buildCost?.hotel||0;
     });
     return v;
   }
@@ -7643,7 +7654,7 @@ function bvStartSpaceTravel(playerIdx){
   bvSpaceSelecting=true;bvAnimating=false;
   bvBroadcastEvent('space',`${bvMe()}이 우주여행 목적지를 선택 중...`,'🚀 보드에서 이동할 칸 선택');
   // 모달 열지 않음 (클릭 막힘 방지) - 이벤트 패널에만 표시
-  bvSetEvent("🚀 <b>우주여행!</b><br>이동할 칸을 보드에서 직접 클릭하세요<br><small style=\"color:rgba(255,255,255,0.6)\">1~3구역: 월급 지급 &nbsp; 4구역: 월급 없음</small>");
+  bvSetEvent("🚀 <b>우주여행!</b><br>이동할 칸을 보드에서 직접 클릭하세요<br><small style=\"color:rgba(255,255,255,0.6)\">1~3구역/출발지: 월급 O &nbsp; 4구역: 월급 X</small>");
   if(bvG)bvRender(bvG); // space-target 클래스 붙이도록 재렌더
 }
 
@@ -7653,12 +7664,13 @@ async function bvSelectSpaceTarget(sqIdx){
   const playerIdx=bvMyIdx();const player=data.players[playerIdx];const players=[...data.players];
   const sq=BV_BOARD[sqIdx];
 
-  // 1~3구역이면 출발 통과 월급
+  // 4구역(31~39)을 제외한 모든 이동 시 월급 지급 (1~3구역 + 출발지 정확도착)
   const isZone4=sq.zone===4||(sqIdx>=31&&sqIdx<=39);
   players[playerIdx]={...player,spaceWait:false,position:sqIdx};
   await bvRef().update({players,log:firebase.firestore.FieldValue.arrayUnion(`🚀 ${player.name} → ${sq.name}으로 이동`)});
   bvAddLog(`🚀 → ${sq.name}`);
-  if(!isZone4&&sqIdx!==0){await bvGiveSalary(playerIdx,1);}
+  // ★ 출발지(0) 정확 도착도 월급 지급 (특별건설은 bvHandleSquare가 처리)
+  if(!isZone4){await bvGiveSalary(playerIdx,1);}
   bvAnimating=false;
   await bvHandleSquare(playerIdx,sqIdx);
 }
@@ -7808,7 +7820,13 @@ async function bvApplyCard(card,playerIdx,data){
       if(isMe)await bvEndTurn();break;
 
     case"teleport":
-      if(isMe){bvSpaceSelecting=true;bvOpenModal("bv-space-modal");bvRender(data);}
+      if(isMe){
+        // ★ 모달 안 열기 (보드 클릭 막힘 방지) - 이벤트 패널 안내만
+        bvSpaceSelecting=true;bvAnimating=false;
+        bvSetEvent("🌀 <b>순간이동!</b><br>이동할 칸을 보드에서 직접 클릭하세요<br><small style=\"color:rgba(255,255,255,0.6)\">1~3구역/출발지: 월급 지급 &nbsp; 4구역: 월급 없음</small>");
+        bvBroadcastEvent('teleport',`${bvMe()}이 순간이동 칸 선택 중...`,'🌀 보드에서 이동할 칸 선택');
+        bvRender(data);
+      }
       break;
 
     case"pay_per_building":{
@@ -8296,12 +8314,13 @@ function bvStartBuildConfirm(){
   const myLands=Object.entries(data.board||{}).filter(([k,v])=>v.owner===bvMe());
   if(myLands.length===0){bvToast("보유 토지가 없습니다");bvEndTurn();return;}
   bvStartBuildSelecting=true;
-  bvSetEvent("🏗 건설할 토지를 보드에서 클릭하세요<br><small style=\"color:rgba(255,255,255,0.5)\">건설 없이 넘기려면 다른 버튼을 누르세요</small>")
+  bvSetEvent("🏗 건설할 토지를 보드에서 클릭하세요<br><button onclick='bvStartBuildSkip()' style='margin-top:6px;padding:4px 12px;background:rgba(255,255,255,0.1);color:white;border:1px solid rgba(255,255,255,0.25);border-radius:8px;cursor:pointer;font-size:11px'>⏭ 건설 없이 넘기기</button>");
   bvRender(data);
 }
 function bvStartBuildSkip(){
   bvCloseModal("bv-startbuild-modal");
   bvStartBuildSelecting=false;
+  bvClearBroadcast();
   bvRender(bvG);
   bvEndTurn();
 }
@@ -8314,8 +8333,24 @@ async function bvSelectPaidBuild(sqIdx){
   await bvShowBuildOptions(playerIdx,sqIdx,999);
 }
 
-function bvSkipFreeBuild(){bvFreeBuildSelecting=false;bvRender(bvG);bvEndTurn();}
-function bvSkipFreeLand(){bvFreeLandSelecting=false;bvRender(bvG);bvEndTurn();}
+function bvSkipFreeBuild(){bvFreeBuildSelecting=false;bvClearBroadcast();bvRender(bvG);bvEndTurn();}
+function bvSkipFreeLand(){bvFreeLandSelecting=false;bvClearBroadcast();bvRender(bvG);bvEndTurn();}
+
+// ★ 비상 턴 강제 종료 (선택 모드에서 막힐 때 최후의 수단)
+async function bvForceEndTurn(){
+  if(!confirm("⚠ 현재 진행 중인 작업을 취소하고 턴을 종료합니다.\n계속하시겠습니까?"))return;
+  bvSpaceSelecting=false;bvSaleSelecting=false;bvFreeBuildSelecting=false;
+  bvFreeLandSelecting=false;bvStartBuildSelecting=false;
+  bvCloseModal("bv-purchase-modal");bvCloseModal("bv-toll-modal");
+  bvCloseModal("bv-sale-modal");bvCloseModal("bv-acquire-modal");
+  bvCloseModal("bv-special-modal");bvCloseModal("bv-card-modal");
+  bvCloseModal("bv-startbuild-modal");bvCloseModal("bv-space-modal");
+  bvAnimating=false;bvPendingCard=null;bvPendingSquare=null;bvAcquireTarget=null;
+  bvTollContext=null;bvIsRebuildMode=false;
+  bvClearBroadcast();
+  if(bvG)bvRender(bvG);
+  await bvEndTurn();
+}
 async function bvSendChat(){
   const inp=document.getElementById("bv-chat-inp");if(!inp)return;
   const text=inp.value.trim();if(!text)return;
