@@ -3053,7 +3053,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v05.25.3</div>
+  <div class="splash-ver">v05.25.4</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -4581,7 +4581,7 @@ init();
     <!-- ══ 주사위 대형 오버레이 ══ -->
     
 
-    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.25.3</div>
+    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.25.4</div>
   </div>
 
 
@@ -5791,7 +5791,7 @@ document.addEventListener('keydown', e => {
 </script>
 <script>
 // ════════════════════════════════════════════════════════
-// 부루마블 WORLD EDITION  v05.25.3
+// 부루마블 WORLD EDITION  v05.25.4
 // prefix: bv (bravo)
 // ════════════════════════════════════════════════════════
 
@@ -6590,7 +6590,7 @@ function bvSqInner(sq,land,data){
   // 관광지 - 특수칸과 동일한 방식 (flex 중앙 + 이미지 max-height 제한)
   if(sq.type==="tourist"){
     const touristImgMap={5:"t5",15:"t15",25:"t25",28:"t28",32:"t32",39:"t39"};
-    const tkey=touristImgMap[sqIdx];
+    const tkey=touristImgMap[sq.index];
     const tImg=(tkey&&BV_IMG[tkey])?BV_IMG[tkey]:"";
     const tBg=ownerColor?bvHexToRgba(ownerColor,0.25):"white";
     const imgHtml=tImg?`<img src="${tImg}" class="bv-tile-icon bv-tile-tourist" alt="${sq.name}">`:"";
