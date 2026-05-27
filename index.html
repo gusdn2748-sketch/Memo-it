@@ -1482,7 +1482,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 .bv-col-left .bv-sq-bar,.bv-col-right .bv-sq-bar{width:30%;height:100%;flex-shrink:0}
 .bv-col-left .bv-sq{flex-direction:row}
 .bv-col-right .bv-sq{flex-direction:row-reverse}
-.bv-sq-body{flex:1;display:flex;flex-direction:column;align-items:stretch;overflow:hidden;min-width:0}
+.bv-sq-body{flex:1;display:flex;flex-direction:column;align-items:stretch;justify-content:space-between;overflow:hidden;min-width:0;position:relative}
 .bv-sq-name{font-size:clamp(9px,0.85vw,13px);font-weight:600;text-align:center;line-height:1.2;word-break:keep-all;color:#111}
 .bv-sq-price{font-size:clamp(8px,0.7vw,11px);color:#444;text-align:center}
 .bv-sq-bld{font-size:clamp(14px,1.5vw,20px);text-align:center;line-height:1}
@@ -2452,9 +2452,14 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 }
 /* 건물 이모지: 크게! */
 .bv-bld-row{
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
   display:flex;justify-content:center;align-items:center;
   gap:1px;line-height:1;
   pointer-events:none;
+  max-width:94%;max-height:72%;
+  z-index:1;
 }
 .bv-bld-icon{
   font-size:clamp(21px,2.5vw,34px);
@@ -2858,7 +2863,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 
 /* ════ 픽셀 건물/야자수 이미지 ════ */
 .bv-bld-img{
-  width:auto;height:clamp(34px,3.4vw,50px);
+  width:auto;max-height:100%;height:clamp(30px,3vw,46px);
   image-rendering:pixelated;
   filter:drop-shadow(0 2px 3px rgba(0,0,0,0.4));
   display:block;
@@ -2965,14 +2970,19 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 
 /* ════ 관광지 고유 이미지 ════ */
 .bv-tourist-img{
-  width:auto;max-width:96%;
-  height:clamp(46px,5vw,76px);
+  max-width:100%;max-height:100%;
+  width:auto;height:auto;
   image-rendering:pixelated;
   object-fit:contain;
   border-radius:4px;
   filter:drop-shadow(0 2px 4px rgba(0,0,0,0.45));
-  display:block;margin:0 auto;
+  display:block;
 }
+
+
+/* 이미지 위 이름/가격 가독성 */
+.bv-sq-body .bv-sq-name{position:relative;z-index:2;}
+.bv-sq-body .bv-sq-price{position:relative;z-index:2;}
 
 </style>
 </head>
@@ -3049,7 +3059,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v05.25.0</div>
+  <div class="splash-ver">v05.25.1</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -4577,7 +4587,7 @@ init();
     <!-- ══ 주사위 대형 오버레이 ══ -->
     
 
-    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.25.0</div>
+    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.25.1</div>
   </div>
 
 
@@ -5787,7 +5797,7 @@ document.addEventListener('keydown', e => {
 </script>
 <script>
 // ════════════════════════════════════════════════════════
-// 부루마블 WORLD EDITION  v05.25.0
+// 부루마블 WORLD EDITION  v05.25.1
 // prefix: bv (bravo)
 // ════════════════════════════════════════════════════════
 
