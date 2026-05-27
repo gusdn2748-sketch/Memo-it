@@ -1482,7 +1482,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 .bv-col-left .bv-sq-bar,.bv-col-right .bv-sq-bar{width:30%;height:100%;flex-shrink:0}
 .bv-col-left .bv-sq{flex-direction:row}
 .bv-col-right .bv-sq{flex-direction:row-reverse}
-.bv-sq-body{flex:1;display:flex;flex-direction:column;align-items:stretch;justify-content:space-between;overflow:hidden;min-width:0;position:relative}
+.bv-sq-body{flex:1;display:flex;flex-direction:column;align-items:stretch;overflow:hidden;min-width:0}
 .bv-sq-name{font-size:clamp(9px,0.85vw,13px);font-weight:600;text-align:center;line-height:1.2;word-break:keep-all;color:#111}
 .bv-sq-price{font-size:clamp(8px,0.7vw,11px);color:#444;text-align:center}
 .bv-sq-bld{font-size:clamp(14px,1.5vw,20px);text-align:center;line-height:1}
@@ -2452,14 +2452,9 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 }
 /* 건물 이모지: 크게! */
 .bv-bld-row{
-  position:absolute;
-  top:50%;left:50%;
-  transform:translate(-50%,-50%);
   display:flex;justify-content:center;align-items:center;
   gap:1px;line-height:1;
   pointer-events:none;
-  max-width:94%;max-height:72%;
-  z-index:1;
 }
 .bv-bld-icon{
   font-size:clamp(21px,2.5vw,34px);
@@ -2978,25 +2973,10 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 
 
 /* ════ 관광지 배경 이미지 (항상 표시, 레이아웃 영향 없음) ════ */
-.bv-tourist-bg{
-  position:absolute;
-  top:0;left:0;right:0;bottom:0;
-  background-position:center 42%;
-  background-repeat:no-repeat;
-  background-size:88% auto;
-  image-rendering:pixelated;
-  pointer-events:none;
-  z-index:0;
-  opacity:0.96;
-}
-.bv-tourist-name{
-  position:relative;z-index:2;
-  text-shadow:0 1px 2px rgba(255,255,255,0.9),0 0 4px rgba(255,255,255,0.7);
-}
-.bv-tourist-price{
-  position:relative;z-index:2;font-weight:700;
-  text-shadow:0 1px 2px rgba(255,255,255,0.9),0 0 4px rgba(255,255,255,0.7);
-}
+/* 관광지 이미지 - 특수칸과 동일 패턴 (max-height 제한, 레이아웃 안전) */
+.bv-tile-tourist{width:auto;height:auto;max-width:92%;max-height:54%;}
+.bv-tourist-label{font-size:clamp(9px,0.9vw,13px);font-weight:800;color:#111;text-align:center;line-height:1.1;word-break:keep-all;}
+.bv-tourist-price-lbl{font-size:clamp(8px,0.7vw,11px);color:#333;text-align:center;font-weight:600;}
 
 </style>
 </head>
@@ -3073,7 +3053,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v05.25.2</div>
+  <div class="splash-ver">v05.25.3</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -4601,7 +4581,7 @@ init();
     <!-- ══ 주사위 대형 오버레이 ══ -->
     
 
-    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.25.2</div>
+    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.25.3</div>
   </div>
 
 
@@ -5811,7 +5791,7 @@ document.addEventListener('keydown', e => {
 </script>
 <script>
 // ════════════════════════════════════════════════════════
-// 부루마블 WORLD EDITION  v05.25.2
+// 부루마블 WORLD EDITION  v05.25.3
 // prefix: bv (bravo)
 // ════════════════════════════════════════════════════════
 
@@ -6607,18 +6587,14 @@ function bvSqInner(sq,land,data){
   const bodyBg=ownerColor?bvHexToRgba(ownerColor,0.20):"white";
   const ownerGlow=ownerColor?`<div class="bv-sq-owner-glow" style="--og-color:${ownerColor}"></div>`:"";
 
-  // 관광지 - 항상 고유 이미지를 배경으로 깔기 (소유 무관)
+  // 관광지 - 특수칸과 동일한 방식 (flex 중앙 + 이미지 max-height 제한)
   if(sq.type==="tourist"){
     const touristImgMap={5:"t5",15:"t15",25:"t25",28:"t28",32:"t32",39:"t39"};
     const tkey=touristImgMap[sqIdx];
     const tImg=(tkey&&BV_IMG[tkey])?BV_IMG[tkey]:"";
     const tBg=ownerColor?bvHexToRgba(ownerColor,0.25):"white";
-    const imgLayer=tImg?`<div class="bv-tourist-bg" style="background-image:url('${tImg}')"></div>`:"";
-    return`<div class="bv-sq-body tourist-body" style="background:${tBg}">
-      ${imgLayer}
-      <div class="bv-sq-name bv-tourist-name" style="font-size:clamp(10px,0.95vw,13px);font-weight:800">${sq.name}</div>
-      <div class="bv-sq-price bv-tourist-price">${priceOrToll}</div>
-    </div>${ownerGlow}${piecesHtml}`;
+    const imgHtml=tImg?`<img src="${tImg}" class="bv-tile-icon bv-tile-tourist" alt="${sq.name}">`:"";
+    return`<div class="bv-sq-body tourist-body" style="background:${tBg}"><div class="bv-sq-special bv-special-img">${imgHtml}<span class="bv-tourist-label">${sq.name}</span><span class="bv-tourist-price-lbl">${priceOrToll}</span></div></div>${ownerGlow}${piecesHtml}`;
   }
 
   // 일반 토지
