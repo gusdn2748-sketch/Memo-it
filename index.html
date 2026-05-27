@@ -2984,6 +2984,28 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 .bv-sq-body .bv-sq-name{position:relative;z-index:2;}
 .bv-sq-body .bv-sq-price{position:relative;z-index:2;}
 
+
+/* ════ 관광지 배경 이미지 (항상 표시, 레이아웃 영향 없음) ════ */
+.bv-tourist-bg{
+  position:absolute;
+  top:0;left:0;right:0;bottom:0;
+  background-position:center 42%;
+  background-repeat:no-repeat;
+  background-size:88% auto;
+  image-rendering:pixelated;
+  pointer-events:none;
+  z-index:0;
+  opacity:0.96;
+}
+.bv-tourist-name{
+  position:relative;z-index:2;
+  text-shadow:0 1px 2px rgba(255,255,255,0.9),0 0 4px rgba(255,255,255,0.7);
+}
+.bv-tourist-price{
+  position:relative;z-index:2;font-weight:700;
+  text-shadow:0 1px 2px rgba(255,255,255,0.9),0 0 4px rgba(255,255,255,0.7);
+}
+
 </style>
 </head>
 <body>
@@ -3059,7 +3081,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v05.25.1</div>
+  <div class="splash-ver">v05.25.2</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -4587,7 +4609,7 @@ init();
     <!-- ══ 주사위 대형 오버레이 ══ -->
     
 
-    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.25.1</div>
+    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.25.2</div>
   </div>
 
 
@@ -5797,7 +5819,7 @@ document.addEventListener('keydown', e => {
 </script>
 <script>
 // ════════════════════════════════════════════════════════
-// 부루마블 WORLD EDITION  v05.25.1
+// 부루마블 WORLD EDITION  v05.25.2
 // prefix: bv (bravo)
 // ════════════════════════════════════════════════════════
 
@@ -6577,17 +6599,9 @@ function bvSqInner(sq,land,data){
   // 일반 토지 / 관광지
   const barColor=BV_ZONE_COLOR[sq.zone]||BV_ZONE_COLOR[sq.color]||"#888";
   const bld=land?.buildings||{villa:0,building:0,hotel:0};
-  // 건물/관광지 픽셀 이미지
+  // 건물 픽셀 이미지 (관광지는 별도 처리 - 항상 배경 이미지)
   let bldHtml="";
-  const isTourist=sq.type==="tourist";
-  // ★ 관광지 칸별 고유 이미지 (소유 시) - 야자수 대체
-  const touristImgMap={5:"t5",15:"t15",25:"t25",28:"t28",32:"t32",39:"t39"};
-  if(isTourist&&land?.owner){
-    const tkey=touristImgMap[sqIdx];
-    if(tkey&&BV_IMG[tkey]){
-      bldHtml='<div class="bv-bld-row"><img class="bv-tourist-img" src="'+BV_IMG[tkey]+'" title="'+sq.name+'"></div>';
-    }
-  }else{
+  {
     const bldImgs=[];
     if(bld.villa>0)bldImgs.push('<img class="bv-bld-img" src="'+BV_IMG.villa+'" title="별장">');
     if(bld.building>0)bldImgs.push('<img class="bv-bld-img" src="'+BV_IMG.office+'" title="빌딩">');
@@ -6601,13 +6615,17 @@ function bvSqInner(sq,land,data){
   const bodyBg=ownerColor?bvHexToRgba(ownerColor,0.20):"white";
   const ownerGlow=ownerColor?`<div class="bv-sq-owner-glow" style="--og-color:${ownerColor}"></div>`:"";
 
-  // 관광지
+  // 관광지 - 항상 고유 이미지를 배경으로 깔기 (소유 무관)
   if(sq.type==="tourist"){
+    const touristImgMap={5:"t5",15:"t15",25:"t25",28:"t28",32:"t32",39:"t39"};
+    const tkey=touristImgMap[sqIdx];
+    const tImg=(tkey&&BV_IMG[tkey])?BV_IMG[tkey]:"";
     const tBg=ownerColor?bvHexToRgba(ownerColor,0.25):"white";
+    const imgLayer=tImg?`<div class="bv-tourist-bg" style="background-image:url('${tImg}')"></div>`:"";
     return`<div class="bv-sq-body tourist-body" style="background:${tBg}">
-      ${bldHtml}
-      <div class="bv-sq-name" style="font-size:clamp(10px,0.95vw,13px);font-weight:800">${sq.name}</div>
-      <div class="bv-sq-price">${priceOrToll}</div>
+      ${imgLayer}
+      <div class="bv-sq-name bv-tourist-name" style="font-size:clamp(10px,0.95vw,13px);font-weight:800">${sq.name}</div>
+      <div class="bv-sq-price bv-tourist-price">${priceOrToll}</div>
     </div>${ownerGlow}${piecesHtml}`;
   }
 
