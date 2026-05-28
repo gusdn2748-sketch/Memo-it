@@ -1463,7 +1463,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 .bv-row-top,.bv-row-bot{height:248px;flex-shrink:0}
 .bv-row-mid{flex:1;min-height:0}
 .bv-col{display:flex;flex-direction:column;width:248px;flex-shrink:0}
-.bv-col-left .bv-sq,.bv-col-right .bv-sq{flex:1;min-height:0}
+.bv-col-left .bv-sq,.bv-col-right .bv-sq{flex:1;min-height:0;position:relative}
 .bv-center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:space-around;padding:4px;min-width:0;overflow:hidden}
 .bv-center-logo{font-size:clamp(18px,2vw,32px);font-weight:700;color:white;letter-spacing:1px;text-shadow:0 0 10px rgba(255,255,255,0.4)}
 .bv-center-sub{font-size:clamp(8px,1vw,10px);color:rgba(255,255,255,0.5)}
@@ -2989,11 +2989,12 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 }
 .bv-land-layer.on{opacity:1;} /* 즉시 표시 (리렌더 시 깜빡임 없음) */
 .bv-land-layer.just-upgraded{
-  animation:bvLandRise 0.65s cubic-bezier(.22,1.2,.4,1);
+  animation:bvLandRise 2.5s cubic-bezier(.18,.9,.3,1);
 }
 @keyframes bvLandRise{
-  0%{opacity:0;transform:scale(0.72) translateY(10%);}
-  55%{opacity:1;transform:scale(1.08) translateY(-2%);}
+  0%{opacity:0;transform:scale(0.72) translateY(12%);}
+  35%{opacity:0.7;transform:scale(0.92) translateY(4%);}
+  70%{opacity:1;transform:scale(1.06) translateY(-1%);}
   100%{opacity:1;transform:scale(1) translateY(0);}
 }
 .bv-land-layer.on{opacity:1;}
@@ -3108,7 +3109,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v05.29.1</div>
+  <div class="splash-ver">v05.29.2</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -4636,7 +4637,7 @@ init();
     <!-- ══ 주사위 대형 오버레이 ══ -->
     
 
-    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.29.1</div>
+    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.29.2</div>
   </div>
 
 
@@ -5846,7 +5847,7 @@ document.addEventListener('keydown', e => {
 </script>
 <script>
 // ════════════════════════════════════════════════════════
-// 부루마블 WORLD EDITION  v05.29.1
+// 부루마블 WORLD EDITION  v05.29.2
 // prefix: bv (bravo)
 // ════════════════════════════════════════════════════════
 
@@ -6507,8 +6508,9 @@ function bvBuildTooltipHtml(idx){
 
   // 토지 / 관광지
   const flag=BV_FLAG[sq.name]?BV_FLAG[sq.name]+" ":"";
-  const zHex=BV_ZONE_HEX[sq.zone]||"";
-  const zName=BV_ZONE_NAME[sq.zone]||"";
+  const colorKey=sq.type==="tourist"?"tourist":sq.color;
+  const zHex=BV_ZONE_HEX[colorKey]||"";
+  const zName=BV_ZONE_NAME[colorKey]||"";
   const zoneTag=zHex?` <span class="tt-zone" style="background:${zHex}">${zName}</span>`:"";
   const titleBg=zHex?`background:${zHex};`:"";
   let html=`<div class="tt-title tt-title-zone" style="${titleBg}">${flag}${sq.name}${zoneTag}</div><div class="tt-sep"></div>`;
@@ -7537,7 +7539,7 @@ async function bvConfirmPurchase(){
   bvSetEventHighlight(`🏗 <b>${sq.name}</b> ${logVerb} 완료!${bldLabel}`);
 
   bvJustBoughtSq=sqIdx;
-  setTimeout(()=>{bvJustBoughtSq=-1;if(bvG)bvRenderBoard(bvG);},2000);
+  setTimeout(()=>{bvJustBoughtSq=-1;if(bvG)bvRenderBoard(bvG);},2700);
   bvPendingSquare=null;bvPmSelectedBlds=new Set();
   if(!isRebuild)await bvCheckSynergy(playerIdx);
   await bvEndTurn();
