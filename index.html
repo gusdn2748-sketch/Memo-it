@@ -2056,13 +2056,10 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
 
 
 /* ── 소유 토지 컬러 글로우 ── */
-.bv-sq-owner-glow{
-  position:absolute;inset:0;pointer-events:none;border-radius:inherit;z-index:3;
-  animation:bvOwnerGlow 2s ease-in-out infinite;
-}
+/* (구 글로우 정의1 제거 - 통합됨) */
 @keyframes bvOwnerGlow{
-  0%,100%{opacity:0.35;box-shadow:inset 0 0 0 2px var(--og-color,rgba(255,255,255,0.4)),0 0 6px 0 var(--og-color,rgba(255,255,255,0.3))}
-  50%{opacity:0.95;box-shadow:inset 0 0 0 3px var(--og-color,rgba(255,255,255,0.6)),0 0 14px 2px var(--og-color,rgba(255,255,255,0.55))}
+  0%,100%{opacity:calc(var(--gi,0.6) * 0.55);}
+  50%{opacity:var(--gi,0.6);}
 }
 
 
@@ -2492,15 +2489,16 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
   position:absolute;inset:0;
   pointer-events:none;
   border-radius:inherit;
-  box-shadow:inset 0 0 0 4px var(--og-color,#fff),
-             inset 0 0 32px 4px var(--og-color,#fff),
-             0 0 24px 2px var(--og-color,#fff),
-             0 0 40px 4px var(--og-color,#fff);
-  opacity:0.85;
-  animation:bvOwnerGlowPulse 2.8s ease-in-out infinite;
-  z-index:3;
-  mix-blend-mode:screen;
+  z-index:4;
+  box-shadow:inset 0 0 0 var(--gw,3px) var(--og-color,#fff),
+             0 0 var(--gb,10px) 2px var(--og-color,#fff);
+  animation:bvOwnerGlow 1.8s ease-in-out infinite;
 }
+/* 건물 단계별 글로우 강화 */
+.bv-glow-s1{--gw:2px;--gb:7px;--gi:0.55;}
+.bv-glow-s2{--gw:3px;--gb:12px;--gi:0.72;}
+.bv-glow-s3{--gw:5px;--gb:18px;--gi:0.88;}
+.bv-glow-s4{--gw:7px;--gb:26px;--gi:1;}
 @keyframes bvOwnerGlowPulse{
   0%,100%{opacity:0.7;}
   50%    {opacity:1;}
@@ -3109,7 +3107,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v05.29.2</div>
+  <div class="splash-ver">v05.29.4</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -4637,7 +4635,7 @@ init();
     <!-- ══ 주사위 대형 오버레이 ══ -->
     
 
-    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.29.2</div>
+    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.29.4</div>
   </div>
 
 
@@ -5847,7 +5845,7 @@ document.addEventListener('keydown', e => {
 </script>
 <script>
 // ════════════════════════════════════════════════════════
-// 부루마블 WORLD EDITION  v05.29.2
+// 부루마블 WORLD EDITION  v05.29.4
 // prefix: bv (bravo)
 // ════════════════════════════════════════════════════════
 
@@ -6021,7 +6019,7 @@ let bvPrevTurnName=null; // 이전 턴 플레이어 (배너 트리거용)
 let bvShownDiceTs=0; // 동기화 표시한 주사위 ts (중복 방지)
 let bvShownCardTs=0; // 동기화 표시한 카드 ts
 let bvShownRainTs=0; // 머니레인 ts
-let bvPrevStage={},bvSynergyQueue=[],bvFreeBuildSelecting=false,bvLastLog="",bvStarsStarted=false,bvZoomLevel=1.0,bvLastBuildSq=-1,bvJustBoughtSq=-1;
+let bvPrevStage={},bvUpgradeAnim={},bvSynergyQueue=[],bvFreeBuildSelecting=false,bvLastLog="",bvStarsStarted=false,bvZoomLevel=1.0,bvLastBuildSq=-1,bvJustBoughtSq=-1;
 let bvPanX=0,bvPanY=0,bvIsDragging=false,bvDragSX=0,bvDragSY=0,bvDragSPX=0,bvDragSPY=0;
 let bvPrevPlayerCash={};
 let bvPrevPlayerPositions={}; // 플레이어 이동 감지 (밟기 애니메이션용)
@@ -6757,8 +6755,12 @@ function bvSqInner(sq,land,data){
   }
   // ★ 단계 상승 감지 (구매/건설/인수 시에만 페이드인, 리렌더는 조용)
   const _prevStage=bvPrevStage[sq.index];
-  const _upgraded=(_prevStage!==undefined && stage>_prevStage);
+  if(_prevStage!==undefined && stage>_prevStage){
+    bvUpgradeAnim[sq.index]=Date.now(); // 단계 상승 시각 기록
+  }
   bvPrevStage[sq.index]=stage;
+  // 더블렌더(Firebase 중복 스냅샷)에도 애니 유지: 최근 2.6초 내 상승이면 애니
+  const _upgraded=(bvUpgradeAnim[sq.index] && (Date.now()-bvUpgradeAnim[sq.index]<2600));
   const textLayer=`<div class="bv-sq-name">${sq.name}</div><div class="bv-sq-price">${priceOrToll}</div>`;
   const landLayers=[0,1,2,3,4].map(st=>{
     const on=(st===stage)?(" on"+(_upgraded?" just-upgraded":"")):"";
@@ -6773,8 +6775,9 @@ function bvSqInner(sq,land,data){
       return `<div class="bv-land-layer bv-land-text${on}">${textLayer}</div>`;
     }
   }).join("");
-  // ★ 지역 색상 배너 제거 - 이미지 공간 확보 (구역색은 hover 툴팁에 표시)
-  return`<div class="bv-sq-body bv-land-body" style="background:${bodyBg}">${landLayers}</div>${ownerGlow}${piecesHtml}`;
+  // ★ 지역 색상 배너 제거 + 단계별 플레이어 글로우
+  const landGlow=(ownerColor&&stage>=1)?`<div class="bv-sq-owner-glow bv-glow-s${stage}" style="--og-color:${ownerColor}"></div>`:"";
+  return`<div class="bv-sq-body bv-land-body" style="background:${bodyBg}">${landLayers}</div>${landGlow}${piecesHtml}`;
 }
 
 
