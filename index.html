@@ -3107,7 +3107,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v05.29.4</div>
+  <div class="splash-ver">v05.29.6</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -4635,7 +4635,7 @@ init();
     <!-- ══ 주사위 대형 오버레이 ══ -->
     
 
-    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.29.4</div>
+    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.29.6</div>
   </div>
 
 
@@ -5845,7 +5845,7 @@ document.addEventListener('keydown', e => {
 </script>
 <script>
 // ════════════════════════════════════════════════════════
-// 부루마블 WORLD EDITION  v05.29.4
+// 부루마블 WORLD EDITION  v05.29.6
 // prefix: bv (bravo)
 // ════════════════════════════════════════════════════════
 
@@ -7170,11 +7170,12 @@ function bvShowTollOptions(player,toll,ownerName,data){
         <span class="bvo-sub">${canCash?"보유 현금으로 즉시 납부":`부족 (${bvFmt(player.cash)}/${bvFmt(toll)})`}</span>
       </span>
     </button>
-    <button class="bv-toll-opt bv-toll-ok" onclick="bvTollSaleMode()">
+    <button class="bv-toll-opt ${assetSaleVal>0?"bv-toll-ok":"bv-toll-dim"}"
+      onclick="${assetSaleVal>0?"bvTollSaleMode()":"bvToast('매각할 보유 자산이 없습니다.')"}">
       <span class="bvo-icon">🏚</span>
       <span class="bvo-body">
         <span class="bvo-title">자산 매각</span>
-        <span class="bvo-sub">보유 자산 선택 후 매각 (구매가×80%)</span>
+        <span class="bvo-sub">${assetSaleVal>0?`보유 자산 매각 (최대 ${bvFmt(assetSaleVal)})`:"매각할 자산 없음"}</span>
       </span>
     </button>
     <button class="bv-toll-opt ${canLoan?"bv-toll-ok":"bv-toll-dim"}"
@@ -8455,7 +8456,7 @@ async function bvAfterSynergy(){
       // NASA: 순간이동 + 우주여행 이용료 2배
       players[playerIdx]={...player,nasaSynergy:true};
       await bvRef().update({players,nasaOwner:player.name});
-      bvSpaceSelecting=true;bvOpenModal("bv-space-modal");bvRender(data);break;
+      bvSpaceSelecting=true;bvAnimating=false;bvOpenModal("bv-space-modal");bvRender(data);break;
     case"toll_free":
       if(sy.gainAmount){players[playerIdx]={...player,cash:player.cash+sy.gainAmount,tollFreeUses:(player.tollFreeUses||0)+1};}
       await bvRef().update({players,log:firebase.firestore.FieldValue.arrayUnion(`⭐ 시너지 효과 적용`)});
