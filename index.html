@@ -3109,7 +3109,7 @@ input:checked+.rw-tsl::before{transform:translateX(18px)}
     padding:0 24px;
     letter-spacing:-.1px;
   "></p>
-  <div class="splash-ver">v05.30.1</div>
+  <div class="splash-ver">v05.30.2</div>
   <div class="splash-credit">Claude by Anthropic · Real-time Team Workspace</div>
 </div>
 
@@ -4637,7 +4637,7 @@ init();
     <!-- ══ 주사위 대형 오버레이 ══ -->
     
 
-    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.30.1</div>
+    <div style="position:absolute;bottom:4px;right:8px;font-size:10px;color:rgba(255,255,255,0.2);z-index:10">v05.30.2</div>
   </div>
 
 
@@ -5847,7 +5847,7 @@ document.addEventListener('keydown', e => {
 </script>
 <script>
 // ════════════════════════════════════════════════════════
-// 부루마블 WORLD EDITION  v05.30.1
+// 부루마블 WORLD EDITION  v05.30.2
 // prefix: bv (bravo)
 // ════════════════════════════════════════════════════════
 
@@ -8247,19 +8247,26 @@ async function bvApplyCard(card,playerIdx,data){
       bvTriggerMoneyRain(player.position,card.amount);
       break;
 
-    case"move_to":
-      if(card.target===0&&card.salary){await bvGiveSalary(playerIdx,1);}
+    case"move_to":{
+      // 출발 통과/도착 판정 (앞으로 이동하다 0을 지나거나 0에 도착)
+      const _passGo=(card.salary!==false)&&((card.target<player.position)||(card.target===0&&player.position!==0));
+      // ★ 위치 먼저 갱신 (월급 덮어쓰기 방지)
       players[playerIdx]={...player,position:card.target};
       await bvRef().update({players,log:firebase.firestore.FieldValue.arrayUnion(`🗝 ${player.name} [${card.title}] 이동`)});
       bvAddLog(`🗝 ${card.title}`);
+      // ★ 출발 통과 시 월급 + 바퀴수 증가 (fresh 데이터 기반)
+      if(_passGo)await bvGiveSalary(playerIdx);
       if(isMe)await bvHandleSquare(playerIdx,card.target);
-      break;
+      break;}
 
     case"move_forward":{
       const newPos=(player.position+card.steps)%40;
-      if(newPos<player.position||(player.position+card.steps)>=40)await bvGiveSalary(playerIdx,1);
+      const _passGo=newPos<player.position||(player.position+card.steps)>=40;
+      // ★ 위치 먼저 갱신 (월급 덮어쓰기 방지)
       players[playerIdx]={...player,position:newPos};
       await bvRef().update({players,log:firebase.firestore.FieldValue.arrayUnion(`🗝 ${player.name} [${card.title}] ${card.steps}칸 전진`)});
+      // ★ 출발 통과 시 월급 + 바퀴수 증가 (이전엔 ,1로 바퀴 누락 + 덮어쓰기됨)
+      if(_passGo)await bvGiveSalary(playerIdx);
       if(isMe)await bvHandleSquare(playerIdx,newPos);break;}
 
     case"move_backward":{
